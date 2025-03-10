@@ -15,9 +15,6 @@ export default defineConfig({
   publicDir: resolve(__dirname, "public"),
   plugins: [
     handlebars({
-      context: {
-        title: "Hello, world!",
-      },
       partialDirectory: resolve(__dirname, "src/partials"),
     }),
   ],

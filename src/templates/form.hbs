@@ -1,0 +1,17 @@
+<h2>{{title}}</h2>
+
+<form id="dynamic-form">
+  {{#each fields}}
+    <label for="{{this.name}}">{{this.label}}</label>
+    <input 
+      type="{{this.type}}" 
+      id="{{this.name}}" 
+      name="{{this.name}}" 
+      required="{{this.required}}" 
+    />
+  {{/each}}
+
+  <button type="submit">{{buttonText}}</button>
+</form>
+
+<a href="#" id="form-link">{{linkText}}</a>
