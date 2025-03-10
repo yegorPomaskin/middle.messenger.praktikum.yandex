@@ -11,7 +11,10 @@
     />
   {{/each}}
 
-  <button type="submit" class="{{styles.button}} {{#if isLogin}}{{lookup styles "button--login"}}{{else}}{{lookup styles "button--register"}}{{/if}}">{{buttonText}}
-  </button>
+  {{!-- <button type="submit" class="{{styles.button}} {{#if isLogin}}{{lookup styles "button--login"}}{{else}}{{lookup styles "button--register"}}{{/if}}">{{buttonText}}
+  </button> --}}
+
+   {{> button type="submit" text=buttonText className=buttonClass}}
+  
   <a href="#" class="{{styles.form__link}}" id="form-link">{{linkText}}</a>
 </form>
