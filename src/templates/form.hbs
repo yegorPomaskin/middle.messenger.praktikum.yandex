@@ -1,17 +1,17 @@
-<h2>{{title}}</h2>
-
-<form id="dynamic-form">
+<form id="dynamic-form" class="{{styles.form}}">
+  <h2 class="{{styles.title}}">{{title}}</h2>
   {{#each fields}}
-    <label for="{{this.name}}">{{this.label}}</label>
-    <input 
-      type="{{this.type}}" 
-      id="{{this.name}}" 
-      name="{{this.name}}" 
-      required="{{this.required}}" 
+    <label for="{{this.name}}" class="{{../styles.form__label}}">{{this.label}}</label>
+    <input
+      class="{{../styles.form__input}}"
+      type="{{this.type}}"
+      id="{{this.name}}"
+      name="{{this.name}}"
+      required="{{this.required}}"
     />
   {{/each}}
 
-  <button type="submit">{{buttonText}}</button>
+  <button type="submit" class="{{styles.button}} {{#if isLogin}}{{lookup styles "button--login"}}{{else}}{{lookup styles "button--register"}}{{/if}}">{{buttonText}}
+  </button>
+  <a href="#" class="{{styles.form__link}}" id="form-link">{{linkText}}</a>
 </form>
-
-<a href="#" id="form-link">{{linkText}}</a>

@@ -1,5 +1,6 @@
 import formTemplate from "../templates/form.hbs?raw";
 import Handlebars from "handlebars";
+import styles from "./auth.module.css";
 import { renderRegisterPage } from "./register.ts";
 
 export function renderAuthPage() {
@@ -11,12 +12,24 @@ export function renderAuthPage() {
   app.innerHTML = template({
     title: "Вход",
     fields: [
-      { label: "Логин", name: "login", type: "text", required: true },
-      { label: "Пароль", name: "password", type: "password", required: true },
+      {
+        label: "Логин",
+        name: "login",
+        type: "text",
+        required: true,
+      },
+      {
+        label: "Пароль",
+        name: "password",
+        type: "password",
+        required: true,
+      },
     ],
     buttonText: "Авторизоваться",
+    isLogin: true,
     linkText: "Нет аккаунта?",
     linkHref: "#register",
+    styles,
   });
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {

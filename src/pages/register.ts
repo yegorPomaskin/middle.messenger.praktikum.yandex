@@ -1,4 +1,5 @@
 import formTemplate from "../templates/form.hbs?raw";
+import styles from "./auth.module.css";
 import Handlebars from "handlebars";
 import { renderAuthPage } from "./auth";
 
@@ -19,8 +20,10 @@ export function renderRegisterPage() {
       { label: "Пароль", name: "password", type: "password", required: true },
     ],
     buttonText: "Зарегистрироваться",
+    isLogin: false,
     linkText: "Войти",
     linkHref: "#login",
+    styles,
   });
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {

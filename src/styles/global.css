@@ -1,0 +1,54 @@
+@import "normalize.css/normalize.css";
+
+:root {
+  --accent-color: #f64819;
+  --primary-color: #ffffff;
+  --secondary-color: #999999;
+  --font-size-base: 16px;
+  --spacing-base: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Сброс отступов */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Чистим стили и кнопки */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Базовая типографика */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 13px;
+  background-color: #212327;
+  color: #fff;
+  font-weight: medium;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: bold;
+}
