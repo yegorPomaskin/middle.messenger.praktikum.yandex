@@ -9,36 +9,49 @@ export function renderAuthPage() {
   const app = document.getElementById("app");
   if (!app) return;
 
+  app.textContent = "";
+
   Handlebars.registerPartial("button", buttonPartial);
   const template = Handlebars.compile(formTemplate);
 
-  const isLogin = true; // or set it based on your logic
+  // Проверка на какой странице кнопка - если на странице логина, то добавляем стили логина.
+  const isLogin = true;
   const buttonClass = isLogin
     ? `${buttonStyles.button} ${buttonStyles["button--login"]}`
     : `${buttonStyles.button} ${buttonStyles["button--register"]}`;
 
-  app.innerHTML = template({
-    title: "Вход",
-    fields: [
-      {
-        label: "Логин",
-        name: "login",
-        type: "text",
-        required: true,
-      },
-      {
-        label: "Пароль",
-        name: "password",
-        type: "password",
-        required: true,
-      },
-    ],
-    buttonText: "Авторизоваться",
-    buttonClass,
-    linkText: "Нет аккаунта?",
-    linkHref: "#register",
-    styles,
-  });
+  // У контейнера пока нет стиля
+  const container = document.createElement("div");
+  container.className = `container ${styles["container--login"]}`;
+
+  container.insertAdjacentHTML(
+    "beforeend",
+    template({
+      title: "Вход",
+      fields: [
+        {
+          label: "Логин",
+          name: "login",
+          type: "text",
+          required: true,
+        },
+        {
+          label: "Пароль",
+          name: "password",
+          type: "password",
+          required: true,
+        },
+      ],
+      buttonText: "Авторизоваться",
+      buttonClass,
+      linkText: "Нет аккаунта?",
+      linkHref: "#register",
+      styles,
+    })
+  );
+
+  app.textContent = "";
+  app.appendChild(container);
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {
     event.preventDefault();

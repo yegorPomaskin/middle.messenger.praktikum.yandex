@@ -1,4 +1,4 @@
 import "./styles/global.css";
-import { renderAuthPage } from "./pages/auth";
+import { renderLinksPage } from "./pages/links.ts";
 
-renderAuthPage();
+renderLinksPage(); // рендерим главную страницу
