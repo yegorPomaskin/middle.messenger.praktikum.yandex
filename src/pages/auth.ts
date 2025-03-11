@@ -20,37 +20,36 @@ export function renderAuthPage() {
     ? `${buttonStyles.button} ${buttonStyles["button--login"]}`
     : `${buttonStyles.button} ${buttonStyles["button--register"]}`;
 
-  // У контейнера пока нет стиля
+  // У контейнера пока нет стиля, но пусть элемент будет 
   const container = document.createElement("div");
   container.className = `container ${styles["container--login"]}`;
 
-  container.insertAdjacentHTML(
-    "beforeend",
-    template({
-      title: "Вход",
-      fields: [
-        {
-          label: "Логин",
-          name: "login",
-          type: "text",
-          required: true,
-        },
-        {
-          label: "Пароль",
-          name: "password",
-          type: "password",
-          required: true,
-        },
-      ],
-      buttonText: "Авторизоваться",
-      buttonClass,
-      linkText: "Нет аккаунта?",
-      linkHref: "#register",
-      styles,
-    })
-  );
+  // Объект формы
+  const formConfig = {
+    title: "Вход",
+    fields: [
+      {
+        label: "Логин",
+        name: "login",
+        type: "text",
+        required: true,
+      },
+      {
+        label: "Пароль",
+        name: "password",
+        type: "password",
+        required: true,
+      },
+    ],
+    buttonText: "Авторизоваться",
+    buttonClass,
+    linkText: "Нет аккаунта?",
+    linkHref: "#register",
+    styles,
+  };
 
-  app.textContent = "";
+  // Рендерим форму
+  container.innerHTML = template(formConfig);
   app.appendChild(container);
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {

@@ -2,6 +2,8 @@ import styles from "./links.module.css";
 import { renderAuthPage } from "./auth.ts";
 import { renderRegisterPage } from "./register.ts";
 import { renderChatPage } from "./chat.ts";
+import { render404ErrorPage } from "./404.ts";
+import { render505ErrorPage } from "./505.ts";
 
 export function renderLinksPage() {
   const app = document.getElementById("app");
@@ -21,6 +23,8 @@ export function renderLinksPage() {
       <li><a href="#" data-page="auth">Авторизация</a></li>
       <li><a href="#" data-page="register">Регистрация</a></li>
       <li><a href="#" data-page="chat">Чат</a></li>
+      <li><a href="#" data-page="404">404</a></li>
+      <li><a href="#" data-page="505">505</a></li>
     </ul>
   `;
 
@@ -43,6 +47,12 @@ export function renderLinksPage() {
           break;
         case "chat":
           renderChatPage();
+          break;
+        case "404":
+          render404ErrorPage();
+          break;
+        case "505":
+          render505ErrorPage();
           break;
         default:
           console.error("Неизвестная страница");

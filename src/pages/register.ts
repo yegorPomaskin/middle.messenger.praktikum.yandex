@@ -2,6 +2,7 @@ import formTemplate from "../templates/form.hbs?raw";
 import styles from "./auth.module.css";
 import Handlebars from "handlebars";
 import { renderAuthPage } from "./auth";
+// Подключаю кнопку и ее стили как partial 
 import buttonPartial from "../partials/button.hbs?raw";
 import buttonStyles from "../partials/button.module.css";
 
