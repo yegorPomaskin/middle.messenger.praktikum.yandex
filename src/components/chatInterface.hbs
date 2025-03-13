@@ -1,0 +1,39 @@
+<div class="{{styles.chat__interface}}">
+  <!-- Верхняя часть интерфейса с названием чата и количеством участников -->
+  {{!-- <div class="{{styles.chat__header}}">
+    <span class="{{styles.chat__name}}">{{chatName}}</span>
+    <div class="{{styles.chat__info}}">
+      <span class="{{styles.chat__participants}}">{{participantsCount}}
+        участников</span>
+    </div>
+  </div> --}}
+
+  <!-- Основная область для сообщений -->
+  {{!-- <div class="{{styles.chat__messages}}">
+    {{#each messages}}
+      <div class="{{styles.chat__message}}">
+        <div class="{{styles.chat__message-info}}">
+          <span class="{{styles.chat__message-user}}">{{userName}}</span>
+          <span class="{{styles.chat__message-time}}">{{time}}</span>
+        </div>
+        <div class="{{styles.chat__message-text}}">
+          {{text}}
+        </div>
+      </div>
+    {{/each}}
+  </div> --}}
+
+  <!-- Нижняя часть для ввода нового сообщения -->
+  <div class="{{styles.chat__interface-area}}">
+    <img src="{{attachment}}" alt="{{attachment}}'s attachment" />
+    <input
+      type="text"
+      class="{{styles.chat__interface-input}}"
+      placeholder="Напишите сообщение..."
+    />
+    <button class="{{styles.chat__interface-sendButton}}"><img class="{{styles.chat__interface-sendButton}}"
+        src="{{sendButton}}"
+        alt="{{send}}'s send"
+      /></button>
+  </div>
+</div>

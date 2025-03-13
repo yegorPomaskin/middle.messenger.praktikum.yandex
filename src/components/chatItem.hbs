@@ -1,0 +1,16 @@
+<div class="{{styles.chat__item}} {{#if isActive}}{{styles.active}}{{/if}}">
+  <div class="{{styles.chat__avatar}}">
+    <img src="{{avatar}}" alt="{{name}}'s avatar" />
+  </div>
+  <div class="{{styles.chat__item-messageDetails}}">
+    <span class="{{styles.chat__item-name}}">{{name}}</span>
+    <span class="{{styles.chat__item-message}}">{{lastMessage}}</span>
+  </div>
+  <div class="{{styles.chat__item-info}}">
+    <div class="{{styles.chat__item-time}}">{{time}}</div>
+    {{#if unreadCount}}
+      <div class="{{styles.chat__item-numberOfMessages}}">{{unreadCount}}</div>
+    {{/if}}
+  </div>
+  
+</div>

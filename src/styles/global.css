@@ -2,9 +2,15 @@
 
 :root {
   --accent-color: #f64819;
-  --primary-color: #ffffff;
-  --secondary-color: #999999;
+  --text-color: #ffffff;
+  --secondary-text: #999999;
   --link-color: #1885ff;
+  --chat-inactive: #6c7a8a;
+  --interface-background: linear-gradient(
+    to bottom,
+    rgba(44, 44, 44, 0) 0%,
+    #2c2c2c 100%
+  );
   --font-size-base: 16px;
   --spacing-base: 1rem;
 }

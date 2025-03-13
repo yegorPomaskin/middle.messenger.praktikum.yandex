@@ -20,7 +20,7 @@ export function renderAuthPage() {
     ? `${buttonStyles.button} ${buttonStyles["button--login"]}`
     : `${buttonStyles.button} ${buttonStyles["button--register"]}`;
 
-  // У контейнера пока нет стиля, но пусть элемент будет 
+  // У контейнера пока нет стиля, но пусть элемент будет
   const container = document.createElement("div");
   container.className = `container ${styles["container--login"]}`;
 

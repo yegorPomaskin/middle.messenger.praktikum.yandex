@@ -1,4 +1,20 @@
-<h2>Чат</h2>
-<p>Добро пожаловать в чат!</p>
-
-<a href="#" id="link-to-auth">Вернуться к авторизации</a>
+<div class="{{styles.chat-container}}">
+  <div class="{{styles.chat__items}}">
+      <div class="{{styles.chat__item-header}}">
+        <div class="{{styles.chat__item-title}}">Чат</div>
+        <a href="#" class="chat__item-link">Профиль</a>
+      </div>
+    <div class="{{styles.chat__item-search}}">
+      <input type="text" class="{{styles.search-input}}" placeholder="Поиск" />
+    </div>
+    <div class="chat__item-list">
+      {{#each chats}}
+        {{> chatItem styles=../styles}}
+      {{/each}}
+    </div>
+  </div>
+  
+  
+  {{> chatInterface chatName=chatName participantsCount=participantsCount messages=messages}}
+  
+</div>

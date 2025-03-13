@@ -1,0 +1,140 @@
+.chat-container {
+  display: flex;
+  height: 100vh; /* Чтобы контейнер заполнял весь экран */
+}
+
+.chat__items {
+  width: 332px;
+  color: var(--text-color); /* Белый текст */
+  margin-top: 21px;
+  overflow-y: auto; /* Прокрутка, если чатов будет много */
+  padding: 0 30px 0 10px;
+  font-size: 12px;
+  line-height: 12px;
+  color: var(--text-color);
+}
+
+.chat__item-title {
+  font-weight: bold;
+}
+
+.chat__item-search {
+  margin-bottom: 13px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.chat__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 23px;
+}
+
+/* Стили единичного чата */
+
+.chat__item {
+  display: flex;
+  align-items: center;
+  padding: 10px 7px;
+  border-radius: 4px;
+  margin-bottom: 7px;
+  background-color: var(--chat-inactive);
+  cursor: pointer;
+}
+
+.chat__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat__item-messageDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat__item-name {
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 13px;
+  margin-bottom: 4px;
+}
+
+.chat__item-message {
+  line-height: 15px;
+  color: var(--secondary-text);
+}
+
+.chat__item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat__item-time {
+  font-size: 9px;
+  line-height: 13px;
+  color: var(--secondary-text);
+  margin-bottom: 10px;
+}
+
+.chat__item-numberOfMessages {
+  background-color: var(--accent-color);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+}
+
+.active {
+  background-color: var(--link-color);
+}
+
+/* Стили интерфейса */
+
+.chat__interface {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  padding: 0 29px 35px 13px;
+  height: 90vh; /* Контейнер занимает всю высоту экрана */
+  background: linear-gradient(to bottom, rgba(44, 44, 44, 0) 0%, #2c2c2c 100%);
+  border-radius: 15px;
+}
+
+.chat__interface-area {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.chat__interface-input {
+  flex: 1; /* Поле ввода растягивается на всю доступную ширину */
+  padding: 10px;
+  margin-left: 9px;
+  background-color: #efefef; /* Цвет фона поля */
+  color: #000000; /* Белый текст */
+  border: solid 2px #1885ff;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat__interface-sendButton {
+  width: 36px;
+  height: 36px;
+}

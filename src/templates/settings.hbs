@@ -1,0 +1,26 @@
+<div class="{{styles.settings-container}}">
+  <div class="profile-info">
+    <img class="profile-image" src="{{profileImage}}" alt="Профиль пользователя">
+    <div class="profile-details">
+      <h2>{{userName}}</h2>
+
+      <form id="settings-form">
+        {{#each userFields as |field|}}
+          <div class="field-group">
+            <label for="{{field.name}}">{{field.label}}</label>
+            <input type="text" id="{{field.name}}" name="{{field.name}}" value="{{field.value}}" required>
+          </div>
+        {{/each}}
+
+        <div class="field-group">
+          <button type="submit" class="action-btn">Сохранить изменения</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="settings-actions">
+    <a href="/change-password" class="action-btn">Изменить пароль</a>
+    <a href="/logout" class="action-btn logout-btn">Выйти</a>
+  </div>
+</div>
