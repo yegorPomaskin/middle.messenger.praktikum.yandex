@@ -1,9 +1,10 @@
-.settings__container {
+.profile__container--background {
   background-color: var(--contrast-bg-color);
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
 }
+
+
 
 .profile__container {
   max-width: 510px;

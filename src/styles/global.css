@@ -1,9 +1,9 @@
 @import "normalize.css/normalize.css";
 
-/* Убираю скролл */
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 :root {
@@ -12,6 +12,7 @@ body {
   --text-secondary: #999999;
   --link-color: #1885ff;
   --chat-inactive: #6c7a8a;
+  --background-color: #212327;
   --interface-background: linear-gradient(
     to bottom,
     rgba(44, 44, 44, 0) 0%,
@@ -54,7 +55,7 @@ body {
   font-family: Arial, sans-serif;
   font-size: 13px;
   line-height: 13px;
-  background-color: #212327;
+  background-color: var(--background-color);
   color: #fff;
   font-weight: medium;
   height: 100%;

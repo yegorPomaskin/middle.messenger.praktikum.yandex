@@ -15,3 +15,8 @@
 .button--register {
   margin: 47px 0 14px;
 }
+
+.button--save {
+  width: 280px;
+  margin: 60px auto 0;
+}

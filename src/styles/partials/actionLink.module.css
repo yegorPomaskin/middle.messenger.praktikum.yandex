@@ -1,10 +1,10 @@
-.action-btn {
+.action-link {
   color: var(--link-color);
   border: none;
   border-radius: 5px;
   text-decoration: none;
 }
 
-.logout-btn {
+.logout-link {
   color: var(--error-color) !important; /* Цвет кнопки "Выйти" */
 }

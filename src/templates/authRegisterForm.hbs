@@ -1,0 +1,24 @@
+<div class="{{formContainerModifier}}">
+  <form id="dynamic-form" class="{{styles.form}} {{formModifierClass}}">
+    <h2 class="{{styles.title}}">{{title}}</h2>
+    {{#each fields}}
+    {{!-- Input partial --}}
+      {{> input
+        name=this.name
+        label=this.label
+        type=this.type
+        required=this.required
+        styles=../authInputPartialStyles
+      }}
+    {{/each}}
+
+    {{!-- Button partial  --}}
+    {{> button type="submit" text=buttonText className=buttonClass}}
+    
+    <a href="#" class="{{styles.form__link}}" id="form-link">{{linkText}}</a>
+  </form>
+</div>
+
+
+
+

@@ -1,17 +1,17 @@
-import formTemplate from "../templates/form.hbs?raw";
+import formTemplate from "../templates/authRegisterForm.hbs?raw";
 // Стили для register.ts и auth.ts в одном файле
 import styles from "../styles/pages/auth.module.css";
 import Handlebars from "handlebars";
 import { renderAuthPage } from "./auth";
 // Подключаю кнопку и ее стили как partial
 import buttonPartial from "../partials/button.hbs?raw";
-import buttonStyles from "../partials/button.module.css";
-import inputPartial from "../partials/input.hbs?raw";
-import inputStyles from "../styles/partials/input.module.css";
+import buttonPartialStyles from "../styles/partials/button.module.css";
+import authInputPartial from "../partials/authFormInput.hbs?raw";
+import authInputPartialStyles from "../styles/partials/authInput.module.css";
 
 // Регистрирую partial
 Handlebars.registerPartial("button", buttonPartial);
-Handlebars.registerPartial("input", inputPartial);
+Handlebars.registerPartial("input", authInputPartial);
 
 const template = Handlebars.compile(formTemplate);
 
@@ -40,24 +40,22 @@ export function renderRegisterPage() {
   const app = document.getElementById("app");
   if (!app) return;
 
-  const container = document.createElement("div");
-  container.className = `container ${styles["container--register"]}`;
+  // Использую модификатор form--register для margin-top формы
+  const formContainerModifier = styles["form__container--register"];
 
   // Проверка на какой странице кнопка - если не на странице логина, то добавляем стили register.
   const isLogin = false;
   const buttonClass = isLogin
-    ? `${buttonStyles.button} ${buttonStyles["button--login"]}`
-    : `${buttonStyles.button} ${buttonStyles["button--register"]}`;
+    ? `${buttonPartialStyles.button} ${buttonPartialStyles["button--login"]}`
+    : `${buttonPartialStyles.button} ${buttonPartialStyles["button--register"]}`;
 
-  container.innerHTML = template({
+  app.innerHTML = template({
     ...REGISTER_FORM_CONFIG,
     buttonClass,
     styles,
-    inputStyles,
+    authInputPartialStyles,
+    formContainerModifier
   });
-
-  app.textContent = "";
-  app.appendChild(container);
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {
     event.preventDefault();

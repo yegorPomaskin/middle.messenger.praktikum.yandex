@@ -1,4 +1,12 @@
-<div class="{{styles.settings__container}}">
+<div class="{{styles.profile__container--background}}">
+
+  {{!-- Подключаю sidebar --}}
+  {{> sidebar 
+      href=sidebarData.href 
+      iconSrc=sidebarData.iconSrc 
+      styles=sidebarStyles
+  }}
+
   <div class="{{styles.profile__container}}">
     <div class="{{styles.profile__info}}">
       <img
@@ -14,7 +22,7 @@
               name=this.name 
               label=this.label 
               value=this.value 
-              styles= ../inputFieldStyles
+              styles= ../profileFieldItemStyles
           }}
         {{/each}}
       </div>
@@ -23,7 +31,7 @@
     <div class="{{styles.settings__actions}}">
       {{#each buttons}}
         <div class="{{../styles.profile__actionItem}}">
-          {{> actionButton href=this.href className=this.className text=this.text styles=../actionButtonStyles}}
+          {{> actionButton href=this.href className=this.className text=this.text styles=../actionLinkStyles}}
         </div>
       {{/each}}
     </div>

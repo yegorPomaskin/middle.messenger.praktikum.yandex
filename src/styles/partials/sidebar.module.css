@@ -1,0 +1,10 @@
+/* Левая панель */
+.profile__sidebar {
+  width: 64px; /* или любой другой размер */
+  background-color: var(--background-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
