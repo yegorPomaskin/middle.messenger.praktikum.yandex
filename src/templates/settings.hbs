@@ -1,26 +1,31 @@
-<div class="{{styles.settings-container}}">
-  <div class="profile-info">
-    <img class="profile-image" src="{{profileImage}}" alt="Профиль пользователя">
-    <div class="profile-details">
-      <h2>{{userName}}</h2>
+<div class="{{styles.settings__container}}">
+  <div class="{{styles.profile__container}}">
+    <div class="{{styles.profile__info}}">
+      <img
+        class="{{styles.profile__image}}"
+        src="{{profileImage}}"
+        alt="Профиль пользователя"
+      />
+      <div class="{{styles.profile__details}}">
+        <h2 class="{{styles.profile__name}}">{{userName}}</h2>
 
-      <form id="settings-form">
-        {{#each userFields as |field|}}
-          <div class="field-group">
-            <label for="{{field.name}}">{{field.label}}</label>
-            <input type="text" id="{{field.name}}" name="{{field.name}}" value="{{field.value}}" required>
-          </div>
+        {{#each userFields}}
+          {{> profileFieldItem 
+              name=this.name 
+              label=this.label 
+              value=this.value 
+              styles= ../inputFieldStyles
+          }}
         {{/each}}
-
-        <div class="field-group">
-          <button type="submit" class="action-btn">Сохранить изменения</button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
 
-  <div class="settings-actions">
-    <a href="/change-password" class="action-btn">Изменить пароль</a>
-    <a href="/logout" class="action-btn logout-btn">Выйти</a>
+    <div class="{{styles.settings__actions}}">
+      {{#each buttons}}
+        <div class="{{../styles.profile__actionItem}}">
+          {{> actionButton href=this.href className=this.className text=this.text styles=../actionButtonStyles}}
+        </div>
+      {{/each}}
+    </div>
   </div>
 </div>

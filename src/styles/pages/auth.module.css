@@ -14,30 +14,6 @@
   text-align: center;
 }
 
-.form__input {
-  color: #fff;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  outline: none;
-  padding: 6px 0;
-  margin-bottom: 16px;
-  font-size: 13px;
-  line-height: 13px;
-}
-
-.form__input:focus {
-  border-bottom-color: #fff;
-}
-
-.form__label {
-  color: var(--secondary-color);
-  margin-bottom: 8px;
-  font-size: 9px;
-  line-height: 9px;
-}
-
 .form__link {
   text-align: center;
   font-size: 11px;

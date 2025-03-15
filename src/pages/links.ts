@@ -1,10 +1,10 @@
-import styles from "./links.module.css";
+import styles from "../styles/pages/links.module.css";
 import { renderAuthPage } from "./auth.ts";
 import { renderRegisterPage } from "./register.ts";
 import { renderChatPage } from "./chat.ts";
 import { render404ErrorPage } from "./404.ts";
 import { render505ErrorPage } from "./505.ts";
-import { renderSettings } from "./settings.ts";
+import { renderProfile } from "./profile.ts";
 
 export function renderLinksPage() {
   const app = document.getElementById("app");
@@ -17,7 +17,7 @@ export function renderLinksPage() {
   const container = document.createElement("div");
   container.className = `container ${styles["container--links"]}`;
 
-  renderSettings();
+  renderProfile();
 
   // Вставляем HTML вручную
   // container.innerHTML = `
@@ -28,7 +28,7 @@ export function renderLinksPage() {
   //     <li><a href="#" data-page="chat">Чат</a></li>
   //     <li><a href="#" data-page="404">404</a></li>
   //     <li><a href="#" data-page="505">505</a></li>
-  //     <li><a href="#" data-page="settings">settings</a></li>
+  //     <li><a href="#" data-page="profile">Профиль</a></li>
   //   </ul>
   // `;
 
@@ -58,8 +58,8 @@ export function renderLinksPage() {
         case "505":
           render505ErrorPage();
           break;
-        case "settings":
-          renderSettings();
+        case "profile":
+          renderProfile();
           break;
         default:
           console.error("Неизвестная страница");

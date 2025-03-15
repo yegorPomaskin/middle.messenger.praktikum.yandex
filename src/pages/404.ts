@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import errorTemplate from "../templates/error.hbs?raw";
-import styles from "./error.module.css";
+import styles from "../styles/pages/error.module.css";
 import { renderLinksPage } from "./links.ts";
 
 export function render404ErrorPage() {

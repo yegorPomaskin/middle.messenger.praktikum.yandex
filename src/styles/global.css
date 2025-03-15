@@ -1,9 +1,15 @@
 @import "normalize.css/normalize.css";
 
+/* Убираю скролл */
+html,
+body {
+  height: 100%;
+}
+
 :root {
   --accent-color: #f64819;
   --text-color: #ffffff;
-  --secondary-text: #999999;
+  --text-secondary: #999999;
   --link-color: #1885ff;
   --chat-inactive: #6c7a8a;
   --interface-background: linear-gradient(
@@ -11,6 +17,8 @@
     rgba(44, 44, 44, 0) 0%,
     #2c2c2c 100%
   );
+  --error-color: #d32f2f;
+  --contrast-bg-color: #2c2c2c;
   --font-size-base: 16px;
   --spacing-base: 1rem;
 }
@@ -49,6 +57,9 @@ body {
   background-color: #212327;
   color: #fff;
   font-weight: medium;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 h1,
 h2,

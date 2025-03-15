@@ -1,6 +1,6 @@
 import chatTemplate from "../templates/chat.hbs?raw";
 import Handlebars from "handlebars";
-import styles from "./chat.module.css";
+import styles from "../styles/pages/chat.module.css";
 import chatItemTemplate from "../components/chatItem.hbs?raw";
 import chatInterfaceTemplate from "../components/chatInterface.hbs?raw";
 

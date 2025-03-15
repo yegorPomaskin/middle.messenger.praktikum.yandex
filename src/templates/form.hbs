@@ -1,17 +1,19 @@
 <form id="dynamic-form" class="{{styles.form}}">
   <h2 class="{{styles.title}}">{{title}}</h2>
   {{#each fields}}
-    <label for="{{this.name}}" class="{{../styles.form__label}}">{{this.label}}</label>
-    <input
-      class="{{../styles.form__input}}"
-      type="{{this.type}}"
-      id="{{this.name}}"
-      name="{{this.name}}"
-      required="{{this.required}}"
-    />
+  {{!-- Input partial --}}
+    {{> input
+      name=this.name
+      label=this.label
+      type=this.type
+      required=this.required
+      styles=../inputStyles
+    }}
   {{/each}}
 
+   {{!-- Button partial  --}}
    {{> button type="submit" text=buttonText className=buttonClass}}
   
   <a href="#" class="{{styles.form__link}}" id="form-link">{{linkText}}</a>
 </form>
+
