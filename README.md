@@ -6,6 +6,10 @@
 
 <img src="https://www.svgrepo.com/show/452202/figma.svg" alt="Figma" width="18" height="18" /> [Макет разрабатываемого приложения](https://www.figma.com/design/SXczNhdiiOZJgogyqk54Iu/Messenger?node-id=0-1&t=dpI4SGRkugKncPCH-1)
 
+## Cсылка на netlify 
+
+<img src="https://www.svgrepo.com/show/376339/netlify.svg" alt="Figma" width="18" height="18" /> [Ссылка на netlify]https://partialmessenger.netlify.app/
+
 ## Стек технологий
 
 - Верстка
@@ -22,6 +26,8 @@ npm run start (запускает и билдит проект)
 
 все странички можно получить с главной, пока роутинга нет. 
 для доступа ко всем страницам нужно просто обновить страницу. 
+
+
 
 ## Статус и планы по разработке
 
