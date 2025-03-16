@@ -52,12 +52,14 @@ button {
 
 /* Базовая типографика */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
   font-size: 13px;
   line-height: 13px;
   background-color: var(--background-color);
   color: #fff;
-  font-weight: medium;
   height: 100%;
   margin: 0;
   padding: 0;
