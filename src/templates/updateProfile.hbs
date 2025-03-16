@@ -1,37 +1,36 @@
-<div class="{{styles.profile__container--background}}">
-
-
-  {{!-- Подключаю sidebar --}}
-  {{> sidebar 
-      href=sidebarData.href 
-      iconSrc=sidebarData.iconSrc 
-      styles=sidebarStyles
-  }}
+<section class="profile__update-profile">
+  <div class="{{styles.profile__container--background}}">
   
-  <div class="{{styles.profile__container}}">
-    <div class="{{styles.profile__info}}">
-      <img
-        class="{{styles.profile__image}}"
-        src="{{profileImage}}"
-        alt="Профиль пользователя"
-      />
-      <div class="{{styles.profile__details}}">
-        <h2 class="{{styles.profile__name}}">{{userName}}</h2>
-
-        {{#each userFields}}
-            {{> profileInput 
-                name=this.name 
-                label=this.label 
-                value=this.value 
-                styles=../inputFieldStyles
-            }}
-        {{/each}}
+    {{!-- Подключаю sidebar --}}
+    {{> sidebar
+    href=sidebarData.href
+    iconSrc=sidebarData.iconSrc
+    styles=sidebarStyles
+    }}
+  
+    <div class="{{styles.profile__container}}">
+      <div class="{{styles.profile__info}}">
+        <img class="{{styles.profile__image}}" src="{{profileImage}}" alt="Профиль пользователя" />
+        <div class="{{styles.profile__details}}">
+          <h2 class="{{styles.profile__name}}">{{userName}}</h2>
+  
+  
+          {{!-- profileInput partial --}}
+          {{#each userFields}}
+          {{> profileInput
+          name=this.name
+          label=this.label
+          value=this.value
+          styles=../inputFieldStyles
+          }}
+          {{/each}}
+        </div>
+      </div>
+  
+      <div class="{{styles.settings__actions}}">
+        {{!-- Button partial --}}
+        {{> button type="submit" text=buttonText className=buttonClass}}
       </div>
     </div>
-
-    <div class="{{styles.settings__actions}}">
-        {{!-- Button partial  --}}
-        {{> button type="submit" text=buttonText className=buttonClass}}
-    </div>
   </div>
-</div>
+</section>

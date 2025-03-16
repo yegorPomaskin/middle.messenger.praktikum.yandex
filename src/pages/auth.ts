@@ -30,8 +30,8 @@ export function renderAuthPage() {
   const app = document.getElementById("app");
   if (!app) return;
 
-    // Использую модификатор form--auth для margin-top формы
-    const formContainerModifier = styles["form__container--auth"];
+  // Использую модификатор для section
+  const sectionModifier = styles["auth"];
 
   // Проверка на какой странице кнопка - если на странице логина, то добавляем стили логина.
   const isLogin = true;
@@ -45,7 +45,7 @@ export function renderAuthPage() {
     buttonClass,
     styles,
     authInputPartialStyles,
-    formContainerModifier
+    sectionModifier
   });
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {

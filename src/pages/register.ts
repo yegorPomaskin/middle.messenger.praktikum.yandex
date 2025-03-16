@@ -39,8 +39,8 @@ export function renderRegisterPage() {
   const app = document.getElementById("app");
   if (!app) return;
 
-  // Использую модификатор form--register для margin-top формы
-  const formContainerModifier = styles["form__container--register"];
+  // Использую модификатор section
+  const sectionModifier = styles["register"];
 
   // Проверка на какой странице кнопка - если не на странице логина, то добавляем стили register.
   const isLogin = false;
@@ -53,7 +53,7 @@ export function renderRegisterPage() {
     buttonClass,
     styles,
     authInputPartialStyles,
-    formContainerModifier
+    sectionModifier
   });
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {

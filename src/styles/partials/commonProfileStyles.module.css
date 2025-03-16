@@ -11,12 +11,12 @@
 }
 
 .profile__input {
-  border: none; /* Убираем рамку */
-  outline: none; /* Убираем обводку при фокусе */
-  background: transparent; /* Убираем фон */
-  box-shadow: none; /* Убираем тень */
-  padding: 0px; /* Можно добавить паддинг для внутреннего отступа */
-  font-size: 14px; /* Размер шрифта */
+  border: none; 
+  outline: none; 
+  background: transparent; 
+  box-shadow: none; 
+  padding: 0px; 
+  font-size: 14px; 
   color: var(--text-secondary);
   text-align: right;
 }

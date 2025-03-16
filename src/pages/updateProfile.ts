@@ -14,7 +14,7 @@ import sidebarStyles from "../styles/partials/sidebar.module.css";
 // Регистрирую partials
 Handlebars.registerPartial("sidebar", sidebarPartial);
 Handlebars.registerPartial("button", buttonPartial);
-Handlebars.registerPartial("profileInput", profileInput); // мб поменять название profileFieldItem
+Handlebars.registerPartial("profileInput", profileInput); 
 Handlebars.registerPartial("actionLink", actionLink);
 const template = Handlebars.compile(settingTemplate);
 

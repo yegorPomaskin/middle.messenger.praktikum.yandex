@@ -1,6 +1,5 @@
-/* Левая панель */
 .profile__sidebar {
-  width: 64px; /* или любой другой размер */
+  width: 64px; 
   background-color: var(--background-color);
   padding: 20px;
   display: flex;

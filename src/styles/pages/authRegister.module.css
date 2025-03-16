@@ -1,3 +1,11 @@
+.auth {
+  margin-top: 135px;
+}
+
+.register {
+  margin-top: 52px;
+}
+
 .form-container {
   margin: 0 auto;
 }
@@ -10,14 +18,6 @@
   border-radius: 12px;
   margin: 0 auto;
   padding: 30px 50px 30px;
-}
-
-.form__container--register {
-  margin-top: 52px;
-}
-
-.form__container--auth {
-  margin-top: 135px;
 }
 
 .title {

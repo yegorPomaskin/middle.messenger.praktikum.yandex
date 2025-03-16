@@ -54,6 +54,7 @@ export function renderChatPage() {
   const app = document.getElementById("app");
   if (!app) return;
 
+
   const template = Handlebars.compile(chatTemplate);
   app.innerHTML = template(chatData);
 }

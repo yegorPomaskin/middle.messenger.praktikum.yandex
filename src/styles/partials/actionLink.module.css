@@ -6,5 +6,5 @@
 }
 
 .logout-link {
-  color: var(--error-color) !important; /* Цвет кнопки "Выйти" */
+  color: var(--error-color) !important; 
 }

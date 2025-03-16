@@ -1,20 +1,22 @@
-<div class="{{styles.chat-container}}">
-  <div class="{{styles.chat__items}}">
+<section class="chat">
+  <div class="{{styles.chat-container}}">
+    <div class="{{styles.chat__items}}">
       <div class="{{styles.chat__item-header}}">
         <div class="{{styles.chat__item-title}}">Чат</div>
         <a href="#" class="chat__item-link">Профиль</a>
       </div>
-    <div class="{{styles.chat__item-search}}">
-      <input type="text" class="{{styles.search-input}}" placeholder="Поиск" />
-    </div>
-    <div class="chat__item-list">
-      {{#each chats}}
+      <div class="{{styles.chat__item-search}}">
+        <input type="text" class="{{styles.search-input}}" placeholder="Поиск" />
+      </div>
+      <div class="chat__item-list">
+        {{#each chats}}
         {{> chatItem styles=../styles}}
-      {{/each}}
+        {{/each}}
+      </div>
     </div>
+  
+    {{!-- chatInterface component --}}
+    {{> chatInterface chatName=chatName participantsCount=participantsCount messages=messages}}
+  
   </div>
-  
-  
-  {{> chatInterface chatName=chatName participantsCount=participantsCount messages=messages}}
-  
-</div>
+</section>

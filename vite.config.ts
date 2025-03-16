@@ -5,9 +5,9 @@ import { defineConfig } from "vite";
 import handlebars from "vite-plugin-handlebars";
 
 export default defineConfig({
-  root: resolve(__dirname, "static"), // Root is the 'static' folder
+  root: resolve(__dirname, "static"), 
   build: {
-    outDir: "../dist", // Output directory
+    outDir: "../dist", 
   },
   resolve: {
     alias: {
@@ -20,4 +20,7 @@ export default defineConfig({
       partialDirectory: resolve(__dirname, "src/partials"),
     }),
   ],
+  server: {
+    port: 3000, // Устанавливаем порт 3000
+  },
 });
