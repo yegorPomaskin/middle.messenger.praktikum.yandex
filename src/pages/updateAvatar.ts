@@ -18,7 +18,7 @@ Handlebars.registerPartial("actionLink", actionLink); //
 const template = Handlebars.compile(settingTemplate);
 
 // Нужные классы для кнопки
-const buttonClass = `${buttonStyles.button} ${buttonStyles["button--save"]}`;
+const buttonClass = `${buttonStyles.button} ${buttonStyles["button--modal"]}`;
 
 const profileDate = {
   profileImage: "/profile-pic.png",
@@ -75,7 +75,7 @@ export function bindAvatarModalEvents(): void {
   if (changeAvatarBtn) {
     changeAvatarBtn.addEventListener("click", () => {
       modalOverlay.style.display = "block";
-      modalWindow.style.display = "block";
+      modalWindow.style.display = "flex";
     });
   }
 

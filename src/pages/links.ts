@@ -19,22 +19,20 @@ export function renderLinksPage() {
   const container = document.createElement("div");
   container.className = `container ${styles["container--links"]}`;
 
-  renderUpdateAvatar();
-
-  // container.innerHTML = `
-  //   <h1 class=${styles.links__title}>Доступные страницы</h1>
-  //   <ul class="${styles["links-list"]}">
-  //     <li><a href="#" data-page="auth">Авторизация</a></li>
-  //     <li><a href="#" data-page="register">Регистрация</a></li>
-  //     <li><a href="#" data-page="chat">Чат</a></li>
-  //     <li><a href="#" data-page="404">404</a></li>
-  //     <li><a href="#" data-page="505">505</a></li>
-  //     <li><a href="#" data-page="profile">Профиль</a></li>
-  //     <li><a href="#" data-page="updateProfile">Изменить Профиль</a></li>
-  //     <li><a href="#" data-page="updatePassword">Изменить Пароль</a></li>
-  //     <li><a href="#" data-page="updateAvatar">Изменить Аватар</a></li>
-  //   </ul>
-  // `;
+  container.innerHTML = `
+    <h1 class=${styles.links__title}>Доступные страницы</h1>
+    <ul class="${styles["links-list"]}">
+      <li><a href="#" data-page="auth">Авторизация</a></li>
+      <li><a href="#" data-page="register">Регистрация</a></li>
+      <li><a href="#" data-page="chat">Чат</a></li>
+      <li><a href="#" data-page="404">404</a></li>
+      <li><a href="#" data-page="505">505</a></li>
+      <li><a href="#" data-page="profile">Профиль</a></li>
+      <li><a href="#" data-page="updateProfile">Изменить Профиль</a></li>
+      <li><a href="#" data-page="updatePassword">Изменить Пароль</a></li>
+      <li><a href="#" data-page="updateAvatar">Изменить Аватар</a></li>
+    </ul>
+  `;
 
   app.appendChild(container);
 

@@ -41,11 +41,12 @@
 </div>
 
 {{!-- Ниже добавляем разметку для "заглушки" (overlay) и модального окна --}}
-<div class="{{styles.modalOverlay}}" id="modalOverlay"></div>
-
-<div class="{{styles.modal}}" id="modalWindow">
-  <h2>Загрузите файл</h2>
-  <button id="selectFileBtn">Выбрать файл</button>
-  <br><br>
-  {{> button type="submit" text=buttonText className=buttonClass}}
+<div class="{{styles.profile__modalOverlay}}" id="modalOverlay">
+  <div class="{{styles.modal}}" id="modalWindow">
+    <h2 class="{{styles.profile__modalTitle}}">Загрузите файл</h2>
+    <button class="{{styles.profile__modalLink}}"id="selectFileBtn">Выбрать файл на компьютере</button>
+    <br><br>
+    {{> button type="submit" text=buttonText className=buttonClass}}
+  </div>
 </div>
+

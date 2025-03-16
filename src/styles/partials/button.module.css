@@ -20,3 +20,10 @@
   width: 280px;
   margin: 60px auto 0;
 }
+
+.button--modal {
+  width: 280px;
+  height: 37px;
+  padding: 0.5rem;
+  margin-bottom: 0;
+}
