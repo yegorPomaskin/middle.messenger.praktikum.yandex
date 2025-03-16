@@ -8,7 +8,7 @@
 
 ## Cсылка на netlify 
 
-<img src="https://www.svgrepo.com/show/376339/netlify.svg" alt="Figma" width="18" height="18" /> [Ссылка на netlify]https://partialmessenger.netlify.app/
+<img src="https://www.svgrepo.com/show/376339/netlify.svg" alt="Figma" width="18" height="18" /> [Ссылка на netlify](https://partialmessenger.netlify.app/)
 
 ## Стек технологий
 
