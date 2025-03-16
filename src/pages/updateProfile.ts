@@ -21,30 +21,32 @@ const template = Handlebars.compile(settingTemplate);
 // Нужные классы для кнопки
 const buttonClass = `${buttonStyles.button} ${buttonStyles["button--save"]}`;
 
+const updatePasswordData = {
+  profileImage: "/profile-pic.png",
+  userFields: [
+    { name: "email", label: "Почта", value: "test@mail.com" },
+    { name: "login", label: "Логин", value: "ivanivanov" },
+    { name: "first_name", label: "Имя", value: "Идрак" },
+    { name: "second_name", label: "Фамилия", value: "Иванов" },
+    { name: "display_name", label: "Имя в чате", value: "Иван" },
+    { name: "phone", label: "Телефон", value: "+7 (909) 967 30 30" },
+  ],
+  sidebarData: {
+    href: "#",
+    iconSrc: "/back-arrow.png",
+  },
+  buttonText: "Cохранить",
+  styles,
+  inputFieldStyles,
+  actionLinkStyles,
+  buttonStyles,
+  buttonClass,
+  sidebarStyles,
+};
+
 export function renderUpdateProfile() {
   const app = document.getElementById("app");
   if (!app) return;
 
-  app.innerHTML = template({
-    profileImage: "/profile-pic.png",
-    userFields: [
-      { name: "email", label: "Почта", value: "test@mail.com" },
-      { name: "login", label: "Логин", value: "ivanivanov" },
-      { name: "first_name", label: "Имя", value: "Лан" },
-      { name: "second_name", label: "Фамилия", value: "Иванов" },
-      { name: "display_name", label: "Имя в чате", value: "Иван" },
-      { name: "phone", label: "Телефон", value: "+7 (909) 967 30 30" },
-    ],
-    sidebarData: {
-      href: "#",
-      iconSrc: "/back-arrow.png",
-    },
-    buttonText: "Cохранить",
-    styles,
-    inputFieldStyles,
-    actionLinkStyles,
-    buttonStyles,
-    buttonClass,
-    sidebarStyles,
-  });
+  app.innerHTML = template(updatePasswordData);
 }

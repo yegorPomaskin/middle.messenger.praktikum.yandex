@@ -1,12 +1,12 @@
 import Handlebars from "handlebars";
 import formTemplate from "../templates/authRegisterForm.hbs?raw";
 // Стили для register и auth одинаковые
-import styles from "../styles/pages/auth.module.css";
+import styles from "../styles/pages/authRegister.module.css";
 import { renderRegisterPage } from "./register.ts";
 // Подключаю partials
 import buttonPartial from "../partials/button.hbs?raw";
-import buttonPartialStyles from "../styles/partials/button.module.css";
 import authInputPartial from "../partials/authFormInput.hbs?raw";
+import buttonPartialStyles from "../styles/partials/button.module.css";
 import authInputPartialStyles from "../styles/partials/authInput.module.css";
 
 // Регистрирую partials

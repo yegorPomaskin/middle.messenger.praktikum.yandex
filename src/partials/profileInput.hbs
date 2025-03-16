@@ -7,6 +7,8 @@
     value="{{value}}"
     class="{{styles.profile__input}}"
     value="{{value}}"
-    onfocus="this.value=''"
+    {{! Чудеса фокуса }}
+    onfocus="if (this.value === this.defaultValue) { this.dataset.oldValue = this.value; this.value = ''; }"
+    onblur="if (this.value === '') { this.value = this.dataset.oldValue; }"
   />
 </div>

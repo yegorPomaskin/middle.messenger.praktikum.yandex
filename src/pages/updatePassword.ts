@@ -21,42 +21,46 @@ const template = Handlebars.compile(settingTemplate);
 // Нужные классы для кнопки
 const buttonClass = `${buttonStyles.button} ${buttonStyles["button--save"]}`;
 
+const updatePasswordDate = {
+  profileImage: "/profile-pic.png",
+  userFields: [
+    {
+      name: "old_password",
+      label: "Старый пароль",
+      value: "12345678",
+      type: "password",
+    },
+    {
+      name: "new_password",
+      label: "Новый пароль",
+      value: "12345678910",
+      type: "password",
+    },
+    {
+      name: "confirm_password",
+      label: "Повторите новый пароль",
+      value: "12345678910",
+      type: "password",
+    },
+  ],
+  sidebarData: {
+    href: "#",
+    iconSrc: "/back-arrow.png",
+  },
+  buttonText: "Cохранить",
+  styles,
+  inputFieldStyles,
+  actionLinkStyles,
+  buttonStyles,
+  buttonClass,
+  sidebarStyles,
+};
+
+
+
 export function renderUpdatePassword() {
   const app = document.getElementById("app");
   if (!app) return;
 
-  app.innerHTML = template({
-    profileImage: "/profile-pic.png",
-    userFields: [
-      {
-        name: "old_password",
-        label: "Старый пароль",
-        value: "12345678",
-        type: "password",
-      },
-      {
-        name: "new_password",
-        label: "Новый пароль",
-        value: "12345678910",
-        type: "password",
-      },
-      {
-        name: "confirm_password",
-        label: "Повторите новый пароль",
-        value: "12345678910",
-        type: "password",
-      },
-    ],
-    sidebarData: {
-      href: "#",
-      iconSrc: "/back-arrow.png",
-    },
-    buttonText: "Cохранить",
-    styles,
-    inputFieldStyles,
-    actionLinkStyles,
-    buttonStyles,
-    buttonClass,
-    sidebarStyles,
-  });
+  app.innerHTML = template(updatePasswordDate);
 }
