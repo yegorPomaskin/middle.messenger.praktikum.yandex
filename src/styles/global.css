@@ -1,0 +1,75 @@
+@import "normalize.css/normalize.css";
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+:root {
+  --accent-color: #f64819;
+  --text-color: #ffffff;
+  --text-secondary: #999999;
+  --link-color: #1885ff;
+  --chat-inactive: #6c7a8a;
+  --background-color: #212327;
+  --interface-background: linear-gradient(
+    to bottom,
+    rgba(44, 44, 44, 0) 0%,
+    #2c2c2c 100%
+  );
+  --error-color: #d32f2f;
+  --contrast-bg-color: #2c2c2c;
+  --font-size-base: 16px;
+  --spacing-base: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Сброс отступов */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Чищу стили и кнопки */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Базовая типографика */
+body {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 13px;
+  background-color: var(--background-color);
+  color: #fff;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: bold;
+}

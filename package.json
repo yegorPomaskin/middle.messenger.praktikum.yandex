@@ -1,0 +1,28 @@
+{
+  "name": "middle.messenger.praktikum.yandex",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "npm run build && npm run dev"
+  },
+  "devDependencies": {
+    "@types/node": ">=22.13.10",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "normalize.css": "^8.0.1",
+    "postcss": "^8.5.3",
+    "postcss-import": "^16.1.0",
+    "postcss-preset-env": "^10.1.5",
+    "vite-plugin-handlebars": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
