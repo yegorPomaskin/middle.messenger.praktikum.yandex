@@ -7,7 +7,7 @@ import handlebars from "vite-plugin-handlebars";
 export default defineConfig({
   root: resolve(__dirname, "static"), 
   build: {
-    outDir: "../dist", 
+    outDir: "./dist", 
   },
   resolve: {
     alias: {
