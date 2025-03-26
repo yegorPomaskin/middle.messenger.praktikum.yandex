@@ -3,12 +3,16 @@ import styles from "../styles/pages/links.module.css";
 import { renderAuthPage } from "./auth.ts";
 import { renderRegisterPage } from "./register.ts";
 import { renderChatPage } from "./chat.ts";
-import { render404ErrorPage } from "./404.ts";
-import { render505ErrorPage } from "./505.ts";
+// import { render404ErrorPage } from "./404.ts";
+// import { render505ErrorPage } from "./505.ts";
 import { renderProfile } from "./profile.ts";
 import { renderUpdateProfile } from "./updateProfile.ts";
 import { renderUpdatePassword } from "./updatePassword.ts";
 import { renderUpdateAvatar } from "./updateAvatar.ts";
+
+// Новые компоненты
+import { render404ErrorPage } from "./Error404.ts";
+import { render505ErrorPage } from "./Error505.ts";
 
 export function renderLinksPage() {
   const app = document.getElementById("app");

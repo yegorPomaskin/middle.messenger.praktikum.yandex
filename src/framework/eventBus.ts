@@ -1,6 +1,6 @@
-type EventCallback = (...args: any[]) => void;
+export type EventCallback = (...args: any[]) => void;
 
-class EventBus {
+export default class EventBus {
     private listeners: Record<string, EventCallback[]>
 
     constructor() {
@@ -8,7 +8,7 @@ class EventBus {
     }
 
     // Регистрация событий
-    on(event: string, callback: EventCallback): void {
+    public on(event: string, callback: EventCallback): void {
         if (!this.listeners[event]) {
             this.listeners[event] = [];
         }
@@ -17,7 +17,7 @@ class EventBus {
     }
 
     // Удаление событий
-    off(event: string, callback: EventCallback): void {
+    public off(event: string, callback: EventCallback): void {
         const listeners = this.listeners[event]
         if (!listeners) {
             throw new Error(`Нет события: ${event}`);
@@ -28,7 +28,7 @@ class EventBus {
         );
     }
 
-    emit(event: string, ...args: any[]) {
+    public emit(event: string, ...args: any[]):void {
         const listeners = this.listeners[event]
         if (!listeners) {
             throw new Error(`Нет события: ${event}`);
