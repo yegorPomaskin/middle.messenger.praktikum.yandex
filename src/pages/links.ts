@@ -1,18 +1,22 @@
 // Страница загулшка с ссылками пока нет роутинга
 import styles from "../styles/pages/links.module.css";
-import { renderAuthPage } from "./auth.ts";
-import { renderRegisterPage } from "./register.ts";
+// import { renderRegisterPage } from "./register.ts";
 import { renderChatPage } from "./chat.ts";
-// import { render404ErrorPage } from "./404.ts";
-// import { render505ErrorPage } from "./505.ts";
 import { renderProfile } from "./profile.ts";
 import { renderUpdateProfile } from "./updateProfile.ts";
 import { renderUpdatePassword } from "./updatePassword.ts";
 import { renderUpdateAvatar } from "./updateAvatar.ts";
 
 // Новые компоненты
-import { render404ErrorPage } from "./Error404.ts";
-import { render505ErrorPage } from "./Error505.ts";
+import { Error404Page } from "./Error404.ts";
+import { Error505Page } from "./Error505.ts";
+import { AuthPage } from "./auth.ts";
+import { RegisterPage } from "./register.ts";
+
+// const error404Page = new Error404Page();
+const error505Page = new Error505Page();
+const authPage = new AuthPage();
+const registerPage = new RegisterPage();
 
 export function renderLinksPage() {
   const app = document.getElementById("app");
@@ -52,19 +56,29 @@ export function renderLinksPage() {
       // В зависимости от страницы, рендерим нужный компонент
       switch (page) {
         case "auth":
-          renderAuthPage();
+          if (app) {
+            app.innerHTML = "";
+            app.appendChild(authPage.getContent()!);
+            authPage.dispatchComponentDidMount();
+          }
           break;
         case "register":
-          renderRegisterPage();
+          if (app) {
+            app.innerHTML = "";
+            app.appendChild(registerPage.getContent()!);
+            registerPage.dispatchComponentDidMount();
+          }
           break;
         case "chat":
           renderChatPage();
           break;
         case "404":
-          render404ErrorPage();
+          const new404Page = new Error404Page();
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(new404Page.getContent());
           break;
         case "505":
-          render505ErrorPage();
+          document.getElementById("app")!.innerHTML = error505Page.render();
           break;
         case "profile":
           renderProfile();

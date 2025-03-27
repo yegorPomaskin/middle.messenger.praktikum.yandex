@@ -2,7 +2,7 @@ import Handlebars from "handlebars";
 import formTemplate from "../templates/authRegisterForm.hbs?raw";
 // Стили для register и auth одинаковые
 import styles from "../styles/pages/authRegister.module.css";
-import { renderRegisterPage } from "./register.ts";
+// import { renderRegisterPage } from "./register.ts";
 // Подключаю partials
 import buttonPartial from "../partials/button.hbs?raw";
 import authInputPartial from "../partials/authFormInput.hbs?raw";
@@ -50,6 +50,6 @@ export function renderAuthPage() {
 
   document.getElementById("form-link")?.addEventListener("click", (event) => {
     event.preventDefault();
-    renderRegisterPage();
+    // renderRegisterPage();
   });
 }

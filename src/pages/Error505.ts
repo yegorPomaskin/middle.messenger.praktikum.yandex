@@ -1,28 +1,42 @@
+import Block from "../framework/block"
 import { ErrorPage } from "../components/error/ErrorPage";
-import { renderLinksPage } from "./links";
-// import Block from "../framework/block";
+import { renderLinksPage } from "../pages/links";
 
-export function render505ErrorPage() {
-    const app = document.getElementById("app");
-    if (!app) return;
+interface Error505PageProps {
+    errorName: string;
+    errorText: string;
+    linkText: string;
+}
 
-    const errorPage = new ErrorPage({
-        errorName: "505",
-        errorText: "Мы уже фиксим",
-        linkText: "Назад к чатам",
-        events: {
-            click: (event: Event) => {
-                const target = event.target as HTMLElement;
-                if (target && target.id === "error-link") {
-                    event.preventDefault();
-                    renderLinksPage();
-                }
+export class Error505Page extends Block {
+    constructor() {
+        super({
+            errorName: "505",
+            errorText: "Уже фиксим",
+            linkText: "Назад к чатам",
+        });
+    }
+
+    override render(): string {
+        const app = document.getElementById("app");
+        if (!app) return "";
+
+        // Создаем компонент ErrorPage и передаем необходимые данные
+        const errorPage = new ErrorPage({
+            errorName: this.props.errorName,
+            errorText: this.props.errorText,
+            linkText: this.props.linkText,
+            events: {
+                click: (event: Event) => {
+                    const target = event.target as HTMLElement;
+                    if (target && target.id === "error-link") {
+                        event.preventDefault();
+                        renderLinksPage();
+                    }
+                },
             },
-        },
-    });
+        });
 
-    app.innerHTML = "";
-    app.appendChild(errorPage.getContent()!);
-
-    errorPage.dispatchComponentDidMount();
+        return errorPage.getContent()!.outerHTML;
+    }
 }

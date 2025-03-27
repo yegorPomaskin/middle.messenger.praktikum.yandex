@@ -98,6 +98,7 @@ export default class Block {
                 props[key] = value
             }
         })
+        console.log({ children, props, lists })
 
         return { children, props, lists }
     }
@@ -133,7 +134,7 @@ export default class Block {
     }
 
     private _render(): void {
-
+        console.log("Block _render called");
         const propsAndStubs = { ...this.props }
 
         // Создание заглушек для детей-компонентов
