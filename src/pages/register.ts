@@ -1,7 +1,7 @@
 import Handlebars from "handlebars";
 import formTemplate from "../templates/authRegisterForm.hbs?raw";
 // Стили для register.ts и auth.ts в одном файле
-import styles from "../styles/pages/authRegister.module.css";
+import styles from "../styles/pages/authRegister-old.module.css";
 import { renderAuthPage } from "./auth";
 // Подключаю partials
 import buttonPartial from "../partials/button.hbs?raw";
