@@ -13,8 +13,6 @@ import { Error505Page } from "./Error505.ts";
 import { AuthPage } from "./auth.ts";
 import { RegisterPage } from "./register.ts";
 
-// const error404Page = new Error404Page();
-const error505Page = new Error505Page();
 const authPage = new AuthPage();
 const registerPage = new RegisterPage();
 
@@ -78,7 +76,9 @@ export function renderLinksPage() {
           document.getElementById("app")!.appendChild(new404Page.getContent());
           break;
         case "505":
-          document.getElementById("app")!.innerHTML = error505Page.render();
+          const new505Page = new Error505Page();
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(new505Page.getContent());
           break;
         case "profile":
           renderProfile();

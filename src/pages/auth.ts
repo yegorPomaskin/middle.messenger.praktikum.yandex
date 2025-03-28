@@ -1,18 +1,11 @@
 import Block from "../framework/block";
-import { AuthRegisterForm } from "../components/authRegister/authRegisterForm";
+import { AuthRegisterForm, AuthField } from "../components/authRegisterForm/authRegisterForm";
 import { RegisterPage } from "./register";
-import { AuthInputProps } from "../components/authFormInput";
 
-// Задаем реальные данные для полей, соответствующие интерфейсу AuthInputProps
-const fields: AuthInputProps[] = [
+const fields: AuthField[] = [
     { label: "Логин", name: "login", type: "text", required: true },
     { label: "Пароль", name: "password", type: "password", required: true },
 ];
-
-const authInputStyles: { [key: string]: string } = {
-    form__label: "form__label", // замените на реальные имена классов, если нужно
-    form__input: "form__input",
-};
 
 const AUTH_FORM_CONFIG = {
     title: "Вход",
@@ -20,7 +13,6 @@ const AUTH_FORM_CONFIG = {
     buttonText: "Авторизоваться",
     linkText: "Нет аккаунта?",
     linkHref: "#register",
-    authInputStyles,
 };
 
 export class AuthPage extends Block {
@@ -38,16 +30,17 @@ export class AuthPage extends Block {
                         registerPage.dispatchComponentDidMount();
                     }
                 },
+                onSubmit: (e: Event) => {
+                    e.preventDefault();
+                    // Логика отправки формы авторизации
+                }
             }),
         });
     }
 
-    override render(): string {
-        // Возвращаем шаблон, где плейсхолдер {{{ AuthForm }}} будет заменён методом _render базового класса
+    protected render(): string {
         return `
-            <div class="app">
                 {{{ AuthForm }}}
-            </div>
         `;
     }
 }

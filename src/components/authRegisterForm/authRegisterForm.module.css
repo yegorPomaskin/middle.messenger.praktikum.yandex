@@ -27,9 +27,7 @@
 }
 
 .form__link {
-  text-align: center;
-  font-size: 11px;
-  line-height: 11px;
+  color: var(--text-color);
 }
 
 .container--register {

@@ -1,5 +1,5 @@
 import Block from "../framework/block";
-import { AuthRegisterForm } from "../components/authRegister/authRegisterForm";
+import { AuthRegisterForm } from "../components/authRegisterForm/authRegisterForm";
 import { AuthPage } from "./auth";
 
 const REGISTER_FORM_CONFIG = {
@@ -38,16 +38,17 @@ export class RegisterPage extends Block {
                         authPage.dispatchComponentDidMount();
                     }
                 },
+                onSubmit: (e: Event) => {
+                    e.preventDefault();
+                    // Логика отправки формы авторизации
+                }
             }),
         });
     }
 
     override render(): string {
-        // Возвращаем шаблон, где плейсхолдер {{{ AuthForm }}} будет заменён методом _render базового класса
         return `
-            <div class="app">
-                {{{ RegisterForm }}}
-            </div>
+            {{{ RegisterForm }}}
         `;
     }
 }

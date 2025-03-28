@@ -19,7 +19,7 @@ export class Error404Page extends Block {
 
     protected render(): string {
         return `
-                {{{ errorPage }}}
+            {{{ errorPage }}}
         `;
     }
 }

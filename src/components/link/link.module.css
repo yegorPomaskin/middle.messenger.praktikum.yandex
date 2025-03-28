@@ -1,0 +1,6 @@
+.link {
+    font-size: 11px;
+    line-height: 11px;
+    color: var(--link-color);
+    text-align: center;
+}
