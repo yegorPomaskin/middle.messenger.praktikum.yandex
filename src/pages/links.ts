@@ -1,8 +1,7 @@
 // Страница загулшка с ссылками пока нет роутинга
 import styles from "../styles/pages/links.module.css";
-// import { renderRegisterPage } from "./register.ts";
 import { renderChatPage } from "./chat.ts";
-import { renderProfile } from "./profile.ts";
+// import { renderProfile } from "./profile.ts";
 import { renderUpdateProfile } from "./updateProfile.ts";
 import { renderUpdatePassword } from "./updatePassword.ts";
 import { renderUpdateAvatar } from "./updateAvatar.ts";
@@ -12,6 +11,7 @@ import { Error404Page } from "./Error404.ts";
 import { Error505Page } from "./Error505.ts";
 import { AuthPage } from "./auth.ts";
 import { RegisterPage } from "./register.ts";
+import { ProfilePageHandler } from "./profile.ts";
 
 const authPage = new AuthPage();
 const registerPage = new RegisterPage();
@@ -81,7 +81,9 @@ export function renderLinksPage() {
           document.getElementById("app")!.appendChild(new505Page.getContent());
           break;
         case "profile":
-          renderProfile();
+          const profilePage = new ProfilePageHandler();
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(profilePage.getContent());
           break;
         case "updateProfile":
           renderUpdateProfile();

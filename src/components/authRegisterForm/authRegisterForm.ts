@@ -1,13 +1,9 @@
-import Handlebars from "handlebars";
 import Block from "../../framework/block";
 import template from "./authRegisterForm.hbs?raw";
 import styles from "./authRegisterForm.module.css";
 import { AuthInput } from "./AuthRegisterInput/authFormInput";
 import { Link } from "../link/link";
 import { Button } from "../button/button";
-
-import buttonPartial from "../../partials/button.hbs?raw";
-Handlebars.registerPartial("button", buttonPartial);
 
 export interface AuthField {
     label: string;

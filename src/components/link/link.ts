@@ -7,6 +7,7 @@ interface LinkProps {
     events?: {
         click?: (event: Event) => void;
     };
+    href?: string;
 }
 
 export class Link extends Block {
