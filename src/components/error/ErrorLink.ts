@@ -3,7 +3,9 @@ import styles from "./error.module.css";
 
 interface ErrorLinkProps {
     text: string;
-    onClick?: (e: Event) => void;
+    events?: {
+        click?: (event: Event) => void;
+    };
 }
 
 export class ErrorLink extends Block {
@@ -12,8 +14,8 @@ export class ErrorLink extends Block {
             ...props,
             events: {
                 click: (e: Event) => {
-                    e.preventDefault(); // Предотвращаем переход по #
-                    props.onClick?.(e); // Вызываем переданный колбэк
+                    e.preventDefault();
+                    props.events?.click?.(e);
                 }
             }
         });
@@ -21,8 +23,10 @@ export class ErrorLink extends Block {
 
     protected render(): string {
         return `
-            <a href="#" class="${styles.error__link}" data-action="back">
-                ${this.props.text}
+            <a href="#" 
+               class="${styles.error__link}" 
+               data-action="back">
+               ${this.props.text}
             </a>
         `;
     }

@@ -1,10 +1,10 @@
 import Handlebars from "handlebars";
-import Block from "../../framework/block.ts";
+import Block from "../../framework/block";
 import styles from "./error.module.css";
 import template from "./error.hbs?raw";
-import { ErrorLink } from "./ErrorLink.ts";
+import { ErrorLink } from "./ErrorLink";
 
-export interface ErrorPageProps {
+interface ErrorPageProps {
     errorName: string;
     errorText: string;
     linkText: string;
@@ -12,23 +12,23 @@ export interface ErrorPageProps {
 }
 
 export class ErrorPage extends Block {
-    
     constructor(props: ErrorPageProps) {
+
         super({
-            props, 
-            ErrorLink: new ErrorLink({
+            ...props,
+            link: new ErrorLink({
                 text: props.linkText,
-                onClick: props.onLinkClick,
-            })
-         });
+                events: {
+                    click: props.onLinkClick,
+                }
+            }),
+            styles
+            
+            // linkHtml: link.getContent().outerHTML
+        });
     }
 
-    render(): string {
-
-        console.log(template)
-        return Handlebars.compile(template)({
-            ...this.props.props,
-            styles,
-        });
+    protected render(): string {
+        return template
     }
 }
