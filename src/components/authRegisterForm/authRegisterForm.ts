@@ -27,35 +27,44 @@ export class AuthRegisterForm extends Block {
         const isLogin = props.isLogin;
         const modifier = isLogin ? styles.auth : styles.register;
         
-        // Генерируем HTML для полей формы (Потому что handlebars дурачок)
-        const fieldsHTML = props.fields.map(field =>
+        // Создаем компоненты для полей формы
+        const fields = props.fields.map(field =>
             new AuthInput({
                 ...field,
-            }).getContent().outerHTML
-        ).join('');
+            })
+        );
+
+        // Создаем компонент ссылки
+        const link = new Link({
+            text: props.linkText,
+            className: styles.form__link,
+            events: {
+                click: props.onLinkClick,
+            }
+        });
+
+        // Создаем компонент кнопки
+        const button = new Button({  
+            text: props.buttonText,
+            type: "submit",
+            className: `${styles.button} ${modifier}`,
+        });
 
         super({
             ...props,
             styles, 
-            fieldsHTML,
-            link: new Link({
-                text: props.linkText,
-                className: styles.form__link,
-                events: {
-                    click: props.onLinkClick,
-                }
-            }),
-            button: new Button({  
-                text: props.buttonText,
-                type: "submit",
-                className: `${styles.button} ${modifier}`,
-            }),
+            fields,  // Передаем массив компонентов
+            link,
+            button,
             sectionModifier: modifier,
             buttonClass: `${styles.button} ${props.isLogin ? styles.button_login : styles.button_register}`,
             events: {
                 submit: props.onSubmit,  // Обработчик формы
             }
         });
+        
+        // Отладочная информация
+        console.log('Fields in lists:', this.lists.fields);
     }
 
     protected render(): string {

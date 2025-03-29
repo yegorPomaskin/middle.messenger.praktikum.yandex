@@ -4,6 +4,7 @@ import styles from "./profile.module.css";
 import commonStyles from "../profileField/commonProfileStyles.module.css";
 import { Sidebar } from "../sidebar/sidebar";
 import { Link } from "../link/link";
+import { ProfileField } from "../profileField/profileField";
 
 interface ProfilePageProps {
     profileImage: string;
@@ -27,6 +28,7 @@ interface ProfilePageProps {
         iconSrc: string;
         onClick?: (event: Event) => void;
     };
+    isEditMode?: boolean;
 }
 
 export class ProfilePage extends Block {
@@ -38,26 +40,60 @@ export class ProfilePage extends Block {
             onClick: props.sidebarData.onClick,
         });
 
-        // Добавляем классы из CSS модулей к строковым свойствам
-        const profileFieldsClass = commonStyles.profile__fields;
-        const profileActionsClass = styles.settings__actions; // Используем класс из styles
-        
-        // Формируем HTML для полей
-        const fieldsHTML = generateFieldsHTML(props.userFields || [], commonStyles);
-        
-        // Формируем HTML для кнопок с использованием компонента Link
-        const buttonsHTML = generateButtonsHTML(props.buttons || [], commonStyles);
+        // Создаем компоненты для полей профиля
+        const fields = (props.userFields || []).map(field => 
+            new ProfileField({
+                name: field.name,
+                label: field.label,
+                value: field.value,
+                type: field.type,
+                mode: props.isEditMode ? 'edit' : 'view',
+                events: {
+                    focus: (e: FocusEvent) => {
+                        console.log(`Field ${field.name} focused`, e);
+                    },
+                    blur: (e: FocusEvent) => {
+                        console.log(`Field ${field.name} blurred`, e);
+                    },
+                    change: (e: Event) => {
+                        const input = e.target as HTMLInputElement;
+                        console.log(`Field ${field.name} changed to: ${input.value}`);
+                    }
+                }
+            })
+        );
+
+        // Создаем компоненты для кнопок действий
+        const buttons = (props.buttons || []).map(button => 
+            new Link({
+                href: button.href,
+                text: button.text,
+                className: button.className,
+                useDefaultClass: button.useDefaultClass ?? false,
+                attr: {
+                    'data-action': button.text.toLowerCase().replace(/\s+/g, '')
+                },
+                events: {
+                    click: (e: Event) => {
+                        e.preventDefault();
+                        console.log(`Button "${button.text}" clicked`);
+                        
+                        if (button.onClick) {
+                            button.onClick(e);
+                        }
+                    }
+                }
+            })
+        );
 
         super({
             ...props,
             sidebar,
-            profileFieldsClass,
-            profileActionsClass: styles.settings__actions,
-            fieldsHTML,
-            buttonsHTML,
+            fields,
+            buttons,
             styles,
             commonStyles,
-            isEditMode: false,
+            isEditMode: props.isEditMode || false,
             events: {
                 click: (e: Event) => {
                     const target = e.target as HTMLElement;
@@ -65,69 +101,29 @@ export class ProfilePage extends Block {
                         e.preventDefault();
                         console.log('Avatar change requested');
                     }
-                    // Обработка событий клика теперь перенесена в компоненты Link
                 }
             }
         });
+        
+        // Отладочная информация
+        console.log('Fields in lists:', this.lists.fields);
+        console.log('Buttons in lists:', this.lists.buttons);
+    }
+
+    public setEditMode(isEdit: boolean): void {
+        this.setProps({ isEditMode: isEdit });
+        
+        // Обновляем режим для всех полей
+        if (this.lists && this.lists.fields) {
+            this.lists.fields.forEach(field => {
+                if (field instanceof ProfileField) {
+                    field.setProps({ mode: isEdit ? 'edit' : 'view' });
+                }
+            });
+        }
     }
 
     protected render(): string {
         return template;
     }
-}
-
-// Вспомогательные функции для генерации HTML с CSS-модулями
-function generateFieldsHTML(fields: ProfilePageProps['userFields'], styles: any): string {
-    const fieldsContent = fields.map(field => `
-        <div class="${styles.profile__fieldItem}">
-            <div class="${styles.profile__fieldLabel || styles.profile__label}">${field.label}:</div>
-            <div class="${styles.profile__fieldValue || styles.profile__value}">${field.value}</div>
-        </div>
-    `).join('');
-    
-    return fieldsContent;
-}
-
-function generateButtonsHTML(buttons: ProfilePageProps['buttons'], styles: any): string {
-    const actions = ['editData', 'changePassword', 'logout'];
-    
-    return buttons.map((button, index) => {
-        const dataAction = actions[index] || '';
-        
-        // Создаем экземпляр компонента Link с правильными параметрами
-        const link = new Link({
-            href: button.href,
-            text: button.text,
-            className: button.className,
-            useDefaultClass: false, // Отключаем дефолтный класс
-            // Не используем attributes, так как они не обрабатываются в текущем шаблоне
-            // Нам нужно использовать либо реф.элемент, либо модифицировать после рендеринга
-            events: {
-                click: (e: Event) => {
-                    e.preventDefault();
-                    console.log(`${dataAction} clicked`);
-                    
-                    if (button.onClick) {
-                        button.onClick(e);
-                    }
-                }
-            }
-        });
-        
-        // Получаем DOM-элемент и устанавливаем data-action вручную
-        const content = link.getContent();
-        if (content instanceof HTMLElement) {
-            const linkElement = content.querySelector('a');
-            if (linkElement) {
-                linkElement.setAttribute('data-action', dataAction);
-            }
-        }
-        
-        // Оборачиваем компонент Link в div с классом profile__actionItem
-        return `
-            <div class="${styles.profile__actionItem}">
-                ${link.getContent().outerHTML}
-            </div>
-        `;
-    }).join('');
 }

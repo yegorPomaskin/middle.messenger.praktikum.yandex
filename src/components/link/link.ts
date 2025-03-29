@@ -10,7 +10,9 @@ interface LinkProps {
     href?: string;
     useDefaultClass?: boolean;
     label?: string;
-    attributes?: string[];
+    attr?: {
+        'data-action': string;
+    }
 }
 
 export class Link extends Block {

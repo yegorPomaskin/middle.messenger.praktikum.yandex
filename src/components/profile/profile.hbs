@@ -5,14 +5,17 @@
             <div class="{{styles.profile__info}}">
                 <img src="{{profileImage}}" alt="{{userName}}" class="{{styles.profile__image}}" />
                 <h2 class="{{styles.profile__name}}">{{userName}}</h2>
+                {{#if isEditMode}}
+                    <div class="{{styles.profile__edit_indicator}}">Режим редактирования</div>
+                {{/if}}
             </div>
             
             <div class="{{commonStyles.profile__fields}}">
-                {{{fieldsHTML}}}
+                {{{fields}}}
             </div>
             
             <div class="{{styles.settings__actions}}">
-                {{{buttonsHTML}}}
+                {{{buttons}}}
             </div>
         </div>
     </div>

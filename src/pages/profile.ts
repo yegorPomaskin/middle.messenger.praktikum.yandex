@@ -1,11 +1,35 @@
 import Block from "../framework/block";
 import { ProfilePage } from "../components/profile/profilePage";
 import { renderLinksPage } from "../pages/links";
-import linkStyles from "../components/link/link.module.css"
+import linkStyles from "../components/link/link.module.css";
 
 export class ProfilePageHandler extends Block {
+    private profilePage: ProfilePage;
+
     constructor() {
-        // Создаем экземпляр ProfilePage
+        // Создаем методы-обработчики для кнопок
+        const handleEditData = (e: Event) => {
+            e.preventDefault();
+            console.log('Переход на страницу редактирования данных');
+            // Здесь будет логика перехода на страницу редактирования
+            // Когда будет роутер: router.go('/edit-profile');
+        };
+
+        const handleChangePassword = (e: Event) => {
+            e.preventDefault();
+            console.log('Переход на страницу изменения пароля');
+            // Логика перехода на страницу изменения пароля
+            // Когда будет роутер: router.go('/change-password');
+        };
+
+        const handleLogout = (e: Event) => {
+            e.preventDefault();
+            console.log('Выход из профиля');
+            // Логика выхода из профиля
+            // Например: AuthController.logout().then(() => router.go('/login'));
+        };
+
+        // Создаем экземпляр ProfilePage с настроенными обработчиками событий
         const profilePage = new ProfilePage({
             profileImage: "/profile-pic.png",
             userName: "Иван",
@@ -22,21 +46,22 @@ export class ProfilePageHandler extends Block {
                     href: "#",
                     className: linkStyles.actionLink,
                     text: "Изменить данные",
-                    useDefaultClass: false, 
+                    useDefaultClass: false,
+                    onClick: handleEditData
                 },
                 {
                     href: "#",
                     className: linkStyles.actionLink,
                     text: "Изменить пароль",
-                    useDefaultClass: false, 
-                    onClick: () => console.log('Переход на страницу изменения пароля'),
+                    useDefaultClass: false,
+                    onClick: handleChangePassword
                 },
                 {
                     href: "#",
                     className: linkStyles.logoutLink,
                     text: "Выйти",
-                    useDefaultClass: false, 
-                    onClick: () => console.log('Выход из профиля'),
+                    useDefaultClass: false,
+                    onClick: handleLogout
                 },
             ],
             sidebarData: {
@@ -49,6 +74,20 @@ export class ProfilePageHandler extends Block {
         super({
             profilePage
         });
+
+        this.profilePage = profilePage;
+    }
+
+    // Методы для внешнего управления страницей
+    public startEditMode(): void {
+        console.log('Включение режима редактирования');
+        this.profilePage.setEditMode(true);
+    }
+
+    public updateUserData(userData: Partial<{ [key: string]: string }>): void {
+        // Метод для обновления данных пользователя
+        console.log('Обновление данных пользователя:', userData);
+        // Здесь можно добавить логику обновления данных пользователя
     }
 
     protected render(): string {
