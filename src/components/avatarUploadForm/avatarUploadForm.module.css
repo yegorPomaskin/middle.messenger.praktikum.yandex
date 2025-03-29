@@ -1,0 +1,24 @@
+.avatarForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.selectFileBtn {
+    max-width: 200px;
+    width: 100%;
+    color: #3369f3;
+    font-size: 12px;
+    line-height: 16px;
+    text-decoration: underline;
+    margin-top: 43px;
+    margin-bottom: 45px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.fileInput {
+    display: none;
+}

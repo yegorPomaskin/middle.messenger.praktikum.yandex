@@ -3,7 +3,12 @@
     <div class="{{styles.profile__container}}">
         <div class="{{styles.profile__details}}">
             <div class="{{styles.profile__info}}">
-                <img src="{{profileImage}}" alt="{{userName}}" class="{{styles.profile__image}}" />
+                <div class="{{styles.profileImageContainer}}" id="changeAvatarBtn">
+                    <img src="{{profileImage}}" alt="{{userName}}" class="{{styles.profile__image}}" />
+                    <div class="{{styles.profileImageOverlay}}">
+                        <span class="{{styles.changeAvatarText}}">Поменять аватар</span>
+                    </div>
+                </div>
                 <h2 class="{{styles.profile__name}}">{{userName}}</h2>
                 {{#if isEditMode}}
                     <div class="{{styles.profile__edit_indicator}}">Режим редактирования</div>

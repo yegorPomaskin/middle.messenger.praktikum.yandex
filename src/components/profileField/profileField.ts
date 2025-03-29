@@ -8,8 +8,8 @@ interface ProfileFieldProps {
     value: string;
     type?: string;
     mode?: 'view' | 'edit';
-    isViewMode?: boolean;  
-    isPassword?: boolean;
+    editable?: boolean; // Added the editable property
+
     events?: {
         focus?: (event: FocusEvent) => void;
         blur?: (event: FocusEvent) => void;
@@ -21,14 +21,15 @@ export class ProfileField extends Block {
     private _oldValue: string = '';
 
     constructor(props: ProfileFieldProps) {
-        // Определяем режим (по умолчанию 'view')
+        // Determine mode (default to 'view')
         const mode = props.mode || 'view';
 
         super({    
             ...props,
             styles,
-            isViewMode: mode === 'view', // Для удобства в шаблоне
-            isPassword: props.type === 'password'
+            isViewMode: mode === 'view', // For convenience in the template
+            isPassword: props.type === 'password',
+            editable: props.editable !== undefined ? props.editable : true // Default to true if not specified
         });
     }
 

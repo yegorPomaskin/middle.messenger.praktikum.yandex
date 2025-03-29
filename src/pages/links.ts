@@ -2,7 +2,7 @@
 import styles from "../styles/pages/links.module.css";
 import { renderChatPage } from "./chat.ts";
 // import { renderProfile } from "./profile.ts";
-import { renderUpdateProfile } from "./updateProfile.ts";
+// import { renderUpdateProfile } from "./updateProfile.ts";
 import { renderUpdatePassword } from "./updatePassword.ts";
 import { renderUpdateAvatar } from "./updateAvatar.ts";
 
@@ -12,6 +12,7 @@ import { Error505Page } from "./Error505.ts";
 import { AuthPage } from "./auth.ts";
 import { RegisterPage } from "./register.ts";
 import { ProfilePageHandler } from "./profile.ts";
+import { UpdateProfilePageHandler } from "./updateProfile.ts";
 
 const authPage = new AuthPage();
 const registerPage = new RegisterPage();
@@ -86,7 +87,9 @@ export function renderLinksPage() {
           document.getElementById("app")!.appendChild(profilePage.getContent());
           break;
         case "updateProfile":
-          renderUpdateProfile();
+          const updateProfilePage = new UpdateProfilePageHandler();
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(updateProfilePage.getContent());
           break;
         case "updatePassword":
           renderUpdatePassword();
