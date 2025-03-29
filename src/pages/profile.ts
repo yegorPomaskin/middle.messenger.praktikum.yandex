@@ -1,6 +1,7 @@
 import Block from "../framework/block";
 import { ProfilePage } from "../components/profile/profilePage";
 import { renderLinksPage } from "../pages/links";
+import linkStyles from "../components/link/link.module.css"
 
 export class ProfilePageHandler extends Block {
     constructor() {
@@ -19,20 +20,23 @@ export class ProfilePageHandler extends Block {
                 buttons: [
                     {
                         href: "#",
-                        className: "action-link",
+                        className: linkStyles.actionLink,
                         text: "Изменить данные",
+                        useDefaultClass: false, 
                         onClick: () => console.log('Переход на страницу изменения данных'),
                     },
                     {
                         href: "#",
-                        className: "action-link",
+                        className: linkStyles.actionLink,
                         text: "Изменить пароль",
+                        useDefaultClass: false, 
                         onClick: () => console.log('Переход на страницу изменения пароля'),
                     },
                     {
                         href: "#",
-                        className: "logout-link",
+                        className: linkStyles.logoutLink,
                         text: "Выйти",
+                        useDefaultClass: false, 
                         onClick: () => console.log('Выход из профиля'),
                     },
                 ],

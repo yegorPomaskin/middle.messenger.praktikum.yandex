@@ -2,9 +2,10 @@ import Block from "../../framework/block";
 import template from "./profile.hbs?raw";
 import styles from "./profile.module.css";
 import actionLinkStyles from "../../styles/partials/actionLink.module.css";
-import sidebarStyles from "../../styles/partials/sidebar.module.css";
+// import sidebarStyles from "../../styles/partials/sidebar.module.css";
 import { Link } from "../link/link";
 import { ProfileField } from "../profileField/profileField";
+import { Sidebar } from "../sidebar/sidebar";
 
 interface ProfilePageProps {
     profileImage: string;
@@ -20,6 +21,7 @@ interface ProfilePageProps {
         text: string;
         className: string;
         href: string;
+        useDefaultClass?: boolean;
         onClick?: (event: Event) => void;
     }>;
     sidebarData: {
@@ -53,6 +55,7 @@ export class ProfilePage extends Block {
                 text: button.text,
                 href: button.href,
                 className: button.className,
+                useDefaultClass: button.useDefaultClass,
                 events: button.onClick ? { click: button.onClick } : {}
             }).getContent().outerHTML}
             </div>`
@@ -70,13 +73,19 @@ export class ProfilePage extends Block {
             styles,
             actionLinksHTML,
             actionLinkStyles,
-            sidebarStyles,
+
+            // Подключаем Sidebar компонент
+            sidebar: new Sidebar({
+                href: props.sidebarData.href,
+                iconSrc: props.sidebarData.iconSrc,
+                onClick: props.sidebarData.onClick,
+            }),
 
             // Компоненты
             sidebarLink: new Link({
                 text: '',
                 href: props.sidebarData.href,
-                className: sidebarStyles.link,
+                className: '',
                 events: {
                     click: props.sidebarData.onClick || (() => { })
                 }
@@ -115,6 +124,6 @@ export class ProfilePage extends Block {
     }
 
     protected render(): string {
-        return template;
+        return template
     }
 }

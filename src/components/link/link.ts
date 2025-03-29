@@ -8,12 +8,16 @@ interface LinkProps {
         click?: (event: Event) => void;
     };
     href?: string;
+    useDefaultClass?: boolean;
 }
 
 export class Link extends Block {
     constructor(props: LinkProps) {
+        const baseClass = props.useDefaultClass === false ? '' : styles.link;
+
         super({
             ...props,
+            className: `${baseClass} ${props.className || ''}`.trim(),
             events: {
                 click: (e: Event) => {
                     e.preventDefault();
@@ -25,8 +29,8 @@ export class Link extends Block {
 
     protected render(): string {
         return `
-            <a href="#"
-                class="${styles.link} ${this.props.className || ''}"
+            <a href="${this.props.href || '#'}"
+                class="${this.props.className}"
                 data-action="back">
                 ${this.props.text}
             </a>

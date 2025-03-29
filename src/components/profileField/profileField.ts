@@ -1,6 +1,6 @@
 import Block from "../../framework/block";
 import template from "./profileField.hbs?raw";
-// import styles from "./profileField.module.css";
+import styles from "./commonProfileStyles.module.css";
 
 interface ProfileFieldProps {
     name: string;
@@ -21,6 +21,7 @@ export class ProfileField extends Block {
     constructor(props: ProfileFieldProps) {
         super({
             ...props,
+            styles,
             type: props.type || 'text',
             mode: props.mode || 'view'
         });

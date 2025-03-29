@@ -4,3 +4,18 @@
     color: var(--link-color);
     text-align: center;
 }
+
+.form__link {
+  color: var(--text-color);
+}
+
+.actionLink {
+  color: var(--link-color);
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.logoutLink {
+  color: var(--error-color) !important; 
+}

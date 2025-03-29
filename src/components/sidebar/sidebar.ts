@@ -1,34 +1,26 @@
-import Block from "../../framework/block"
-import { Sidebar } from "../sidebar/sidebar";
+import Handlebars from "handlebars";
+import Block from "../../framework/block";
+import template from "./sidebar.hbs?raw";
+import styles from "./sidebar.module.css";
 
-export class ProfilePage extends Block {
-    constructor(props: ProfilePageProps) {
-        const sidebar = new Sidebar({
-            href: props.sidebarData.href,
-            iconSrc: props.sidebarData.iconSrc,
-            events: {
-                click: (e: Event) => {
-                    e.preventDefault();
-                    props.sidebarData.onClick?.(e);
-                }
-            }
-        });
+export interface SidebarProps {
+  href: string;
+  iconSrc: string;
+  onClick?: (event: Event) => void;
+}
 
-        super({
-            ...props,
-            sidebar, // Передаем компонент
-            // ... остальные props
-        });
-    }
+export class Sidebar extends Block {
+  constructor(props: SidebarProps) {
+    super({
+      ...props,
+      styles,
+      events: {
+        click: props.onClick || (() => {}),
+      },
+    });
+  }
 
-    protected render(): string {
-        return `
-      <section class="{{styles.profile}}">
-        <div class="{{styles.profile__container--background}}">
-          {{{ sidebar }}} <!-- Используем компонент -->
-          <!-- ... остальной контент ... -->
-        </div>
-      </section>
-    `;
-    }
+  protected render(): string {
+    return template
+  }
 }
