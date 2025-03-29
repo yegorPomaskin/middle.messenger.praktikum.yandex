@@ -1,11 +1,9 @@
 import Block from "../../framework/block";
 import template from "./profile.hbs?raw";
 import styles from "./profile.module.css";
-import actionLinkStyles from "../../styles/partials/actionLink.module.css";
-// import sidebarStyles from "../../styles/partials/sidebar.module.css";
-import { Link } from "../link/link";
-import { ProfileField } from "../profileField/profileField";
+import commonStyles from "../profileField/commonProfileStyles.module.css";
 import { Sidebar } from "../sidebar/sidebar";
+import { Link } from "../link/link";
 
 interface ProfilePageProps {
     profileImage: string;
@@ -33,97 +31,103 @@ interface ProfilePageProps {
 
 export class ProfilePage extends Block {
     constructor(props: ProfilePageProps) {
-        // Генерируем HTML для полей профиля
-        const fieldsHTML = props.userFields.map(field =>
-            new ProfileField({
-                name: field.name,
-                label: field.label,
-                value: field.value,
-                type: field.type || 'text',
-                mode: field.editable ? 'edit' : 'view',
-                events: {
-                    change: (e: Event) => this.handleFieldChange(field.name, e),
-                    focus: (e: FocusEvent) => this.handleFieldFocus(field.name, e),
-                    blur: (e: FocusEvent) => this.handleFieldBlur(field.name, e)
-                }
-            }).getContent().outerHTML
-        ).join('');
+        // Создаем сайдбар
+        const sidebar = new Sidebar({
+            href: props.sidebarData.href,
+            iconSrc: props.sidebarData.iconSrc,
+            onClick: props.sidebarData.onClick,
+        });
 
-        const actionLinksHTML = props.buttons.map(button =>
-            `<div class="${styles.profile__actionItem}">
-                ${new Link({
-                text: button.text,
-                href: button.href,
-                className: button.className,
-                useDefaultClass: button.useDefaultClass,
-                events: button.onClick ? { click: button.onClick } : {}
-            }).getContent().outerHTML}
-            </div>`
-        ).join('');
+        // Добавляем классы из CSS модулей к строковым свойствам
+        const profileFieldsClass = commonStyles.profile__fields;
+        const profileActionsClass = styles.settings__actions; // Используем класс из styles
+        
+        // Формируем HTML для полей
+        const fieldsHTML = generateFieldsHTML(props.userFields || [], commonStyles);
+        
+        // Формируем HTML для кнопок с использованием компонента Link
+        const buttonsHTML = generateButtonsHTML(props.buttons || [], commonStyles);
 
         super({
-            // Основные props
-            profileImage: props.profileImage,
-            userName: props.userName,
-
-            // Сгенерированный HTML
+            ...props,
+            sidebar,
+            profileFieldsClass,
+            profileActionsClass: styles.settings__actions,
             fieldsHTML,
-
-            // Стили
+            buttonsHTML,
             styles,
-            actionLinksHTML,
-            actionLinkStyles,
-
-            // Подключаем Sidebar компонент
-            sidebar: new Sidebar({
-                href: props.sidebarData.href,
-                iconSrc: props.sidebarData.iconSrc,
-                onClick: props.sidebarData.onClick,
-            }),
-
-            // Компоненты
-            sidebarLink: new Link({
-                text: '',
-                href: props.sidebarData.href,
-                className: '',
-                events: {
-                    click: props.sidebarData.onClick || (() => { })
-                }
-            }),
-
-            // События
+            commonStyles,
+            isEditMode: false,
             events: {
-                click: (e: Event) => this.handleAvatarClick(e)
+                click: (e: Event) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('#changeAvatarBtn')) {
+                        e.preventDefault();
+                        console.log('Avatar change requested');
+                    }
+                    // Обработка событий клика теперь перенесена в компоненты Link
+                }
             }
         });
     }
 
-    private handleFieldChange(fieldName: string, event: Event) {
-        const input = event.target as HTMLInputElement;
-        console.log(`Field ${fieldName} changed to: ${input.value}`);
-        // Логика обработки изменений
-    }
-
-    private handleFieldFocus(fieldName: string, event: FocusEvent) {
-        console.log(`Field ${fieldName} focused`);
-        // Логика при фокусировке
-    }
-
-    private handleFieldBlur(fieldName: string, event: FocusEvent) {
-        console.log(`Field ${fieldName} blurred`);
-        // Логика при потере фокуса
-    }
-
-    private handleAvatarClick(event: Event) {
-        const target = event.target as HTMLElement;
-        if (target.closest('#changeAvatarBtn')) {
-            event.preventDefault();
-            console.log('Avatar change requested');
-            // Логика смены аватара
-        }
-    }
-
     protected render(): string {
-        return template
+        return template;
     }
+}
+
+// Вспомогательные функции для генерации HTML с CSS-модулями
+function generateFieldsHTML(fields: ProfilePageProps['userFields'], styles: any): string {
+    const fieldsContent = fields.map(field => `
+        <div class="${styles.profile__fieldItem}">
+            <div class="${styles.profile__fieldLabel || styles.profile__label}">${field.label}:</div>
+            <div class="${styles.profile__fieldValue || styles.profile__value}">${field.value}</div>
+        </div>
+    `).join('');
+    
+    return fieldsContent;
+}
+
+function generateButtonsHTML(buttons: ProfilePageProps['buttons'], styles: any): string {
+    const actions = ['editData', 'changePassword', 'logout'];
+    
+    return buttons.map((button, index) => {
+        const dataAction = actions[index] || '';
+        
+        // Создаем экземпляр компонента Link с правильными параметрами
+        const link = new Link({
+            href: button.href,
+            text: button.text,
+            className: button.className,
+            useDefaultClass: false, // Отключаем дефолтный класс
+            // Не используем attributes, так как они не обрабатываются в текущем шаблоне
+            // Нам нужно использовать либо реф.элемент, либо модифицировать после рендеринга
+            events: {
+                click: (e: Event) => {
+                    e.preventDefault();
+                    console.log(`${dataAction} clicked`);
+                    
+                    if (button.onClick) {
+                        button.onClick(e);
+                    }
+                }
+            }
+        });
+        
+        // Получаем DOM-элемент и устанавливаем data-action вручную
+        const content = link.getContent();
+        if (content instanceof HTMLElement) {
+            const linkElement = content.querySelector('a');
+            if (linkElement) {
+                linkElement.setAttribute('data-action', dataAction);
+            }
+        }
+        
+        // Оборачиваем компонент Link в div с классом profile__actionItem
+        return `
+            <div class="${styles.profile__actionItem}">
+                ${link.getContent().outerHTML}
+            </div>
+        `;
+    }).join('');
 }

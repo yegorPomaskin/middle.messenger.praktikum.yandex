@@ -6,6 +6,10 @@
   margin-bottom: 10px;
 }
 
+.profile__actionItem {
+  margin-bottom: 16px;
+}
+
 .profile__value {
   color: var(--text-secondary);
 }

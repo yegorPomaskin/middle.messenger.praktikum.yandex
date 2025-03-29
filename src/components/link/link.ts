@@ -9,6 +9,8 @@ interface LinkProps {
     };
     href?: string;
     useDefaultClass?: boolean;
+    label?: string;
+    attributes?: string[];
 }
 
 export class Link extends Block {

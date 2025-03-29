@@ -4,8 +4,15 @@
     {{#if isViewMode}}
     <div class="{{styles.profile__value}}">{{value}}</div>
     {{else}}
-    <input type="{{type}}" name="{{name}}" class="{{styles.profile__input}}" value="{{value}}" {{#if
-        isPassword}}autocomplete="new-password" {{/if}} onfocus="this._component.handleFocus(event)"
-        onblur="this._component.handleBlur(event)" oninput="this._component.handleChange(event)" />
+    <input 
+            type="{{type}}" 
+            name="{{name}}" 
+            class="{{styles.profile__input}}" 
+            value="{{value}}"
+            {{#if isPassword}}autocomplete="new-password"{{/if}}
+            onfocus="this._component.handleFocus(event)"
+            onblur="this._component.handleBlur(event)"
+            oninput="this._component.handleChange(event)"
+        />
     {{/if}}
 </div>
