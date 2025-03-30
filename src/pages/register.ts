@@ -1,5 +1,5 @@
 import Block from "../framework/block";
-import { AuthRegisterForm } from "../components/authRegisterForm/authRegisterForm";
+import { AuthRegisterForm } from "../components/registerForm/registerForm";
 import { AuthPage } from "./auth";
 
 const REGISTER_FORM_CONFIG = {

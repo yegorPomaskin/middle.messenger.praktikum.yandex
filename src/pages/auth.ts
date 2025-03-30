@@ -1,5 +1,5 @@
 import Block from "../framework/block";
-import { AuthRegisterForm, AuthField } from "../components/authRegisterForm/authRegisterForm";
+import { AuthForm, AuthField } from "../components/authForm/authForm";
 import { RegisterPage } from "./register";
 
 const fields: AuthField[] = [
@@ -12,15 +12,13 @@ const AUTH_FORM_CONFIG = {
     fields,
     buttonText: "Авторизоваться",
     linkText: "Нет аккаунта?",
-    linkHref: "#register",
 };
 
 export class AuthPage extends Block {
     constructor() {
         super({
-            AuthForm: new AuthRegisterForm({
+            AuthForm: new AuthForm({
                 ...AUTH_FORM_CONFIG,
-                isLogin: true,
                 onLinkClick: () => {
                     const registerPage = new RegisterPage();
                     const app = document.getElementById("app");
@@ -33,14 +31,13 @@ export class AuthPage extends Block {
                 onSubmit: (e: Event) => {
                     e.preventDefault();
                     // Логика отправки формы авторизации
+                    console.log("Форма авторизации отправлена");
                 }
             }),
         });
     }
 
     protected render(): string {
-        return `
-                {{{ AuthForm }}}
-        `;
+        return '{{{ AuthForm }}}';
     }
 }

@@ -5,6 +5,7 @@ interface ButtonProps {
     text: string;
     type?: "button" | "submit" | "reset";
     className?: string;
+    variant?: 'login' | 'register' | 'save' | 'cancel' | 'modal'; // Добавляем варианты кнопок
     attr?: Record<string, string>;
     events?: {
         click?: (event: Event) => void;
@@ -13,8 +14,18 @@ interface ButtonProps {
 
 export class Button extends Block {
     constructor(props: ButtonProps) {
-        // Always include the base button class and append any additional class names
-        const buttonClass = `${styles.button} ${props.className || ''}`;
+        // Базовый класс кнопки
+        let buttonClass = styles.button;
+        
+        // Добавляем специфичный класс для варианта, если он указан
+        if (props.variant) {
+            buttonClass += ` ${styles[`button--${props.variant}`]}`;
+        }
+        
+        // Добавляем дополнительные классы, если они переданы
+        if (props.className) {
+            buttonClass += ` ${props.className}`;
+        }
         
         super({
             ...props,
@@ -22,7 +33,7 @@ export class Button extends Block {
             attr: {
                 ...props.attr,
                 type: props.type || "button",
-                class: buttonClass,
+                class: buttonClass.trim(),
             }
         });
     }
