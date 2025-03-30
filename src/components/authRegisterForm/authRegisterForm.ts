@@ -50,6 +50,29 @@ export class AuthRegisterForm extends Block {
             className: `${styles.button} ${modifier}`,
         });
 
+         // Модифицируем обработчик onSubmit
+         const handleSubmit = (event: Event) => {
+            event.preventDefault();
+            
+            const formData: Record<string, string> = {};
+            
+            // Собираем данные из всех полей формы
+            props.fields.forEach(field => {
+                const input = this.element?.querySelector(`[name="${field.name}"]`) as HTMLInputElement;
+                if (input) {
+                    formData[field.name] = input.value;
+                }
+            });
+            
+            // Выводим собранные данные в консоль
+            console.log('Form data:', formData);
+            
+            // Вызываем оригинальный обработчик, если он был передан
+            if (props.onSubmit) {
+                props.onSubmit(event);
+            }
+        };
+
         super({
             ...props,
             styles, 
@@ -59,12 +82,11 @@ export class AuthRegisterForm extends Block {
             sectionModifier: modifier,
             buttonClass: `${styles.button} ${props.isLogin ? styles.button_login : styles.button_register}`,
             events: {
-                submit: props.onSubmit,  // Обработчик формы
+                submit: handleSubmit,  // Используем наш обработчик
             }
         });
         
-        // Отладочная информация
-        console.log('Fields in lists:', this.lists.fields);
+        
     }
 
     protected render(): string {

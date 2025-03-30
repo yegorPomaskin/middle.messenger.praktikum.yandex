@@ -1,10 +1,10 @@
 // Страница загулшка с ссылками пока нет роутинга
 import styles from "../styles/pages/links.module.css";
-import { renderChatPage } from "./chat.ts";
+// import { renderChatPage } from "./chat.ts";
 // import { renderProfile } from "./profile.ts";
 // import { renderUpdateProfile } from "./updateProfile.ts";
 import { renderUpdatePassword } from "./updatePassword.ts";
-import { renderUpdateAvatar } from "./updateAvatar.ts";
+// import { renderUpdateAvatar } from "./updateAvatar.ts";
 
 // Новые компоненты
 import { Error404Page } from "./Error404.ts";
@@ -13,6 +13,7 @@ import { AuthPage } from "./auth.ts";
 import { RegisterPage } from "./register.ts";
 import { ProfilePageHandler } from "./profile.ts";
 import { UpdateProfilePageHandler } from "./updateProfile.ts";
+import { ChatPage } from "./chat.ts";
 
 const authPage = new AuthPage();
 const registerPage = new RegisterPage();
@@ -38,7 +39,6 @@ export function renderLinksPage() {
         <li><a href="#" data-page="profile">Профиль</a></li>
         <li><a href="#" data-page="updateProfile">Изменить Профиль</a></li>
         <li><a href="#" data-page="updatePassword">Изменить Пароль</a></li>
-        <li><a href="#" data-page="updateAvatar">Изменить Аватар</a></li>
       </ul>
     </nav>
   `;
@@ -69,7 +69,12 @@ export function renderLinksPage() {
           }
           break;
         case "chat":
-          renderChatPage();
+          const newChatPage = new ChatPage({
+            attachment: "/attachment.png",
+            sendButton: "/send-button.png"
+          });
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(newChatPage.getContent());
           break;
         case "404":
           const new404Page = new Error404Page();
@@ -93,9 +98,6 @@ export function renderLinksPage() {
           break;
         case "updatePassword":
           renderUpdatePassword();
-          break;
-        case "updateAvatar":
-          renderUpdateAvatar();
           break;
         default:
           console.error("Неизвестная страница");

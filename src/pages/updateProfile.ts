@@ -40,21 +40,6 @@ export class UpdateProfilePageHandler extends Block {
 
     private handleSaveProfile(formData: Record<string, string>): void {
         console.log('Saving profile data:', formData);
-        
-        // Here you would make an API call to save the data
-        // For example:
-        // UserController.updateProfile(formData)
-        //   .then(() => {
-        //     console.log('Profile updated successfully');
-        //     renderProfilePage();
-        //   })
-        //   .catch((error) => {
-        //     console.error('Failed to update profile:', error);
-        //   });
-        
-        // For now, just go back to the profile page
-        setTimeout(() => {
-        }, 500);
     }
 
     protected render(): string {

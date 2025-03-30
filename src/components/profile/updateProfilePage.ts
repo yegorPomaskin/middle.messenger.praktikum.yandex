@@ -5,6 +5,8 @@ import commonStyles from "../profileField/commonProfileStyles.module.css";
 import { Sidebar } from "../sidebar/sidebar";
 import { ProfileField } from "../profileField/profileField";
 import { Button } from "../button/button";
+import { Modal } from "../modal/modal";
+import { AvatarUploadForm } from "../avatarUploadForm/avatarUploadForm";
 import buttonStyles from "../button/button.module.css";
 
 interface UpdateProfilePageProps {
@@ -27,6 +29,8 @@ interface UpdateProfilePageProps {
 }
 
 export class UpdateProfilePage extends Block {
+     private avatarModal: Modal | null = null;
+
     constructor(props: UpdateProfilePageProps) {
         // Create sidebar component
         const sidebar = new Sidebar({
@@ -63,7 +67,7 @@ export class UpdateProfilePage extends Block {
         const saveButton = new Button({
             text: "Сохранить",
             type: "submit",
-            className: buttonStyles["button--save"], // Using the correct class name from your CSS
+            className: buttonStyles["button--save"], 
             events: {
                 click: (e: Event) => {
                     e.preventDefault();
@@ -94,7 +98,7 @@ export class UpdateProfilePage extends Block {
         const cancelButton = new Button({
             text: "Отмена",
             type: "button",
-            className: buttonStyles["button--cancel"], // Custom class for cancel button
+            className: buttonStyles["button--cancel"], 
             events: {
                 click: (e: Event) => {
                     e.preventDefault();
@@ -117,14 +121,89 @@ export class UpdateProfilePage extends Block {
             buttons,
             styles,
             commonStyles,
-            isEditMode: true, // Set to true for the update profile page
+            isEditMode: true, 
             events: {
                 submit: (e: Event) => {
                     e.preventDefault();
                     console.log('Form submitted');
+                },
+                click: (e: Event) => {
+                    const target = e.target as HTMLElement;
+                    
+                    // Проверяем клик на контейнер изображения или его потомков
+                    const imageContainer = target.closest('#changeAvatarBtn');
+                    if (imageContainer) {
+                        e.preventDefault();
+                        console.log('Avatar change button clicked');
+                        this.openAvatarModal();
+                    }
                 }
             }
         });
+    }
+
+    protected componentDidMount(): void {
+        // Создаем модальное окно для смены аватара
+        this.createAvatarModal();
+    }
+    
+    private createAvatarModal(): void {
+        // Создаем форму загрузки аватара
+        const avatarUploadForm = new AvatarUploadForm({
+            onSubmit: async (file: File) => {
+                if (this.props.onAvatarUpload) {
+                    try {
+                        console.log('Загрузка нового аватара:', file.name);
+                        
+                        // Вызываем обработчик загрузки аватара и получаем URL нового аватара
+                        const newAvatarUrl = await this.props.onAvatarUpload(file);
+                        
+                        // Обновляем URL аватара на странице
+                        this.setProps({
+                            profileImage: newAvatarUrl
+                        });
+                        
+                        // Закрываем модальное окно
+                        if (this.avatarModal) {
+                            this.avatarModal.close();
+                        }
+                    } catch (error) {
+                        console.error('Ошибка при загрузке аватара:', error);
+                    }
+                }
+            }
+        });
+        
+        // Создаем модальное окно
+        this.avatarModal = new Modal({
+            title: 'Загрузите файл',
+            isOpen: false,
+            contentBlock: avatarUploadForm
+        });
+        
+        // Сразу добавляем модальное окно в DOM
+        document.body.appendChild(this.avatarModal.getContent());
+    }
+    
+    private openAvatarModal(): void {
+        console.log('Открытие модального окна аватара');
+        
+        if (!this.avatarModal) {
+            console.error('Модальное окно не инициализировано');
+            this.createAvatarModal();
+        }
+        
+        if (this.avatarModal) {
+            // Проверяем, добавлено ли модальное окно в DOM
+            if (!document.body.contains(this.avatarModal.getContent())) {
+                console.log('Модальное окно не найдено в DOM, добавляем');
+                document.body.appendChild(this.avatarModal.getContent());
+            }
+            
+            // Открываем модальное окно
+            this.avatarModal.open();
+            console.log('Модальное окно открыто');
+        }
     }
 
     protected render(): string {

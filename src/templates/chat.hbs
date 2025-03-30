@@ -9,14 +9,11 @@
         <input type="text" class="{{styles.search-input}}" placeholder="Поиск" />
       </div>
       <div class="chat__item-list">
-        {{#each chats}}
-        {{> chatItem styles=../styles}}
-        {{/each}}
+        {{{chatItems}}}
       </div>
     </div>
-  
-    {{!-- chatInterface component --}}
-    {{> chatInterface chatName=chatName participantsCount=participantsCount messages=messages}}
-  
+    
+
+      {{{chatInterface}}}
   </div>
 </section>
