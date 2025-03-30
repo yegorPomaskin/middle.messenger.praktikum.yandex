@@ -53,7 +53,7 @@ export class UpdatePasswordPage extends Block {
             new ProfileField({
                 name: "newPassword",
                 label: "Новый пароль",
-                value: "",
+                value: "•••••••••••",
                 type: "password",
                 mode: "edit",
                 editable: true,
@@ -73,7 +73,7 @@ export class UpdatePasswordPage extends Block {
             new ProfileField({
                 name: "confirmPassword",
                 label: "Повторите новый пароль",
-                value: "",
+                value: "•••••••••••",
                 type: "password",
                 mode: "edit",
                 editable: true,

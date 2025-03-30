@@ -1,3 +1,5 @@
+declare module "vite-plugin-handlebars";
+
 declare module "*.css" {
   const css: { [key: string]: string };
   export default css;

@@ -1,4 +1,4 @@
-/// <reference types="./types/vite-plugin-handlebars" />
+/// <reference types="./types/custom.d.ts" />
 
 import { resolve } from "path";
 import { defineConfig } from "vite";
