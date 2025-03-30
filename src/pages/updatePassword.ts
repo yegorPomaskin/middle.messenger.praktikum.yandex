@@ -1,66 +1,85 @@
-import Handlebars from "handlebars";
-import settingTemplate from "../templates/updatePassword.hbs?raw";
-import styles from "../styles/pages/profile.module.css";
-// Подключаю partials
-import profileInput from "../partials/profileInput.hbs?raw";
-import inputFieldStyles from "../styles/partials/commonProfileStyles.module.css";
-import actionLink from "../partials/actionLink.hbs?raw";
-import actionLinkStyles from "../styles/partials/actionLink.module.css";
-import buttonPartial from "../partials/button.hbs?raw";
-import buttonStyles from "../styles/partials/button.module.css";
-import sidebarPartial from "../partials/sidebar.hbs?raw";
-import sidebarStyles from "../styles/partials/sidebar.module.css";
+import Block from "../framework/block";
+import { UpdatePasswordPage } from "../components/profile/updatePassword";
+// import { renderProfilePage } from "../pages/profile";
 
-// Регистрирую partials
-Handlebars.registerPartial("sidebar", sidebarPartial);
-Handlebars.registerPartial("button", buttonPartial);
-Handlebars.registerPartial("profileInput", profileInput);
-Handlebars.registerPartial("actionLink", actionLink);
-const template = Handlebars.compile(settingTemplate);
+export class UpdatePasswordPageHandler extends Block {
+  private updatePasswordPage: UpdatePasswordPage;
 
-// Нужные классы для кнопки
-const buttonClass = `${buttonStyles.button} ${buttonStyles["button--save"]}`;
+  constructor() {
+    // Обработчики событий для кнопок
+    const handleSavePassword = (passwordData: Record<string, string>) => {
+      console.log('Сохранение нового пароля:', passwordData);
 
-const updatePasswordDate = {
-  profileImage: "/profile-pic.png",
-  userFields: [
-    {
-      name: "old_password",
-      label: "Старый пароль",
-      value: "12345678",
-      type: "password",
-    },
-    {
-      name: "new_password",
-      label: "Новый пароль",
-      value: "12345678910",
-      type: "password",
-    },
-    {
-      name: "confirm_password",
-      label: "Повторите новый пароль",
-      value: "12345678910",
-      type: "password",
-    },
-  ],
-  sidebarData: {
-    href: "#",
-    iconSrc: "/back-arrow.png",
-  },
-  buttonText: "Cохранить",
-  styles,
-  inputFieldStyles,
-  actionLinkStyles,
-  buttonStyles,
-  buttonClass,
-  sidebarStyles,
-};
+      // Валидация паролей
+      if (!this.validatePasswords(passwordData)) {
+        return; // Прерываем, если валидация не прошла
+      }
 
+      // Здесь будет логика отправки данных на сервер
+      // Например: UserController.changePassword(passwordData).then(...)
 
+      // После успешного сохранения пароля возвращаемся на страницу профиля
+      // renderProfilePage();
+    };
 
-export function renderUpdatePassword() {
-  const app = document.getElementById("app");
-  if (!app) return;
+    const handleCancel = () => {
+      console.log('Отмена изменения пароля');
+      // Возвращаемся на страницу профиля без сохранения
+      // renderProfilePage();
+    };
 
-  app.innerHTML = template(updatePasswordDate);
+    // Создаем экземпляр UpdatePasswordPage
+    const updatePasswordPage = new UpdatePasswordPage({
+      profileImage: "/profile-pic.png",
+      userName: "Иван",
+      sidebarData: {
+        href: "#",
+        iconSrc: "/back-arrow.png",
+        // onClick: () => renderProfilePage(),
+      },
+      onSave: handleSavePassword,
+      onCancel: handleCancel
+    });
+
+    super({
+      updatePasswordPage
+    });
+
+    this.updatePasswordPage = updatePasswordPage;
+  }
+
+  // Метод для валидации полей пароля
+  private validatePasswords(passwordData: Record<string, string>): boolean {
+    // Проверяем, что все поля заполнены
+    if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      console.error('Все поля должны быть заполнены');
+      return false;
+    }
+
+    // Проверяем, что новый пароль и подтверждение совпадают
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      console.error('Новый пароль и подтверждение не совпадают');
+      return false;
+    }
+
+    // Проверяем, что новый пароль отличается от старого
+    if (passwordData.oldPassword === passwordData.newPassword) {
+      console.error('Новый пароль должен отличаться от старого');
+      return false;
+    }
+
+    // Проверяем сложность пароля (например, минимум 8 символов)
+    if (passwordData.newPassword.length < 8) {
+      console.error('Новый пароль должен содержать минимум 8 символов');
+      return false;
+    }
+
+    return true;
+  }
+
+  protected render(): string {
+    return `
+            {{{ updatePasswordPage }}}
+        `;
+  }
 }

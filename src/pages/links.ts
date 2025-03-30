@@ -3,7 +3,7 @@ import styles from "../styles/pages/links.module.css";
 // import { renderChatPage } from "./chat.ts";
 // import { renderProfile } from "./profile.ts";
 // import { renderUpdateProfile } from "./updateProfile.ts";
-import { renderUpdatePassword } from "./updatePassword.ts";
+// import { renderUpdatePassword } from "./updatePassword.ts";
 // import { renderUpdateAvatar } from "./updateAvatar.ts";
 
 // Новые компоненты
@@ -14,6 +14,7 @@ import { RegisterPage } from "./register.ts";
 import { ProfilePageHandler } from "./profile.ts";
 import { UpdateProfilePageHandler } from "./updateProfile.ts";
 import { ChatPage } from "./chat.ts";
+import { UpdatePasswordPageHandler } from "./updatePassword.ts";
 
 const authPage = new AuthPage();
 const registerPage = new RegisterPage();
@@ -97,7 +98,9 @@ export function renderLinksPage() {
           document.getElementById("app")!.appendChild(updateProfilePage.getContent());
           break;
         case "updatePassword":
-          renderUpdatePassword();
+          const updatePasswordPage = new UpdatePasswordPageHandler();
+          document.getElementById("app")!.innerHTML = '';
+          document.getElementById("app")!.appendChild(updatePasswordPage.getContent());
           break;
         default:
           console.error("Неизвестная страница");

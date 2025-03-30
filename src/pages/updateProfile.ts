@@ -1,6 +1,5 @@
 import Block from "../framework/block";
 import { UpdateProfilePage } from "../components/profile/updateProfilePage";
-import buttonStyles from "../components/button/button.module.css";
 
 export class UpdateProfilePageHandler extends Block {
     private updateProfilePage: UpdateProfilePage;
