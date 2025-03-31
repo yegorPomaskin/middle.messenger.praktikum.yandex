@@ -121,7 +121,7 @@ export class UpdateProfilePage extends Block {
                   console.log(`Validating field ${fieldName} with value "${fieldValue}"`);
                   const isFieldValid = field.validate();
                   console.log(
-                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`
+                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`,
                   );
 
                   // Обновляем статус валидности формы

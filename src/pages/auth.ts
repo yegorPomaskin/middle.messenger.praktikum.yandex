@@ -25,8 +25,12 @@ export class AuthPage extends Block {
           const app = document.getElementById('app');
           if (app) {
             app.innerHTML = '';
-            app.appendChild(registerPage.getContent()!);
-            registerPage.dispatchComponentDidMount();
+            const content = registerPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              registerPage.dispatchComponentDidMount();
+            }
+            
           }
         },
         onSubmit: (e: Event) => {

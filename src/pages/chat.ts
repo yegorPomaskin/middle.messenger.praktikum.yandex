@@ -61,7 +61,7 @@ export class ChatPage extends Block {
 
               // Обновляем состояние каждого чата в списке
               if (this.lists?.chatItems) {
-                this.lists.chatItems.forEach((item: any) => {
+                this.lists.chatItems.forEach((item: ChatItem) => {
                   if (item instanceof ChatItem) {
                     item.setProps({ isActive: item.getId() === chatData.id });
                   }
@@ -69,7 +69,7 @@ export class ChatPage extends Block {
               }
             },
           },
-        })
+        }),
     );
 
     // Создаем компонент интерфейса чата

@@ -35,8 +35,11 @@ export class RegisterPage extends Block {
           const app = document.getElementById('app');
           if (app) {
             app.innerHTML = '';
-            app.appendChild(authPage.getContent()!);
-            authPage.dispatchComponentDidMount();
+            const content = authPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              authPage.dispatchComponentDidMount();
+            }
           }
         },
         onSubmit: (e: Event) => {

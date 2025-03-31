@@ -86,7 +86,7 @@ export default class HTTPTransport {
   private request(
     url: string,
     options: Record<string, any> = {},
-    timeout: number = 5000
+    timeout: number = 5000,
   ): Promise<XMLHttpRequest> {
     const { headers = {}, method, data } = options;
 

@@ -30,11 +30,11 @@ export class UpdateProfilePageHandler extends Block {
   }
 
   private handleBackClick(): void {
-    console.log('Back to profile page');
+    console.warn('Back to profile page');
   }
 
   private handleSaveProfile(formData: Record<string, string>): void {
-    console.log('Saving profile data:', formData);
+    console.warn('Saving profile data:', formData);
   }
 
   protected render(): string {

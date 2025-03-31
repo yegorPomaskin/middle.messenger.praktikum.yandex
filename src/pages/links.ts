@@ -62,51 +62,81 @@ export function renderLinksPage() {
         case 'auth':
           if (app) {
             app.innerHTML = '';
-            app.appendChild(authPage.getContent()!);
-            authPage.dispatchComponentDidMount();
+            const content = authPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              authPage.dispatchComponentDidMount();
+            }
           }
           break;
         case 'register':
           if (app) {
             app.innerHTML = '';
-            app.appendChild(registerPage.getContent()!);
-            registerPage.dispatchComponentDidMount();
+            const content = registerPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              registerPage.dispatchComponentDidMount();
+            }
           }
           break;
         case 'chat':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(newChatPage.getContent());
+            app.innerHTML = '';
+            const content = newChatPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              newChatPage.dispatchComponentDidMount();
+            }
           }
           break;
         case '404':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(new404Page.getContent());
+            app.innerHTML = '';
+            const content = new404Page.getContent();
+            if (content) {
+              app.appendChild(content);
+              new404Page.dispatchComponentDidMount();
+            }
           }
           break;
         case '505':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(new505Page.getContent());
+            app.innerHTML = '';
+            const content = new505Page.getContent();
+            if (content) {
+              app.appendChild(content);
+              new505Page.dispatchComponentDidMount();
+            }
           }
           break;
         case 'profile':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(profilePage.getContent());
+            app.innerHTML = '';
+            const content = profilePage.getContent();
+            if (content) {
+              app.appendChild(content);
+              profilePage.dispatchComponentDidMount();
+            }
           }
           break;
         case 'updateProfile':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(updateProfilePage.getContent());
+            app.innerHTML = '';
+            const content = updateProfilePage.getContent();
+            if (content) {
+              app.appendChild(content);
+              updateProfilePage.dispatchComponentDidMount();
+            }
           }
           break;
         case 'updatePassword':
           if (app) {
-            document.getElementById('app')!.innerHTML = '';
-            document.getElementById('app')!.appendChild(updatePasswordPage.getContent());
+            app.innerHTML = '';
+            const content = updatePasswordPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              updatePasswordPage.dispatchComponentDidMount();
+            }
           }
           break;
         default:

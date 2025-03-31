@@ -1,7 +1,7 @@
 import Block from '../../framework/block';
 import { Button } from '../button/button';
-
 import buttonStyles from '../button/button.module.css';
+
 import template from './avatarUploadForm.hbs?raw';
 import styles from './avatarUploadForm.module.css';
 
