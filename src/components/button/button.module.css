@@ -25,9 +25,9 @@
 .button--cancel {
   width: 280px;
   margin: 0 auto;
-  background-color: transparent; 
-  color: #ff0000; 
-  border: 1px solid #ff0000; 
+  background-color: transparent;
+  color: #ff0000;
+  border: 1px solid #ff0000;
 }
 
 .button--modal {

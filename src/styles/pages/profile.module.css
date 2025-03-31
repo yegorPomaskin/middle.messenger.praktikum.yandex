@@ -63,7 +63,6 @@
   background: rgba(255, 255, 255, 0.2);
   z-index: 9998; /* Выше, чем основной контент, но ниже модального окна */
   display: none;
-  
 }
 
 .modal {
@@ -85,13 +84,13 @@
   border-radius: 12px;
 }
 
-.profile__modalTitle{
+.profile__modalTitle {
   color: #1e1e1e;
   font-size: 15px;
   line-height: 20px;
 }
 
-.profile__modalLink{
+.profile__modalLink {
   max-width: 122px;
   width: 100%;
   color: var(--accent-color);

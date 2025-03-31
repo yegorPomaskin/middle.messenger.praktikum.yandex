@@ -2,7 +2,6 @@ import { UpdateProfilePage } from '../components/profile/updateProfilePage';
 import Block from '../framework/block';
 
 export class UpdateProfilePageHandler extends Block {
-
   constructor() {
     // Create the UpdateProfilePage component with the existing profile template
     const updateProfilePage = new UpdateProfilePage({

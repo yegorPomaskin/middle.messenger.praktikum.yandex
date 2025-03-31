@@ -15,12 +15,12 @@
 }
 
 .profile__input {
-  border: none; 
-  outline: none; 
-  background: transparent; 
-  box-shadow: none; 
-  padding: 0px; 
-  font-size: 14px; 
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0px;
+  font-size: 14px;
   color: var(--text-secondary);
   text-align: right;
 }

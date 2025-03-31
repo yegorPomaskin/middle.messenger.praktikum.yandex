@@ -1,26 +1,26 @@
 /// <reference types="./types/custom.d.ts" />
 
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import handlebars from "vite-plugin-handlebars";
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
-  root: resolve(__dirname, "static"), 
+  root: resolve(__dirname, 'static'),
   build: {
-    outDir: "../dist", 
+    outDir: '../dist',
   },
   resolve: {
     alias: {
-      "/src": resolve(__dirname, "src"),
+      '/src': resolve(__dirname, 'src'),
     },
   },
-  publicDir: resolve(__dirname, "public"),
+  publicDir: resolve(__dirname, 'public'),
   plugins: [
     handlebars({
-      partialDirectory: resolve(__dirname, "src/partials"),
+      partialDirectory: resolve(__dirname, 'src/partials'),
     }),
   ],
   server: {
-    port: 3000, 
+    port: 3000,
   },
 });

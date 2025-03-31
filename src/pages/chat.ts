@@ -69,7 +69,7 @@ export class ChatPage extends Block {
               }
             },
           },
-        }),
+        })
     );
 
     // Создаем компонент интерфейса чата

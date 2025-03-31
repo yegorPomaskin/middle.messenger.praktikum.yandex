@@ -1,4 +1,4 @@
-@import "normalize.css/normalize.css";
+@import 'normalize.css/normalize.css';
 
 html,
 body {
@@ -13,11 +13,7 @@ body {
   --link-color: #1885ff;
   --chat-inactive: #6c7a8a;
   --background-color: #212327;
-  --interface-background: linear-gradient(
-    to bottom,
-    rgba(44, 44, 44, 0) 0%,
-    #2c2c2c 100%
-  );
+  --interface-background: linear-gradient(to bottom, rgba(44, 44, 44, 0) 0%, #2c2c2c 100%);
   --error-color: #d32f2f;
   --contrast-bg-color: #2c2c2c;
   --font-size-base: 16px;
@@ -52,7 +48,7 @@ button {
 
 /* Базовая типографика */
 body {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;

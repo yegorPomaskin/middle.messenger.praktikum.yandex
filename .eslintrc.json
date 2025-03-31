@@ -27,15 +27,16 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-non-null-assertion": "warn",
-    "@typescript-eslint/quotes": ["error", "single", { 
-      "allowTemplateLiterals": true,
-      "avoidEscape": true 
-    }],
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-    "@typescript-eslint/no-unused-vars": [
+    "@typescript-eslint/quotes": [
       "error",
-      { "argsIgnorePattern": "^_" }
+      "single",
+      {
+        "allowTemplateLiterals": true,
+        "avoidEscape": true
+      }
     ],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -49,14 +50,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ],
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always",
         "alphabetize": { "order": "asc", "caseInsensitive": true }
       }

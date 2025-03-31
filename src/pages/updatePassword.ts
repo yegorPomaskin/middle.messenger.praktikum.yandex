@@ -1,7 +1,6 @@
 import { UpdatePasswordPage } from '../components/profile/updatePassword';
 import Block from '../framework/block';
 
-
 export class UpdatePasswordPageHandler extends Block {
   constructor() {
     // Обработчики событий для кнопок

@@ -55,10 +55,10 @@ export class ProfileField extends Block {
       isViewMode: mode === 'view',
       isPassword: props.type === 'password',
       editable: props.editable !== false,
-      // ВАЖНО: добавляем явно error 
+      // ВАЖНО: добавляем явно error
       error: false,
       errorText: props.errorText ?? '',
-    }); 
+    });
 
     this.input = input;
     this._currentValue = props.value;
@@ -67,24 +67,24 @@ export class ProfileField extends Block {
 
   private _handleInputBlur(e: FocusEvent, props: ProfileFieldProps): void {
     const isValid = this.input.validate();
-    
+
     // Используем явное приведение типов
     const validationRules = props.validationRules ?? [];
-    
+
     if (!isValid && validationRules.length > 0) {
-      const errorMessage = validationRules
-        .find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
-        ?.errorMessage ?? 'Invalid input';
-      
-      this.setProps({ 
+      const errorMessage =
+        validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
+          ?.errorMessage ?? 'Invalid input';
+
+      this.setProps({
         errorText: errorMessage,
-        error: true, 
+        error: true,
       });
       this.input.setError(true);
     } else {
-      this.setProps({ 
+      this.setProps({
         errorText: '',
-        error: false, 
+        error: false,
       });
       this.input.setError(false);
     }
@@ -96,27 +96,28 @@ export class ProfileField extends Block {
 
   public validate(): boolean {
     const isValid = this.input.validate();
-  
+
     if (!isValid && this.props.validationRules?.length) {
-      const errorMessage = this.props.validationRules.find(
-        (rule: ValidationRule) => !rule.validator(this.input.getValue())
-      )?.errorMessage ?? 'Invalid input';
-  
+      const errorMessage =
+        this.props.validationRules.find(
+          (rule: ValidationRule) => !rule.validator(this.input.getValue())
+        )?.errorMessage ?? 'Invalid input';
+
       // ВАЖНО: устанавливаем и error, и errorText
-      this.setProps({ 
+      this.setProps({
         errorText: errorMessage,
-        error: true, 
+        error: true,
       });
       this.input.setError(true);
     } else {
       // Сбрасываем и error, и errorText
-      this.setProps({ 
+      this.setProps({
         errorText: '',
-        error: false, 
+        error: false,
       });
       this.input.setError(false);
     }
-  
+
     return isValid;
   }
 
@@ -132,4 +133,3 @@ export class ProfileField extends Block {
     return template;
   }
 }
-

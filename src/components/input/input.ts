@@ -44,7 +44,7 @@ export class Input extends Block {
 
     // Инициализируем локальное значение
     this._currentValue = safeProps.value;
-    
+
     // Синхронизируем с реактивной системой пропсов сразу
     this.setProps({ value: this._currentValue });
 
@@ -123,12 +123,14 @@ export class Input extends Block {
   protected render(): string {
     // Используем как локальное значение, так и значение из пропсов в качестве запасного варианта
     const value = this._currentValue || this.props.value || '';
-    
+
     const inputClass = [
-      styles.input, 
-      this.props.className || '', 
+      styles.input,
+      this.props.className || '',
       this.props.error ? styles.inputError : '',
-    ].filter(Boolean).join(' ');
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     return `
         <input 

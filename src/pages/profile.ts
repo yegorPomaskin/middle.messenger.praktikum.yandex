@@ -3,7 +3,6 @@ import { ProfilePage } from '../components/profile/profilePage';
 import Block from '../framework/block';
 import { renderLinksPage } from '../pages/links';
 
-
 export class ProfilePageHandler extends Block {
   constructor() {
     // Создаем методы-обработчики для кнопок
