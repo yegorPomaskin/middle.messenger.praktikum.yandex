@@ -48,8 +48,6 @@ export class RegisterPage extends Block {
   }
 
   override render(): string {
-    return `
-            {{{ RegisterForm }}}
-        `;
+    return `{{{ RegisterForm }}}`;
   }
 }

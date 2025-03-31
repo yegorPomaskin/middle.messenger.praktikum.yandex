@@ -1,7 +1,6 @@
 import Block from '../../framework/block';
 import {
   LOGIN_VALIDATION,
-  PASSWORD_VALIDATION,
   EMAIL_VALIDATION,
   PHONE_VALIDATION,
   NAME_VALIDATION,
@@ -39,7 +38,6 @@ interface UpdateProfilePageProps {
 
 export class UpdateProfilePage extends Block {
   private avatarModal: Modal | null = null;
-  private formData: Record<string, string> = {};
 
   constructor(props: UpdateProfilePageProps) {
     // Create sidebar component
@@ -82,10 +80,10 @@ export class UpdateProfilePage extends Block {
           required: field.name !== 'display_name', // Все поля обязательны, кроме display_name
           events: {
             focus: (e: FocusEvent) => {
-              console.log(`Field ${field.name} focused`);
+              console.log(`${e} Field ${field.name} focused`);
             },
             blur: (e: FocusEvent) => {
-              console.log(`Field ${field.name} blurred, running validation`);
+              console.log(`${e} Field ${field.name} blurred, running validation`);
               // Валидация происходит внутри ProfileField в обработчике blur
             },
             change: (e: Event) => {
@@ -94,7 +92,7 @@ export class UpdateProfilePage extends Block {
             },
           },
         });
-      }
+      },
     );
 
     // Create save button with the correct class name

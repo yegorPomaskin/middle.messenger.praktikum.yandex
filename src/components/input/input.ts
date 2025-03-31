@@ -127,7 +127,7 @@ export class Input extends Block {
     const inputClass = [
       styles.input, 
       this.props.className || '', 
-      this.props.error ? styles.inputError : ''
+      this.props.error ? styles.inputError : '',
     ].filter(Boolean).join(' ');
 
     return `

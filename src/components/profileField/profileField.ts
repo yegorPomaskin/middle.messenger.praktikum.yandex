@@ -1,6 +1,6 @@
 import Block from '../../framework/block';
-import { Input } from '../input/input';
 import { ValidationRule } from '../../utils/validator';
+import { Input } from '../input/input';
 
 import styles from './commonProfileStyles.module.css';
 import template from './profileField.hbs?raw';
@@ -43,8 +43,8 @@ export class ProfileField extends Block {
         input: (e: Event) => {
           this._currentValue = (e.target as HTMLInputElement).value;
           props.events?.change?.(e);
-        }
-      }
+        },
+      },
     });
 
     // 2. Вызываем super() перед использованием this
@@ -78,24 +78,24 @@ export class ProfileField extends Block {
       
       this.setProps({ 
         errorText: errorMessage,
-        error: true 
+        error: true, 
       });
       this.input.setError(true);
     } else {
       this.setProps({ 
         errorText: '',
-        error: false 
+        error: false, 
       });
       this.input.setError(false);
+    }
+    // Вызываем оригинальный обработчик blur если он был передан
+    if (props.events?.blur) {
+      props.events.blur(e);
     }
   }
 
   public validate(): boolean {
-    console.log(`ProfileField.validate() called for ${this.props.name}`);
-  
     const isValid = this.input.validate();
-  
-    console.log(`Input validation result for ${this.props.name}: ${isValid}`);
   
     if (!isValid && this.props.validationRules?.length) {
       const errorMessage = this.props.validationRules.find(
@@ -105,14 +105,14 @@ export class ProfileField extends Block {
       // ВАЖНО: устанавливаем и error, и errorText
       this.setProps({ 
         errorText: errorMessage,
-        error: true 
+        error: true, 
       });
       this.input.setError(true);
     } else {
       // Сбрасываем и error, и errorText
       this.setProps({ 
         errorText: '',
-        error: false 
+        error: false, 
       });
       this.input.setError(false);
     }

@@ -25,10 +25,6 @@
   text-align: right;
 }
 
-.profile__fieldItem_error {
-  /* Стили для контейнера с ошибкой */
-}
-
 .profile__errorText {
   /* Стили для текста ошибки */
   color: red;
