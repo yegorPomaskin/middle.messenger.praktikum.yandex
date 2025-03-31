@@ -14,6 +14,7 @@ interface InputProps {
   required?: boolean;
   error?: boolean;
   validationRules?: ValidationRule[];
+  className?: string;
   events?: {
     blur?: (e: FocusEvent) => void;
     focus?: (e: FocusEvent) => void;
@@ -41,7 +42,11 @@ export class Input extends Block {
 
     super(safeProps);
 
+    // Инициализируем локальное значение
     this._currentValue = safeProps.value;
+    
+    // Синхронизируем с реактивной системой пропсов сразу
+    this.setProps({ value: this._currentValue });
 
     if (props.validationRules?.length) {
       this.validator = new Validator(props.validationRules);
@@ -116,16 +121,23 @@ export class Input extends Block {
   }
 
   protected render(): string {
-    const value = this._currentValue ?? '';
+    // Используем как локальное значение, так и значение из пропсов в качестве запасного варианта
+    const value = this._currentValue || this.props.value || '';
+    
+    const inputClass = [
+      styles.input, 
+      this.props.className || '', 
+      this.props.error ? styles.inputError : '',
+    ].filter(Boolean).join(' ');
 
     return `
-      <input 
-        class="${styles.input} ${this.props.error ? styles.inputError : ''}"
-        type="${this.props.type}" 
-        name="${this.props.name}" 
-        value="${value}"
-        ${this.props.required ? 'required' : ''}
-      >
+        <input 
+          class="${inputClass}"
+          type="${this.props.type}" 
+          name="${this.props.name}" 
+          value="${value}"
+          ${this.props.required ? 'required' : ''}
+        >
     `;
   }
 }

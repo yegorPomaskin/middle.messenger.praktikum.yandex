@@ -24,3 +24,10 @@
   color: var(--text-secondary);
   text-align: right;
 }
+
+.profile__errorText {
+  /* Стили для текста ошибки */
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}

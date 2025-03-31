@@ -1,4 +1,11 @@
 import Block from '../../framework/block';
+import {
+  LOGIN_VALIDATION,
+  EMAIL_VALIDATION,
+  PHONE_VALIDATION,
+  NAME_VALIDATION,
+} from '../../utils/validationRules';
+import { ValidationRule } from '../../utils/validator';
 import { AvatarUploadForm } from '../avatarUploadForm/avatarUploadForm';
 import { Button } from '../button/button';
 import buttonStyles from '../button/button.module.css';
@@ -8,7 +15,6 @@ import styles from '../profile/profile.module.css';
 import commonStyles from '../profileField/commonProfileStyles.module.css';
 import { ProfileField } from '../profileField/profileField';
 import { Sidebar } from '../sidebar/sidebar';
-
 
 interface UpdateProfilePageProps {
   profileImage: string;
@@ -27,6 +33,7 @@ interface UpdateProfilePageProps {
   };
   onSave?: (formData: Record<string, string>) => void;
   onCancel?: () => void;
+  onAvatarUpload?: (file: File) => Promise<string>;
 }
 
 export class UpdateProfilePage extends Block {
@@ -42,27 +49,50 @@ export class UpdateProfilePage extends Block {
 
     // Create components for profile fields
     const fields = (props.userFields || []).map(
-      (field) =>
-        new ProfileField({
+      (field) => {
+        // Определяем правила валидации для каждого поля
+        let validationRules: ValidationRule[] = [];
+        switch (field.name) {
+          case 'login':
+            validationRules = LOGIN_VALIDATION;
+            break;
+          case 'email':
+            validationRules = EMAIL_VALIDATION;
+            break;
+          case 'phone':
+            validationRules = PHONE_VALIDATION;
+            break;
+          case 'first_name':
+          case 'second_name':
+          case 'display_name':
+            validationRules = NAME_VALIDATION;
+            break;
+        }
+
+        return new ProfileField({
           name: field.name,
           label: field.label,
           value: field.value,
           type: field.type || 'text',
           mode: 'edit',
-          editable: field.editable !== undefined ? field.editable : true,
+          editable: field.editable !== false,
+          validationRules,
+          required: field.name !== 'display_name', // Все поля обязательны, кроме display_name
           events: {
             focus: (e: FocusEvent) => {
-              console.log(`Field ${field.name} focused`, e);
+              console.log(`${e} Field ${field.name} focused`);
             },
             blur: (e: FocusEvent) => {
-              console.log(`Field ${field.name} blurred`, e);
+              console.log(`${e} Field ${field.name} blurred, running validation`);
+              // Валидация происходит внутри ProfileField в обработчике blur
             },
             change: (e: Event) => {
               const input = e.target as HTMLInputElement;
               console.log(`Field ${field.name} changed to: ${input.value}`);
             },
           },
-        }),
+        });
+      },
     );
 
     // Create save button with the correct class name
@@ -76,21 +106,42 @@ export class UpdateProfilePage extends Block {
           console.log('Save button clicked');
 
           if (props.onSave) {
+            // Валидация всех полей
+            let isFormValid = true;
             const formData: Record<string, string> = {};
 
-            // Collect form data from fields
             if (this.lists && this.lists.fields) {
+              console.log(`Validating ${this.lists.fields.length} fields`);
+              
               this.lists.fields.forEach((field) => {
-                if (field.element) {
-                  const input = field.element.querySelector('input');
-                  if (input) {
-                    formData[input.name] = input.value;
-                  }
+                if (field instanceof ProfileField) {
+                  // Получаем имя и значение поля через методы компонента
+                  const fieldName = field.getName();
+                  const fieldValue = field.getValue();
+                  
+                  // Запускаем валидацию
+                  console.log(`Validating field ${fieldName} with value "${fieldValue}"`);
+                  const isFieldValid = field.validate();
+                  console.log(`Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`);
+                  
+                  // Обновляем статус валидности формы
+                  isFormValid = isFormValid && isFieldValid;
+                  
+                  // Собираем данные формы
+                  formData[fieldName] = fieldValue;
+                } else {
+                  console.warn('Field is not an instance of ProfileField', field);
                 }
               });
             }
 
-            props.onSave(formData);
+            // Вызываем обработчик сохранения только если все поля валидны
+            if (isFormValid) {
+              console.log('Form is valid, saving data:', formData);
+              props.onSave(formData);
+            } else {
+              console.log('Form contains errors, not saving');
+            }
           }
         },
       },
@@ -206,6 +257,24 @@ export class UpdateProfilePage extends Block {
       this.avatarModal.open();
       console.log('Модальное окно открыто');
     }
+  }
+
+  // Метод для принудительной валидации всех полей формы
+  public validateAllFields(): boolean {
+    if (!this.lists || !this.lists.fields) {
+      return true;
+    }
+    
+    let isValid = true;
+    
+    this.lists.fields.forEach((field) => {
+      if (field instanceof ProfileField) {
+        const fieldValid = field.validate();
+        isValid = isValid && fieldValid;
+      }
+    });
+    
+    return isValid;
   }
 
   protected render(): string {

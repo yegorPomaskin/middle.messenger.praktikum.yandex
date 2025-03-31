@@ -1,19 +1,15 @@
-<div class="{{styles.profile__fieldItem}}" data-name="{{name}}">
+<div class="{{styles.profile__fieldItem}} {{#if error}}{{styles.profile__fieldItem_error}}{{/if}}" data-name="{{name}}">
     <div class="{{styles.profile__label}}">{{label}}:</div>
 
     {{#if isViewMode}}
     <div class="{{styles.profile__value}}">{{value}}</div>
     {{else}}
-    <input 
-            type="{{type}}" 
-            name="{{name}}" 
-            class="{{styles.profile__input}}" 
-            value="{{value}}"
-            {{#if isPassword}}autocomplete="new-password"{{/if}}
-            onfocus="this._component.handleFocus(event)"
-            onblur="this._component.handleBlur(event)"
-            oninput="this._component.handleChange(event)"
-        />
+    <div class="{{styles.input__wrapper}}">
+        {{{ input }}}
+        {{#if errorText}}
+        <div class="{{styles.profile__errorText}}">{{errorText}}</div>
+        {{/if}}
+    </div>
     {{/if}}
 </div>
 
