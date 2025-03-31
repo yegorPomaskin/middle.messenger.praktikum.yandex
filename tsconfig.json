@@ -13,6 +13,7 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "sourceMap": true,
     "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,
