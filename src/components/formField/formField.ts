@@ -107,7 +107,6 @@ export class FormField extends Block {
   public getName(): string {
     return this.props.name;
   }
-
   /**
    * Возвращает текущее значение поля
    */
