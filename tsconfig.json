@@ -6,6 +6,7 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    "noImplicitAny": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
