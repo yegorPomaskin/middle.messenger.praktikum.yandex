@@ -1,85 +1,52 @@
-import Block from "../framework/block";
-import { UpdatePasswordPage } from "../components/profile/updatePassword";
-// import { renderProfilePage } from "../pages/profile";
+import { UpdatePasswordPage } from '../components/profile/updatePassword';
+import Block from '../framework/block';
+
 
 export class UpdatePasswordPageHandler extends Block {
-  private updatePasswordPage: UpdatePasswordPage;
-
   constructor() {
     // Обработчики событий для кнопок
     const handleSavePassword = (passwordData: Record<string, string>) => {
       console.log('Сохранение нового пароля:', passwordData);
 
-      // Валидация паролей
+      // Проверяем, что строки не пустые
       if (!this.validatePasswords(passwordData)) {
-        return; // Прерываем, если валидация не прошла
+        return;
       }
 
       // Здесь будет логика отправки данных на сервер
       // Например: UserController.changePassword(passwordData).then(...)
-
-      // После успешного сохранения пароля возвращаемся на страницу профиля
-      // renderProfilePage();
     };
 
     const handleCancel = () => {
       console.log('Отмена изменения пароля');
       // Возвращаемся на страницу профиля без сохранения
-      // renderProfilePage();
     };
 
     // Создаем экземпляр UpdatePasswordPage
     const updatePasswordPage = new UpdatePasswordPage({
-      profileImage: "/profile-pic.png",
-      userName: "Иван",
+      profileImage: '/profile-pic.png',
+      userName: 'Иван',
       sidebarData: {
-        href: "#",
-        iconSrc: "/back-arrow.png",
-        // onClick: () => renderProfilePage(),
+        href: '#',
+        iconSrc: '/back-arrow.png',
       },
       onSave: handleSavePassword,
-      onCancel: handleCancel
+      onCancel: handleCancel,
     });
 
     super({
-      updatePasswordPage
+      updatePasswordPage,
     });
-
-    this.updatePasswordPage = updatePasswordPage;
   }
 
-  // Метод для валидации полей пароля
+  // Простая валидация - проверяем, что строки не пустые
   private validatePasswords(passwordData: Record<string, string>): boolean {
-    // Проверяем, что все поля заполнены
-    if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      console.error('Все поля должны быть заполнены');
-      return false;
-    }
+    const { oldPassword, newPassword, confirmPassword } = passwordData;
 
-    // Проверяем, что новый пароль и подтверждение совпадают
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      console.error('Новый пароль и подтверждение не совпадают');
-      return false;
-    }
-
-    // Проверяем, что новый пароль отличается от старого
-    if (passwordData.oldPassword === passwordData.newPassword) {
-      console.error('Новый пароль должен отличаться от старого');
-      return false;
-    }
-
-    // Проверяем сложность пароля (например, минимум 8 символов)
-    if (passwordData.newPassword.length < 8) {
-      console.error('Новый пароль должен содержать минимум 8 символов');
-      return false;
-    }
-
-    return true;
+    return Boolean(oldPassword && newPassword && confirmPassword);
   }
 
   protected render(): string {
-    return `
-            {{{ updatePasswordPage }}}
-        `;
+    return `{{{ updatePasswordPage }}}`;
   }
 }

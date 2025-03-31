@@ -1,13 +1,15 @@
+import Block from '../../framework/block';
+import { Button } from '../button/button';
+import { FormField } from '../formField/formField';
+import { Link } from '../link/link';
+
+import template from './authForm.hbs?raw';
+import styles from './authForm.module.css';
+
 /**
  * Компонент формы авторизации
  * Содержит поля ввода с простой валидацией, кнопку отправки и ссылку на регистрацию
  */
-import Block from "../../framework/block";
-import template from "./authForm.hbs?raw";
-import styles from "./authForm.module.css";
-import { FormField } from "../formField/formField";
-import { Link } from "../link/link";
-import { Button } from "../button/button";
 
 export interface AuthField {
   label: string;
@@ -34,11 +36,11 @@ export class AuthForm extends Block {
           ...field,
           validationRules: [
             {
-              validator: (value: string) => value.trim() !== "",
+              validator: (value: string) => value.trim() !== '',
               errorMessage: `Поле ${field.label.toLowerCase()} не может быть пустым`,
             },
           ],
-        })
+        }),
     );
 
     // Создаем компонент ссылки
@@ -53,8 +55,8 @@ export class AuthForm extends Block {
     // Создаем компонент кнопки
     const button = new Button({
       text: props.buttonText,
-      type: "submit",
-      variant: "login",
+      type: 'submit',
+      variant: 'login',
       className: styles.button,
     });
 
@@ -93,7 +95,7 @@ export class AuthForm extends Block {
     if (isFormValid && this.props.onSubmit) {
       this.props.onSubmit(e);
     } else {
-      console.log("Форма содержит ошибки");
+      console.log('Форма содержит ошибки');
     }
   }
 

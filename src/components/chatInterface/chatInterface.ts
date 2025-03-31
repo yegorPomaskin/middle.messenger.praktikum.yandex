@@ -1,12 +1,7 @@
-import Block from "../../framework/block";
-import template from "./ChatInterface.hbs?raw";
-import styles from "./ChatInterface.module.css";
+import Block from '../../framework/block';
 
-// Интерфейс BlockProps для совместимости с Block
-interface BlockProps {
-  [key: string]: any;
-  events?: Record<string, (e: Event) => void>;
-}
+import template from './chatInterface.hbs?raw';
+import styles from './chatInterface.module.css';
 
 export interface Message {
   userName: string;
@@ -14,10 +9,11 @@ export interface Message {
   text: string;
 }
 
-export interface ChatInterfaceProps extends BlockProps {
+export interface ChatInterfaceProps {
   messages: Message[];
   attachment: string;
   sendButton: string;
+  events?: Record<string, (e: Event) => void>;
 }
 
 export class ChatInterface extends Block {
@@ -25,10 +21,17 @@ export class ChatInterface extends Block {
     super({
       ...props,
       styles,
+      events: {
+        submit: (e: Event) => {
+          if (props.events?.submit) {
+            props.events.submit(e);
+          }
+        },
+      },
     });
   }
 
-  // Метод для безопасного получения сообщений
+  // Метод для получения сообщений
   public getMessage(): Message[] {
     return this.props.messages || [];
   }

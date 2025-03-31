@@ -1,6 +1,7 @@
-import Block from "../../framework/block";
-import template from "./ChatItem.hbs?raw";
-import styles from "./ChatItem.module.css";
+import Block from '../../framework/block';
+
+import template from './chatItem.hbs?raw';
+import styles from './chatItem.module.css';
 
 // Расширяем интерфейс BlockProps, который используется в Block
 interface BlockProps {

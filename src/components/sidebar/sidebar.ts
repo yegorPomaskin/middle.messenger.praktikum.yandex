@@ -1,7 +1,7 @@
-import Handlebars from "handlebars";
-import Block from "../../framework/block";
-import template from "./sidebar.hbs?raw";
-import styles from "./sidebar.module.css";
+import Block from '../../framework/block';
+
+import template from './sidebar.hbs?raw';
+import styles from './sidebar.module.css';
 
 export interface SidebarProps {
   href: string;
@@ -21,6 +21,6 @@ export class Sidebar extends Block {
   }
 
   protected render(): string {
-    return template
+    return template;
   }
 }

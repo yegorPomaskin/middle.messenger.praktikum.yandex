@@ -1,17 +1,18 @@
-import Block from "../../framework/block";
-import template from "./registerForm.hbs?raw";
-import styles from "./registerForm.module.css";
-import { FormField } from "../formField/formField";
-import { Link } from "../link/link";
-import { Button } from "../button/button";
+import Block from '../../framework/block';
 import {
   LOGIN_VALIDATION,
   PASSWORD_VALIDATION,
   EMAIL_VALIDATION,
   PHONE_VALIDATION,
   NAME_VALIDATION,
-} from "../../utils/validationRules";
-import { ValidationRule } from "../../utils/validator";
+} from '../../utils/validationRules';
+import { ValidationRule } from '../../utils/validator';
+import { Button } from '../button/button';
+import { FormField } from '../formField/formField';
+import { Link } from '../link/link';
+
+import template from './registerForm.hbs?raw';
+import styles from './registerForm.module.css';
 
 export interface AuthField {
   label: string;
@@ -42,23 +43,23 @@ export class AuthRegisterForm extends Block {
 
       // Определяем правила валидации на основе имени поля
       switch (field.name) {
-        case "login":
+        case 'login':
           validationRules = LOGIN_VALIDATION;
           break;
-        case "password":
-        case "newPassword":
-        case "passwordConfirm":
+        case 'password':
+        case 'newPassword':
+        case 'passwordConfirm':
           validationRules = PASSWORD_VALIDATION;
           break;
-        case "email":
+        case 'email':
           validationRules = EMAIL_VALIDATION;
           break;
-        case "phone":
+        case 'phone':
           validationRules = PHONE_VALIDATION;
           break;
-        case "first_name":
-        case "second_name":
-        case "display_name":
+        case 'first_name':
+        case 'second_name':
+        case 'display_name':
           validationRules = NAME_VALIDATION;
           break;
       }
@@ -81,7 +82,7 @@ export class AuthRegisterForm extends Block {
     // Создаем компонент кнопки
     const button = new Button({
       text: props.buttonText,
-      type: "submit",
+      type: 'submit',
       className: `${styles.button} ${modifier}`,
     });
 
@@ -123,10 +124,10 @@ export class AuthRegisterForm extends Block {
 
     // Если форма валидна, передаем данные обработчику
     if (isFormValid && this.props.onSubmit) {
-      console.log("Form data:", formData);
+      console.log('Form data:', formData);
       this.props.onSubmit(e);
     } else {
-      console.log("Form validation failed");
+      console.log('Form validation failed');
     }
   }
 
