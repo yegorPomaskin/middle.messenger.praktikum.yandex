@@ -29,7 +29,7 @@ interface UpdateProfilePageProps {
   sidebarData: {
     href: string;
     iconSrc: string;
-    onClick?: (event: Event) => void;
+    onClick?: EventListener;
   };
   onSave?: (formData: Record<string, string>) => void;
   onCancel?: () => void;
@@ -78,13 +78,13 @@ export class UpdateProfilePage extends Block {
         validationRules,
         required: field.name !== 'display_name', // Все поля обязательны, кроме display_name
         events: {
-          focus: (e: FocusEvent) => {
+          focus: ((e: Event) => {
             console.log(`${e} Field ${field.name} focused`);
-          },
-          blur: (e: FocusEvent) => {
+          }) as EventListener,
+          blur: ((e: Event) => {
             console.log(`${e} Field ${field.name} blurred, running validation`);
             // Валидация происходит внутри ProfileField в обработчике blur
-          },
+          }) as EventListener,
           change: (e: Event) => {
             const input = e.target as HTMLInputElement;
             console.log(`Field ${field.name} changed to: ${input.value}`);
@@ -121,7 +121,7 @@ export class UpdateProfilePage extends Block {
                   console.log(`Validating field ${fieldName} with value "${fieldValue}"`);
                   const isFieldValid = field.validate();
                   console.log(
-                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`,
+                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`
                   );
 
                   // Обновляем статус валидности формы
@@ -205,7 +205,9 @@ export class UpdateProfilePage extends Block {
     const avatarUploadForm = new AvatarUploadForm({
       onSubmit: async (file: File) => {
         // Type assertion для обработчика загрузки аватара
-        const onAvatarUpload = this.props.onAvatarUpload as ((file: File) => Promise<string>) | undefined;
+        const onAvatarUpload = this.props.onAvatarUpload as
+          | ((file: File) => Promise<string>)
+          | undefined;
 
         if (onAvatarUpload) {
           try {

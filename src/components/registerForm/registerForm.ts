@@ -32,6 +32,8 @@ export interface AuthRegisterFormProps {
 }
 
 export class AuthRegisterForm extends Block {
+  private _onSubmitCallback: ((event: Event) => void) | undefined;
+
   constructor(props: AuthRegisterFormProps) {
     const isLogin = props.isLogin;
     const modifier = isLogin ? styles.auth : styles.register;
@@ -86,6 +88,10 @@ export class AuthRegisterForm extends Block {
       className: `${styles.button} ${modifier}`,
     });
 
+    // Сохраняем колбэки до вызова суперкласса
+    // Это позволит нам использовать их позже
+    const onSubmit = props.onSubmit;
+
     super({
       ...props,
       styles,
@@ -100,6 +106,9 @@ export class AuthRegisterForm extends Block {
         submit: (e: Event) => this.handleSubmit(e),
       },
     });
+
+    // Инициализируем сохраненные колбэки после вызова super
+    this._onSubmitCallback = onSubmit;
   }
 
   private handleSubmit(e: Event): void {
@@ -123,9 +132,9 @@ export class AuthRegisterForm extends Block {
     }
 
     // Если форма валидна, передаем данные обработчику
-    if (isFormValid && this.props.onSubmit) {
+    if (isFormValid && this._onSubmitCallback) {
       console.log('Form data:', formData);
-      this.props.onSubmit(e);
+      this._onSubmitCallback(e);
     } else {
       console.log('Form validation failed');
     }

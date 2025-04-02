@@ -20,7 +20,7 @@ interface ProfileFieldProps {
 
 export class ProfileField extends Block {
   private input: Input;
-  
+
   private _currentValue: string = '';
 
   constructor(props: ProfileFieldProps) {
@@ -41,14 +41,7 @@ export class ProfileField extends Block {
           }
         }) as EventListener,
         blur: ((e: Event) => {
-          // Используем внешнюю функцию для обработки blur, которая будет вызвана позже
-          // Но мы сохраняем ссылку на this._handleInputBlur, которую вызовем после super()
-          const self = this;
-          function handleBlur() {
-            self._handleInputBlur(e as FocusEvent, props);
-          }
-          // Вызываем эту функцию позже, чтобы this был правильным
-          setTimeout(handleBlur, 0);
+          this._handleInputBlur.bind(this)(e as FocusEvent, props);
         }) as EventListener,
         input: ((e: Event) => {
           const target = e.target as HTMLInputElement;
@@ -114,15 +107,14 @@ export class ProfileField extends Block {
 
   public validate(): boolean {
     const isValid = this.input.validate();
-    
+
     // Безопасно получаем validationRules через type assertion
     const validationRules = this.props.validationRules as ValidationRule[] | undefined;
 
     if (!isValid && validationRules?.length) {
       const errorMessage =
-        validationRules.find(
-          (rule: ValidationRule) => !rule.validator(this.input.getValue()),
-        )?.errorMessage ?? 'Invalid input';
+        validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
+          ?.errorMessage ?? 'Invalid input';
 
       // ВАЖНО: устанавливаем и error, и errorText
       this.setProps({

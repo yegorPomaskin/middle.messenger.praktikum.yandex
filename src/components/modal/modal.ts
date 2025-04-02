@@ -11,7 +11,13 @@ interface ModalProps {
 }
 
 export class Modal extends Block {
+  // Add a private property to store the onClose callback
+  private _onCloseCallback?: () => void;
+
   constructor(props: ModalProps) {
+    // Save the onClose callback before calling super
+    const onClose = props.onClose;
+
     super({
       ...props,
       styles,
@@ -27,17 +33,18 @@ export class Modal extends Block {
         },
       },
     });
+
+    // Initialize the callback after calling super
+    this._onCloseCallback = onClose;
   }
 
   open(): void {
     console.log('Modal.open() вызван');
 
-    // Показываем модальное окно
     this.setProps({
       isOpen: true,
     });
 
-    // Применяем стили к модальному окну напрямую, чтобы гарантировать его видимость
     const modalElement = this.getContent();
     const overlayElement = modalElement.querySelector(`.${styles.modalOverlay}`);
     const modalWindowElement = modalElement.querySelector(`.${styles.modal}`);
@@ -52,7 +59,6 @@ export class Modal extends Block {
       console.log('Modal window display установлен в flex');
     }
 
-    // Добавляем класс для блокировки прокрутки body
     document.body.classList.add('modal-open');
 
     console.log('Modal.open() завершен, isOpen:', this.props.isOpen);
@@ -65,7 +71,6 @@ export class Modal extends Block {
       isOpen: false,
     });
 
-    // Скрываем модальное окно
     const modalElement = this.getContent();
     const overlayElement = modalElement.querySelector(`.${styles.modalOverlay}`);
     const modalWindowElement = modalElement.querySelector(`.${styles.modal}`);
@@ -78,11 +83,11 @@ export class Modal extends Block {
       modalWindowElement.style.display = 'none';
     }
 
-    // Удаляем класс для разблокировки прокрутки body
     document.body.classList.remove('modal-open');
 
-    if (this.props.onClose) {
-      this.props.onClose();
+    // Use the stored callback instead of this.props.onClose
+    if (this._onCloseCallback) {
+      this._onCloseCallback();
     }
 
     console.log('Modal.close() завершен, isOpen:', this.props.isOpen);

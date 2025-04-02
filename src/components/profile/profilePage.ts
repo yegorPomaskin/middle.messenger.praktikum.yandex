@@ -18,6 +18,11 @@ interface ProfilePageProps {
     value: string;
     type?: string;
     editable?: boolean;
+    events?: {
+      focus?: EventListener;
+      blur?: EventListener;
+      change?: EventListener;
+    };
   }>;
   buttons: Array<{
     text: string;
@@ -57,18 +62,18 @@ export class ProfilePage extends Block {
           mode: props.isEditMode ? 'edit' : 'view',
           editable: field.editable,
           events: {
-            focus: (e: FocusEvent) => {
+            focus: ((e: Event) => {
               console.log(`Field ${field.name} focused`, e);
-            },
-            blur: (e: FocusEvent) => {
+            }) as EventListener,
+            blur: ((e: Event) => {
               console.log(`Field ${field.name} blurred`, e);
-            },
-            change: (e: Event) => {
+            }) as EventListener,
+            change: ((e: Event) => {
               const input = e.target as HTMLInputElement;
               console.log(`Field ${field.name} changed to: ${input.value}`);
-            },
+            }) as EventListener,
           },
-        }),
+        })
     );
 
     // Создаем компоненты для кнопок действий
@@ -92,7 +97,7 @@ export class ProfilePage extends Block {
               }
             },
           },
-        }),
+        })
     );
 
     super({
@@ -128,9 +133,10 @@ export class ProfilePage extends Block {
     // Создаем форму загрузки аватара
     const avatarUploadForm = new AvatarUploadForm({
       onSubmit: async (file: File) => {
-
         // Type assertion для обработчика загрузки аватара
-        const onAvatarUpload = this.props.onAvatarUpload as ((file: File) => Promise<string>) | undefined;
+        const onAvatarUpload = this.props.onAvatarUpload as
+          | ((file: File) => Promise<string>)
+          | undefined;
 
         if (onAvatarUpload) {
           try {

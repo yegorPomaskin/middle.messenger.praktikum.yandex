@@ -21,7 +21,9 @@ export class UpdateProfilePageHandler extends Block {
         onClick: () => this.handleBackClick(),
       },
       onSave: (formData) => this.handleSaveProfile(formData),
-      onCancel: () => this.handleBackClick(),
+      onCancel: (): void => {
+        this.handleBackClick();
+      },
     });
 
     super({

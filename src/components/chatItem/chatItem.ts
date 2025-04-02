@@ -11,6 +11,9 @@ export interface ChatItemProps {
   time: string;
   unreadCount?: number;
   isActive?: boolean;
+  events?: {
+    click?: EventListener;
+  };
 }
 
 export class ChatItem extends Block {

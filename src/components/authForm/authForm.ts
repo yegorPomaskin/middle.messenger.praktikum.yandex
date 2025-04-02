@@ -38,7 +38,7 @@ export class AuthForm extends Block {
               errorMessage: `Поле ${field.label.toLowerCase()} не может быть пустым`,
             },
           ],
-        }),
+        })
     );
 
     // Создаем компонент ссылки
