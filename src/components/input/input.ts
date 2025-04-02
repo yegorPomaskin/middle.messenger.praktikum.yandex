@@ -32,19 +32,19 @@ export class Input extends Block {
         blur: ((e: Event) => {
           this._handleBlur(
             e as FocusEvent,
-            props.events?.blur ? (props.events.blur as EventListener) : undefined
+            props.events?.blur ? (props.events.blur as EventListener) : undefined,
           );
         }) as EventListener,
         focus: ((e: Event) => {
           this._handleFocus(
             e as FocusEvent,
-            props.events?.focus ? (props.events.focus as EventListener) : undefined
+            props.events?.focus ? (props.events.focus as EventListener) : undefined,
           );
         }) as EventListener,
         input: ((e: Event) => {
           this._handleInput(
             e,
-            props.events?.input ? (props.events.input as EventListener) : undefined
+            props.events?.input ? (props.events.input as EventListener) : undefined,
           );
         }) as EventListener,
       },

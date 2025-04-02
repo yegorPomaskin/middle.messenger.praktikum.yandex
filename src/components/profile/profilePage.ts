@@ -73,7 +73,7 @@ export class ProfilePage extends Block {
               console.log(`Field ${field.name} changed to: ${input.value}`);
             }) as EventListener,
           },
-        })
+        }),
     );
 
     // Создаем компоненты для кнопок действий
@@ -97,7 +97,7 @@ export class ProfilePage extends Block {
               }
             },
           },
-        })
+        }),
     );
 
     super({
