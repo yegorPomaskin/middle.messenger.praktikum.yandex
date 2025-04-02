@@ -30,7 +30,6 @@ export class AuthPage extends Block {
               app.appendChild(content);
               registerPage.dispatchComponentDidMount();
             }
-            
           }
         },
         onSubmit: (e: Event) => {

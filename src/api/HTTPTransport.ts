@@ -93,7 +93,7 @@ export default class HTTPTransport {
   private request(
     url: string,
     options: RequestOptions = {},
-    timeout: number = 5000,
+    timeout: number = 5000
   ): Promise<XMLHttpRequest> {
     const { headers = {}, method, data } = options;
 
@@ -107,7 +107,10 @@ export default class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET-запроса добавляем параметры в URL
-      xhr.open(method, isGet && !!data ? `${url}${queryStringify(data as Record<string, unknown>)}` : url);
+      xhr.open(
+        method,
+        isGet && !!data ? `${url}${queryStringify(data as Record<string, unknown>)}` : url
+      );
 
       // Установка заголовков
       Object.keys(headers).forEach((key) => {

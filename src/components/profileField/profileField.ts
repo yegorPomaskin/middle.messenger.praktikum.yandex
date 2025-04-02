@@ -24,7 +24,7 @@ interface ProfileFieldProps {
 
 export class ProfileField extends Block {
   private input: Input;
-  
+
   private _currentValue: string = '';
 
   constructor(props: ProfileFieldProps) {
@@ -101,7 +101,7 @@ export class ProfileField extends Block {
     if (!isValid && this.props.validationRules?.length) {
       const errorMessage =
         this.props.validationRules.find(
-          (rule: ValidationRule) => !rule.validator(this.input.getValue()),
+          (rule: ValidationRule) => !rule.validator(this.input.getValue())
         )?.errorMessage ?? 'Invalid input';
 
       // ВАЖНО: устанавливаем и error, и errorText
