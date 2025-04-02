@@ -6,11 +6,6 @@ import { Link } from '../link/link';
 import template from './authForm.hbs?raw';
 import styles from './authForm.module.css';
 
-/**
- * Компонент формы авторизации
- * Содержит поля ввода с простой валидацией, кнопку отправки и ссылку на регистрацию
- */
-
 export interface AuthField {
   label: string;
   name: string;
@@ -28,6 +23,9 @@ export interface AuthFormProps {
 }
 
 export class AuthForm extends Block {
+  // Сохраняем оригинальные колбэки как свойства класса
+  private _onSubmitCallback: ((event: Event) => void) | undefined;
+
   constructor(props: AuthFormProps) {
     // Создаем компоненты для полей формы с базовой валидацией
     const fields = props.fields.map(
@@ -60,8 +58,15 @@ export class AuthForm extends Block {
       className: styles.button,
     });
 
+    // Сохраняем колбэки до вызова суперкласса
+    // Это позволит нам использовать их позже
+    const onSubmit = props.onSubmit;
+
+    // Вызываем конструктор базового класса с безопасными параметрами
     super({
-      ...props,
+      title: props.title,  
+      buttonText: props.buttonText,
+      linkText: props.linkText,
       styles,
       fields,
       link,
@@ -69,7 +74,11 @@ export class AuthForm extends Block {
       events: {
         submit: (e: Event) => this._handleSubmit(e),
       },
+      // Не передаем onSubmit и onLinkClick в базовый класс
     });
+
+    // Инициализируем сохраненные колбэки после вызова super
+    this._onSubmitCallback = onSubmit;
   }
 
   /**
@@ -92,8 +101,9 @@ export class AuthForm extends Block {
       });
     }
 
-    if (isFormValid && this.props.onSubmit) {
-      this.props.onSubmit(e);
+    // Используем сохраненный колбэк вместо this.props.onSubmit
+    if (isFormValid && this._onSubmitCallback) {
+      this._onSubmitCallback(e);
     } else {
       console.log('Форма содержит ошибки');
     }

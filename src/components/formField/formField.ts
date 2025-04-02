@@ -44,12 +44,15 @@ export class FormField extends Block {
       },
     });
 
-    super({
+    // Преобразуем события, чтобы они соответствовали типу в BlockProps
+    const blockProps: Record<string, unknown> = {
       ...props,
       styles,
       input,
       errorText: props.errorText ?? '',
-    });
+    };
+
+    super(blockProps);
 
     this.input = input;
   }
@@ -85,9 +88,12 @@ export class FormField extends Block {
   public validate(): boolean {
     const isValid = this.input.validate();
 
-    if (!isValid && this.props.validationRules?.length) {
+    // Получаем validationRules безопасно
+    const validationRules = this.props.validationRules as ValidationRule[] | undefined;
+
+    if (!isValid && validationRules?.length) {
       const errorMessage =
-        this.props.validationRules.find(
+        validationRules.find(
           (rule: ValidationRule) => !rule.validator(this.input.getValue()),
         )?.errorMessage ?? 'Invalid input';
 
@@ -105,7 +111,7 @@ export class FormField extends Block {
    * Возвращает имя поля
    */
   public getName(): string {
-    return this.props.name;
+    return this.props.name as string;
   }
 
   /**

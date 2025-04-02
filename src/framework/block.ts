@@ -4,7 +4,7 @@ import EventBus, { EventCallback } from './eventBus';
 
 interface BlockProps {
   [key: string]: unknown;
-  events?: Record<string, EventListener>;
+  events?: Record<string, EventListenerOrEventListenerObject>;
   attr?: Record<string, string>;
 }
 
