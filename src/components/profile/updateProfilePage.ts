@@ -121,7 +121,7 @@ export class UpdateProfilePage extends Block {
                   console.log(`Validating field ${fieldName} with value "${fieldValue}"`);
                   const isFieldValid = field.validate();
                   console.log(
-                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`
+                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`,
                   );
 
                   // Обновляем статус валидности формы
@@ -204,12 +204,15 @@ export class UpdateProfilePage extends Block {
     // Создаем форму загрузки аватара
     const avatarUploadForm = new AvatarUploadForm({
       onSubmit: async (file: File) => {
-        if (this.props.onAvatarUpload) {
+        // Type assertion для обработчика загрузки аватара
+        const onAvatarUpload = this.props.onAvatarUpload as ((file: File) => Promise<string>) | undefined;
+
+        if (onAvatarUpload) {
           try {
             console.log('Загрузка нового аватара:', file.name);
 
             // Вызываем обработчик загрузки аватара и получаем URL нового аватара
-            const newAvatarUrl = await this.props.onAvatarUpload(file);
+            const newAvatarUrl = await onAvatarUpload(file);
 
             // Обновляем URL аватара на странице
             this.setProps({

@@ -15,16 +15,12 @@ interface ProfileFieldProps {
   validationRules?: ValidationRule[];
   required?: boolean;
   errorText?: string;
-  events?: {
-    focus?: (event: FocusEvent) => void;
-    blur?: (event: FocusEvent) => void;
-    change?: (event: Event) => void;
-  };
+  events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
 export class ProfileField extends Block {
   private input: Input;
-
+  
   private _currentValue: string = '';
 
   constructor(props: ProfileFieldProps) {
@@ -39,12 +35,33 @@ export class ProfileField extends Block {
       validationRules: props.validationRules,
       className: styles.profile__input,
       events: {
-        focus: (e: FocusEvent) => props.events?.focus?.(e),
-        blur: (e: FocusEvent) => this._handleInputBlur(e, props),
-        input: (e: Event) => {
-          this._currentValue = (e.target as HTMLInputElement).value;
-          props.events?.change?.(e);
-        },
+        focus: ((e: Event) => {
+          if (props.events?.focus) {
+            (props.events.focus as EventListener)(e);
+          }
+        }) as EventListener,
+        blur: ((e: Event) => {
+          // Используем внешнюю функцию для обработки blur, которая будет вызвана позже
+          // Но мы сохраняем ссылку на this._handleInputBlur, которую вызовем после super()
+          const self = this;
+          function handleBlur() {
+            self._handleInputBlur(e as FocusEvent, props);
+          }
+          // Вызываем эту функцию позже, чтобы this был правильным
+          setTimeout(handleBlur, 0);
+        }) as EventListener,
+        input: ((e: Event) => {
+          const target = e.target as HTMLInputElement;
+          // Сохраняем значение в локальной переменной
+          const value = target.value;
+          // Используем setTimeout, чтобы обновить _currentValue после инициализации
+          setTimeout(() => {
+            this._currentValue = value;
+            if (props.events?.change) {
+              (props.events.change as EventListener)(e);
+            }
+          }, 0);
+        }) as EventListener,
       },
     });
 
@@ -91,17 +108,20 @@ export class ProfileField extends Block {
     }
     // Вызываем оригинальный обработчик blur если он был передан
     if (props.events?.blur) {
-      props.events.blur(e);
+      (props.events.blur as EventListener)(e);
     }
   }
 
   public validate(): boolean {
     const isValid = this.input.validate();
+    
+    // Безопасно получаем validationRules через type assertion
+    const validationRules = this.props.validationRules as ValidationRule[] | undefined;
 
-    if (!isValid && this.props.validationRules?.length) {
+    if (!isValid && validationRules?.length) {
       const errorMessage =
-        this.props.validationRules.find(
-          (rule: ValidationRule) => !rule.validator(this.input.getValue())
+        validationRules.find(
+          (rule: ValidationRule) => !rule.validator(this.input.getValue()),
         )?.errorMessage ?? 'Invalid input';
 
       // ВАЖНО: устанавливаем и error, и errorText
@@ -127,7 +147,7 @@ export class ProfileField extends Block {
   }
 
   public getName(): string {
-    return this.props.name;
+    return this.props.name as string;
   }
 
   protected render(): string {

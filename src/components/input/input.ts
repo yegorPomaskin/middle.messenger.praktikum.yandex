@@ -15,17 +15,12 @@ interface InputProps {
   error?: boolean;
   validationRules?: ValidationRule[];
   className?: string;
-  events?: {
-    blur?: (e: FocusEvent) => void;
-    focus?: (e: FocusEvent) => void;
-    input?: (e: Event) => void;
-    change?: (e: Event) => void;
-  };
+  events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
 export class Input extends Block {
   private validator: Validator | null = null;
-
+  
   private _currentValue: string = '';
 
   constructor(props: InputProps) {
@@ -34,9 +29,18 @@ export class Input extends Block {
       value: props.value ?? '',
       events: {
         ...props.events,
-        blur: (e: FocusEvent) => this._handleBlur(e, props.events?.blur),
-        focus: (e: FocusEvent) => this._handleFocus(e, props.events?.focus),
-        input: (e: Event) => this._handleInput(e, props.events?.input),
+        blur: ((e: Event) => {
+          this._handleBlur(e as FocusEvent, 
+            props.events?.blur ? (props.events.blur as EventListener) : undefined);
+        }) as EventListener,
+        focus: ((e: Event) => {
+          this._handleFocus(e as FocusEvent, 
+            props.events?.focus ? (props.events.focus as EventListener) : undefined);
+        }) as EventListener,
+        input: ((e: Event) => {
+          this._handleInput(e, 
+            props.events?.input ? (props.events.input as EventListener) : undefined);
+        }) as EventListener,
       },
     };
 
@@ -56,7 +60,7 @@ export class Input extends Block {
   /**
    * Обрабатывает событие потери фокуса
    */
-  private _handleBlur(e: FocusEvent, originalHandler?: (e: FocusEvent) => void): void {
+  private _handleBlur(e: FocusEvent, originalHandler?: EventListener): void {
     // При потере фокуса синхронизируем значение с props и валидируем
     this.setProps({ value: this._currentValue });
     this.validate();
@@ -70,7 +74,7 @@ export class Input extends Block {
   /**
    * Обрабатывает событие получения фокуса
    */
-  private _handleFocus(e: FocusEvent, originalHandler?: (e: FocusEvent) => void): void {
+  private _handleFocus(e: FocusEvent, originalHandler?: EventListener): void {
     if (originalHandler) {
       originalHandler(e);
     }
@@ -80,7 +84,7 @@ export class Input extends Block {
    * Обрабатывает событие ввода
    * Обновляет только локальное значение без перерисовки компонента
    */
-  private _handleInput(e: Event, originalHandler?: (e: Event) => void): void {
+  private _handleInput(e: Event, originalHandler?: EventListener): void {
     const input = e.target as HTMLInputElement;
     this._currentValue = input.value;
 
@@ -110,7 +114,8 @@ export class Input extends Block {
    * Возвращает имя поля
    */
   public getName(): string {
-    return this.props.name;
+    // Use type assertion since the base Block class uses unknown type for props
+    return this.props.name as string;
   }
 
   /**
@@ -122,12 +127,12 @@ export class Input extends Block {
 
   protected render(): string {
     // Используем как локальное значение, так и значение из пропсов в качестве запасного варианта
-    const value = this._currentValue || this.props.value || '';
+    const value = this._currentValue || (this.props.value as string) || '';
 
     const inputClass = [
       styles.input,
-      this.props.className || '',
-      this.props.error ? styles.inputError : '',
+      (this.props.className as string) || '',
+      (this.props.error as boolean) ? styles.inputError : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -135,10 +140,10 @@ export class Input extends Block {
     return `
         <input 
           class="${inputClass}"
-          type="${this.props.type}" 
-          name="${this.props.name}" 
+          type="${this.props.type as string}" 
+          name="${this.props.name as string}" 
           value="${value}"
-          ${this.props.required ? 'required' : ''}
+          ${(this.props.required as boolean) ? 'required' : ''}
         >
     `;
   }

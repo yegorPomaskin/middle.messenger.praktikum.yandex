@@ -33,7 +33,7 @@ export class ChatInterface extends Block {
 
   // Метод для получения сообщений
   public getMessage(): Message[] {
-    return this.props.messages || [];
+    return Array.isArray(this.props.messages) ? this.props.messages : [];
   }
 
   protected render(): string {

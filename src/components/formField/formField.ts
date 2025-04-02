@@ -6,7 +6,7 @@ import template from './formField.hbs?raw';
 import styles from './formField.module.css';
 
 /**
- * Компонент поля формы с меткой и отображением ошибок
+ * Компонент поля формы для AUTH и REGISTER с меткой и отображением ошибок
  * Оборачивает базовый компонент Input и добавляет функциональность валидации
  */
 
@@ -18,18 +18,14 @@ export interface FormFieldProps {
   value?: string;
   errorText?: string;
   validationRules?: ValidationRule[];
-  events?: {
-    focus?: (e: FocusEvent) => void;
-    blur?: (e: FocusEvent) => void;
-    change?: (e: Event) => void;
-    input?: (e: Event) => void;
-  };
+  events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
 export class FormField extends Block {
   private input: Input;
 
   constructor(props: FormFieldProps) {
+    // Create Input instance with correct event handler types
     const input = new Input({
       name: props.name,
       type: props.type,
@@ -37,10 +33,12 @@ export class FormField extends Block {
       required: props.required,
       validationRules: props.validationRules,
       events: {
-        focus: props.events?.focus,
-        blur: (e: FocusEvent) => this._handleInputBlur(e, props),
-        input: props.events?.input,
-        change: props.events?.change,
+        focus: props.events?.focus as EventListener,
+        blur: ((e: Event) => {
+          this._handleInputBlur(e as FocusEvent, props);
+        }) as EventListener,
+        input: props.events?.input as EventListener,
+        change: props.events?.change as EventListener,
       },
     });
 
@@ -78,7 +76,7 @@ export class FormField extends Block {
 
     // Вызываем оригинальный обработчик blur если он был передан
     if (props.events?.blur) {
-      props.events.blur(e);
+      (props.events.blur as EventListener)(e);
     }
   }
 
