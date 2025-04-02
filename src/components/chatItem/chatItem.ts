@@ -3,13 +3,7 @@ import Block from '../../framework/block';
 import template from './chatItem.hbs?raw';
 import styles from './chatItem.module.css';
 
-// Расширяем интерфейс BlockProps, который используется в Block
-interface BlockProps {
-  [key: string]: any;
-  events?: Record<string, (e: Event) => void>;
-}
-
-export interface ChatItemProps extends BlockProps {
+export interface ChatItemProps {
   id: number;
   name: string;
   avatar: string;
@@ -29,7 +23,7 @@ export class ChatItem extends Block {
 
   // Метод для безопасного получения ID чата
   public getId(): number {
-    return this.props.id;
+    return this.props.id as number;
   }
 
   protected render(): string {

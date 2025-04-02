@@ -6,12 +6,19 @@ export enum METHODS {
   DELETE = 'DELETE',
 }
 
+interface RequestOptions {
+  headers?: Record<string, string>;
+  method?: METHODS;
+  data?: unknown;
+  timeout?: number;
+}
+
 /**
  * Преобразует объект в строку запроса
- * @param {Record<string, any>} data - Объект для преобразования
+ * @param {Record<string, unknown>} data - Объект для преобразования
  * @returns {string} - Строка запроса
  */
-function queryStringify(data: Record<string, any>): string {
+function queryStringify(data: Record<string, unknown>): string {
   if (typeof data !== 'object' || data === null) {
     throw new Error('Data must be object');
   }
@@ -31,7 +38,7 @@ function queryStringify(data: Record<string, any>): string {
       value = JSON.stringify(value);
     }
 
-    return `${result}${key}=${encodeURIComponent(value)}${index < keys.length - 1 ? '&' : ''}`;
+    return `${result}${key}=${encodeURIComponent(String(value))}${index < keys.length - 1 ? '&' : ''}`;
   }, '?');
 }
 
@@ -39,53 +46,53 @@ export default class HTTPTransport {
   /**
    * GET-запрос
    * @param {string} url - URL запроса
-   * @param {object} options - Опции запроса
+   * @param {RequestOptions} options - Опции запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
-  public get(url: string, options: Record<string, any> = {}): Promise<XMLHttpRequest> {
+  public get(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.GET }, options.timeout);
   }
 
   /**
    * POST-запрос
    * @param {string} url - URL запроса
-   * @param {object} options - Опции запроса
+   * @param {RequestOptions} options - Опции запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
-  public post(url: string, options: Record<string, any> = {}): Promise<XMLHttpRequest> {
+  public post(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
   }
 
   /**
    * PUT-запрос
    * @param {string} url - URL запроса
-   * @param {object} options - Опции запроса
+   * @param {RequestOptions} options - Опции запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
-  public put(url: string, options: Record<string, any> = {}): Promise<XMLHttpRequest> {
+  public put(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
   }
 
   /**
    * DELETE-запрос
    * @param {string} url - URL запроса
-   * @param {object} options - Опции запроса
+   * @param {RequestOptions} options - Опции запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
-  public delete(url: string, options: Record<string, any> = {}): Promise<XMLHttpRequest> {
+  public delete(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
   /**
    * Основной метод для выполнения запросов
    * @param {string} url - URL запроса
-   * @param {object} options - Опции запроса
+   * @param {RequestOptions} options - Опции запроса
    * @param {number} timeout - Таймаут запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
   private request(
     url: string,
-    options: Record<string, any> = {},
+    options: RequestOptions = {},
     timeout: number = 5000,
   ): Promise<XMLHttpRequest> {
     const { headers = {}, method, data } = options;
@@ -100,7 +107,7 @@ export default class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET-запроса добавляем параметры в URL
-      xhr.open(method, isGet && !!data ? `${url}${queryStringify(data)}` : url);
+      xhr.open(method, isGet && !!data ? `${url}${queryStringify(data as Record<string, unknown>)}` : url);
 
       // Установка заголовков
       Object.keys(headers).forEach((key) => {
