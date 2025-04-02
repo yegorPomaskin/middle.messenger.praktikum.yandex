@@ -18,7 +18,7 @@ export default class Block {
     FLOW_CDM: 'flow:component-did-mount',
     FLOW_CDU: 'flow:component-did-update',
     FLOW_RENDER: 'flow:render',
-  };
+  } as const;
 
   protected _element: HTMLElement | null = null;
 
@@ -54,7 +54,7 @@ export default class Block {
     const { events = {} } = this.props;
     Object.keys(events).forEach((eventName) => {
       if (this._element) {
-        this._element.addEventListener(eventName, events[eventName] as EventListener);
+        this._element!.addEventListener(eventName, events[eventName] as EventListener);
       }
     });
   }
@@ -147,7 +147,23 @@ export default class Block {
     return this._element;
   }
 
+  _removeEvents() {
+    // Получаем все зарегистрированные события на элементе
+    const events = this.props.events;
+    
+    if (!events || !this._element) {
+      return;
+    }
+    
+    // Проходим по всем событиям и удаляем обработчики
+    Object.keys(events).forEach(eventName => {
+      this._element!.removeEventListener(eventName, events[eventName]);
+    });
+  }
+
   private _render(): void {
+    this._removeEvents();
+
     const propsAndStubs = { ...this.props };
 
     // Создание заглушек для детей-компонентов
