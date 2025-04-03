@@ -1,4 +1,9 @@
 import Block from '../../framework/block';
+import {
+  LOGIN_VALIDATION,
+  PASSWORD_VALIDATION
+} from '../../utils/validationRules';
+import { ValidationRule } from '../../utils/validator';
 import { Button } from '../button/button';
 import { FormField } from '../formField/formField';
 import { Link } from '../link/link';
@@ -27,19 +32,26 @@ export class AuthForm extends Block {
   private _onSubmitCallback: ((event: Event) => void) | undefined;
 
   constructor(props: AuthFormProps) {
-    // Создаем компоненты для полей формы с базовой валидацией
-    const fields = props.fields.map(
-      (field) =>
-        new FormField({
-          ...field,
-          validationRules: [
-            {
-              validator: (value: string) => value.trim() !== '',
-              errorMessage: `Поле ${field.label.toLowerCase()} не может быть пустым`,
-            },
-          ],
-        }),
-    );
+    // Добавим правила валидации для полей
+    const fieldsWithValidation = props.fields.map((field) => {
+      //Явно указываем тип
+      let validationRules: ValidationRule[] = [];
+
+      // Определяем правила валидации на основе имени поля
+      switch (field.name) {
+        case 'login':
+          validationRules = LOGIN_VALIDATION;
+          break;
+        case 'password': 
+          validationRules = PASSWORD_VALIDATION;
+          break;
+      }
+
+      return new FormField({
+        ...field,
+        validationRules,
+      });
+    });
 
     // Создаем компонент ссылки
     const link = new Link({
@@ -68,7 +80,7 @@ export class AuthForm extends Block {
       buttonText: props.buttonText,
       linkText: props.linkText,
       styles,
-      fields,
+      fields: fieldsWithValidation,
       link,
       button,
       events: {
