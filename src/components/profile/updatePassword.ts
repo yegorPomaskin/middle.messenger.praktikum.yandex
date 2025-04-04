@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { Button } from '../button/button';
 import buttonStyles from '../button/button.module.css';
 import styles from '../profile/profile.module.css';
@@ -8,7 +8,8 @@ import { Sidebar } from '../sidebar/sidebar';
 
 import template from './profile.hbs?raw';
 
-interface UpdatePasswordPageProps {
+interface UpdatePasswordPageProps extends BlockProps {
+  [key: string]: unknown;
   profileImage: string;
   userName: string;
   sidebarData: {
@@ -18,9 +19,21 @@ interface UpdatePasswordPageProps {
   };
   onSave?: (passwordData: Record<string, string>) => void;
   onCancel?: () => void;
+  events?: {
+    focus?: EventListener;
+    blur?: EventListener;
+    change?: EventListener;
+    submit?: EventListener;
+  };
+  sidebar?: Sidebar;
+  fields?: ProfileField[];
+  buttons?: Button[];
+  styles?: Record<string, string>;
+  commonStyles?: Record<string, string>;
+  isEditMode?: boolean;
 }
 
-export class UpdatePasswordPage extends Block {
+export class UpdatePasswordPage extends Block<UpdatePasswordPageProps> {
   constructor(props: UpdatePasswordPageProps) {
     // Create sidebar component
     const sidebar = new Sidebar({
@@ -39,16 +52,16 @@ export class UpdatePasswordPage extends Block {
         mode: 'edit',
         editable: true,
         events: {
-          focus: (e: FocusEvent) => {
+          focus: ((e: Event) => {
             console.log('Field oldPassword focused', e);
-          },
-          blur: (e: FocusEvent) => {
+          }) as EventListener,
+          blur: ((e: Event) => {
             console.log('Field oldPassword blurred', e);
-          },
-          change: (e: Event) => {
+          }) as EventListener,
+          change: ((e: Event) => {
             const input = e.target as HTMLInputElement;
             console.log(`Field oldPassword changed to: ${input.value}`);
-          },
+          }) as EventListener,
         },
       }),
       new ProfileField({
@@ -59,16 +72,16 @@ export class UpdatePasswordPage extends Block {
         mode: 'edit',
         editable: true,
         events: {
-          focus: (e: FocusEvent) => {
+          focus: ((e: Event) => {
             console.log('Field newPassword focused', e);
-          },
-          blur: (e: FocusEvent) => {
+          }) as EventListener,
+          blur: ((e: Event) => {
             console.log('Field newPassword blurred', e);
-          },
-          change: (e: Event) => {
+          }) as EventListener,
+          change: ((e: Event) => {
             const input = e.target as HTMLInputElement;
             console.log(`Field newPassword changed to: ${input.value}`);
-          },
+          }) as EventListener,
         },
       }),
       new ProfileField({
@@ -79,16 +92,16 @@ export class UpdatePasswordPage extends Block {
         mode: 'edit',
         editable: true,
         events: {
-          focus: (e: FocusEvent) => {
+          focus: ((e: Event) => {
             console.log('Field confirmPassword focused', e);
-          },
-          blur: (e: FocusEvent) => {
+          }) as EventListener,
+          blur: ((e: Event) => {
             console.log('Field confirmPassword blurred', e);
-          },
-          change: (e: Event) => {
+          }) as EventListener,
+          change: ((e: Event) => {
             const input = e.target as HTMLInputElement;
             console.log(`Field confirmPassword changed to: ${input.value}`);
-          },
+          }) as EventListener,
         },
       }),
     ];

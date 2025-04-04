@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { AvatarUploadForm } from '../avatarUploadForm/avatarUploadForm';
 import { Link } from '../link/link';
 import { Modal } from '../modal/modal';
@@ -9,7 +9,8 @@ import { Sidebar } from '../sidebar/sidebar';
 import template from './profile.hbs?raw';
 import styles from './profile.module.css';
 
-interface ProfilePageProps {
+interface ProfilePageProps extends BlockProps {
+  [key: string]: unknown;
   profileImage: string;
   userName: string;
   userFields: Array<{
@@ -18,11 +19,16 @@ interface ProfilePageProps {
     value: string;
     type?: string;
     editable?: boolean;
+    events?: {
+      focus?: EventListener;
+      blur?: EventListener;
+      change?: EventListener;
+    };
   }>;
-  buttons: Array<{
+  buttonSettings: Array<{
     text: string;
     className: string;
-    href: string;
+    href?: string;
     useDefaultClass?: boolean;
     onClick?: (event: Event) => void;
   }>;
@@ -33,9 +39,15 @@ interface ProfilePageProps {
   };
   isEditMode?: boolean;
   onAvatarUpload?: (file: File) => Promise<string>;
+  sidebar?: Sidebar;
+  fields?: ProfileField[];
+  buttons?: Link[];
+  styles?: Record<string, string>;
+  commonStyles?: Record<string, string>;
+  events?: Record<string, EventListener>;
 }
 
-export class ProfilePage extends Block {
+export class ProfilePage extends Block<ProfilePageProps> {
   private avatarModal: Modal | null = null;
 
   constructor(props: ProfilePageProps) {
@@ -57,23 +69,23 @@ export class ProfilePage extends Block {
           mode: props.isEditMode ? 'edit' : 'view',
           editable: field.editable,
           events: {
-            focus: (e: FocusEvent) => {
+            focus: ((e: Event) => {
               console.log(`Field ${field.name} focused`, e);
-            },
-            blur: (e: FocusEvent) => {
+            }) as EventListener,
+            blur: ((e: Event) => {
               console.log(`Field ${field.name} blurred`, e);
-            },
-            change: (e: Event) => {
+            }) as EventListener,
+            change: ((e: Event) => {
               const input = e.target as HTMLInputElement;
               console.log(`Field ${field.name} changed to: ${input.value}`);
-            },
+            }) as EventListener,
           },
         }),
     );
 
     // Создаем компоненты для кнопок действий
-    const buttons = (props.buttons || []).map(
-      (button) =>
+    const buttons = (props.buttonSettings || []).map(
+      (button): Link =>
         new Link({
           href: button.href,
           text: button.text,
@@ -128,12 +140,17 @@ export class ProfilePage extends Block {
     // Создаем форму загрузки аватара
     const avatarUploadForm = new AvatarUploadForm({
       onSubmit: async (file: File) => {
-        if (this.props.onAvatarUpload) {
+        // Type assertion для обработчика загрузки аватара
+        const onAvatarUpload = this.props.onAvatarUpload as
+          | ((file: File) => Promise<string>)
+          | undefined;
+
+        if (onAvatarUpload) {
           try {
             console.log('Загрузка нового аватара:', file.name);
 
             // Вызываем обработчик загрузки аватара и получаем URL нового аватара
-            const newAvatarUrl = await this.props.onAvatarUpload(file);
+            const newAvatarUrl = await onAvatarUpload(file);
 
             // Обновляем URL аватара на странице
             this.setProps({

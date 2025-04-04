@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import {
   LOGIN_VALIDATION,
   EMAIL_VALIDATION,
@@ -11,12 +11,13 @@ import { Button } from '../button/button';
 import buttonStyles from '../button/button.module.css';
 import { Modal } from '../modal/modal';
 import template from '../profile/profile.hbs?raw';
-import styles from '../profile/profile.module.css'; 
+import styles from '../profile/profile.module.css';
 import commonStyles from '../profileField/commonProfileStyles.module.css';
 import { ProfileField } from '../profileField/profileField';
 import { Sidebar } from '../sidebar/sidebar';
 
-interface UpdateProfilePageProps {
+interface UpdateProfilePageProps extends BlockProps {
+  [key: string]: unknown;
   profileImage: string;
   userName: string;
   userFields: Array<{
@@ -29,14 +30,14 @@ interface UpdateProfilePageProps {
   sidebarData: {
     href: string;
     iconSrc: string;
-    onClick?: (event: Event) => void;
+    onClick?: EventListener;
   };
   onSave?: (formData: Record<string, string>) => void;
   onCancel?: () => void;
   onAvatarUpload?: (file: File) => Promise<string>;
 }
 
-export class UpdateProfilePage extends Block {
+export class UpdateProfilePage extends Block<UpdateProfilePageProps> {
   private avatarModal: Modal | null = null;
 
   constructor(props: UpdateProfilePageProps) {
@@ -48,52 +49,50 @@ export class UpdateProfilePage extends Block {
     });
 
     // Create components for profile fields
-    const fields = (props.userFields || []).map(
-      (field) => {
-        // Определяем правила валидации для каждого поля
-        let validationRules: ValidationRule[] = [];
-        switch (field.name) {
-          case 'login':
-            validationRules = LOGIN_VALIDATION;
-            break;
-          case 'email':
-            validationRules = EMAIL_VALIDATION;
-            break;
-          case 'phone':
-            validationRules = PHONE_VALIDATION;
-            break;
-          case 'first_name':
-          case 'second_name':
-          case 'display_name':
-            validationRules = NAME_VALIDATION;
-            break;
-        }
+    const fields = (props.userFields || []).map((field) => {
+      // Определяем правила валидации для каждого поля
+      let validationRules: ValidationRule[] = [];
+      switch (field.name) {
+        case 'login':
+          validationRules = LOGIN_VALIDATION;
+          break;
+        case 'email':
+          validationRules = EMAIL_VALIDATION;
+          break;
+        case 'phone':
+          validationRules = PHONE_VALIDATION;
+          break;
+        case 'first_name':
+        case 'second_name':
+        case 'display_name':
+          validationRules = NAME_VALIDATION;
+          break;
+      }
 
-        return new ProfileField({
-          name: field.name,
-          label: field.label,
-          value: field.value,
-          type: field.type || 'text',
-          mode: 'edit',
-          editable: field.editable !== false,
-          validationRules,
-          required: field.name !== 'display_name', // Все поля обязательны, кроме display_name
-          events: {
-            focus: (e: FocusEvent) => {
-              console.log(`${e} Field ${field.name} focused`);
-            },
-            blur: (e: FocusEvent) => {
-              console.log(`${e} Field ${field.name} blurred, running validation`);
-              // Валидация происходит внутри ProfileField в обработчике blur
-            },
-            change: (e: Event) => {
-              const input = e.target as HTMLInputElement;
-              console.log(`Field ${field.name} changed to: ${input.value}`);
-            },
+      return new ProfileField({
+        name: field.name,
+        label: field.label,
+        value: field.value,
+        type: field.type || 'text',
+        mode: 'edit',
+        editable: field.editable !== false,
+        validationRules,
+        required: field.name !== 'display_name', // Все поля обязательны, кроме display_name
+        events: {
+          focus: ((e: Event) => {
+            console.log(`${e} Field ${field.name} focused`);
+          }) as EventListener,
+          blur: ((e: Event) => {
+            console.log(`${e} Field ${field.name} blurred, running validation`);
+            // Валидация происходит внутри ProfileField в обработчике blur
+          }) as EventListener,
+          change: (e: Event) => {
+            const input = e.target as HTMLInputElement;
+            console.log(`Field ${field.name} changed to: ${input.value}`);
           },
-        });
-      },
-    );
+        },
+      });
+    });
 
     // Create save button with the correct class name
     const saveButton = new Button({
@@ -112,21 +111,23 @@ export class UpdateProfilePage extends Block {
 
             if (this.lists && this.lists.fields) {
               console.log(`Validating ${this.lists.fields.length} fields`);
-              
+
               this.lists.fields.forEach((field) => {
                 if (field instanceof ProfileField) {
                   // Получаем имя и значение поля через методы компонента
                   const fieldName = field.getName();
                   const fieldValue = field.getValue();
-                  
+
                   // Запускаем валидацию
                   console.log(`Validating field ${fieldName} with value "${fieldValue}"`);
                   const isFieldValid = field.validate();
-                  console.log(`Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`);
-                  
+                  console.log(
+                    `Field ${fieldName} validation: ${isFieldValid ? 'passed' : 'failed'}`,
+                  );
+
                   // Обновляем статус валидности формы
                   isFormValid = isFormValid && isFieldValid;
-                  
+
                   // Собираем данные формы
                   formData[fieldName] = fieldValue;
                 } else {
@@ -204,12 +205,17 @@ export class UpdateProfilePage extends Block {
     // Создаем форму загрузки аватара
     const avatarUploadForm = new AvatarUploadForm({
       onSubmit: async (file: File) => {
-        if (this.props.onAvatarUpload) {
+        // Type assertion для обработчика загрузки аватара
+        const onAvatarUpload = this.props.onAvatarUpload as
+          | ((file: File) => Promise<string>)
+          | undefined;
+
+        if (onAvatarUpload) {
           try {
             console.log('Загрузка нового аватара:', file.name);
 
             // Вызываем обработчик загрузки аватара и получаем URL нового аватара
-            const newAvatarUrl = await this.props.onAvatarUpload(file);
+            const newAvatarUrl = await onAvatarUpload(file);
 
             // Обновляем URL аватара на странице
             this.setProps({
@@ -264,16 +270,16 @@ export class UpdateProfilePage extends Block {
     if (!this.lists || !this.lists.fields) {
       return true;
     }
-    
+
     let isValid = true;
-    
+
     this.lists.fields.forEach((field) => {
       if (field instanceof ProfileField) {
         const fieldValid = field.validate();
         isValid = isValid && fieldValid;
       }
     });
-    
+
     return isValid;
   }
 

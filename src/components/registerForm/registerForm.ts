@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import {
   LOGIN_VALIDATION,
   PASSWORD_VALIDATION,
@@ -21,9 +21,11 @@ export interface AuthField {
   required: boolean;
 }
 
-export interface AuthRegisterFormProps {
+export interface AuthRegisterFormProps extends BlockProps {
+  [key: string]: unknown;
   title: string;
   fields: AuthField[];
+  formFields?: FormField[];
   buttonText: string;
   linkText: string;
   isLogin: boolean;
@@ -31,13 +33,15 @@ export interface AuthRegisterFormProps {
   onSubmit: (event: Event) => void;
 }
 
-export class AuthRegisterForm extends Block {
+export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
+  private _onSubmitCallback: ((event: Event) => void) | undefined;
+
   constructor(props: AuthRegisterFormProps) {
     const isLogin = props.isLogin;
     const modifier = isLogin ? styles.auth : styles.register;
 
     // Добавим правила валидации для полей
-    const fieldsWithValidation = props.fields.map((field) => {
+    const formFields = props.fields.map((field) => {
       // Явно указываем тип для validationRules
       let validationRules: ValidationRule[] = [];
 
@@ -86,10 +90,14 @@ export class AuthRegisterForm extends Block {
       className: `${styles.button} ${modifier}`,
     });
 
+    // Сохраняем колбэки до вызова суперкласса
+    // Это позволит нам использовать их позже
+    const onSubmit = props.onSubmit;
+
     super({
       ...props,
       styles,
-      fields: fieldsWithValidation,
+      formFields,
       link,
       button,
       sectionModifier: modifier,
@@ -100,6 +108,9 @@ export class AuthRegisterForm extends Block {
         submit: (e: Event) => this.handleSubmit(e),
       },
     });
+
+    // Инициализируем сохраненные колбэки после вызова super
+    this._onSubmitCallback = onSubmit;
   }
 
   private handleSubmit(e: Event): void {
@@ -123,9 +134,9 @@ export class AuthRegisterForm extends Block {
     }
 
     // Если форма валидна, передаем данные обработчику
-    if (isFormValid && this.props.onSubmit) {
+    if (isFormValid && this._onSubmitCallback) {
       console.log('Form data:', formData);
-      this.props.onSubmit(e);
+      this._onSubmitCallback(e);
     } else {
       console.log('Form validation failed');
     }

@@ -1,8 +1,12 @@
 import { UpdateProfilePage } from '../components/profile/updateProfilePage';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 
-export class UpdateProfilePageHandler extends Block {
+interface UpdateProfilePageHandlerProps extends BlockProps {
+  [key: string]: unknown;
+  updateProfilePage?: UpdateProfilePage;
+}
 
+export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProps> {
   constructor() {
     // Create the UpdateProfilePage component with the existing profile template
     const updateProfilePage = new UpdateProfilePage({
@@ -22,7 +26,9 @@ export class UpdateProfilePageHandler extends Block {
         onClick: () => this.handleBackClick(),
       },
       onSave: (formData) => this.handleSaveProfile(formData),
-      onCancel: () => this.handleBackClick(),
+      onCancel: (): void => {
+        this.handleBackClick();
+      },
     });
 
     super({
@@ -31,11 +37,11 @@ export class UpdateProfilePageHandler extends Block {
   }
 
   private handleBackClick(): void {
-    console.log('Back to profile page');
+    console.warn('Back to profile page');
   }
 
   private handleSaveProfile(formData: Record<string, string>): void {
-    console.log('Saving profile data:', formData);
+    console.warn('Saving profile data:', formData);
   }
 
   protected render(): string {

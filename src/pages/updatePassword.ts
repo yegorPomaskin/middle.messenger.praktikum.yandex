@@ -1,8 +1,12 @@
 import { UpdatePasswordPage } from '../components/profile/updatePassword';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 
+interface UpdatePasswordPageHandlerProps extends BlockProps {
+  [key: string]: unknown;
+  updatePasswordPage?: UpdatePasswordPage;
+}
 
-export class UpdatePasswordPageHandler extends Block {
+export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerProps> {
   constructor() {
     // Обработчики событий для кнопок
     const handleSavePassword = (passwordData: Record<string, string>) => {

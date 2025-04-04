@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import template from './chatInterface.hbs?raw';
 import styles from './chatInterface.module.css';
@@ -9,14 +9,16 @@ export interface Message {
   text: string;
 }
 
-export interface ChatInterfaceProps {
+export interface ChatInterfaceProps extends BlockProps {
+  [key: string]: unknown;
   messages: Message[];
   attachment: string;
   sendButton: string;
   events?: Record<string, (e: Event) => void>;
+  styles?: Record<string, string>;
 }
 
-export class ChatInterface extends Block {
+export class ChatInterface extends Block<ChatInterfaceProps> {
   constructor(props: ChatInterfaceProps) {
     super({
       ...props,
@@ -33,7 +35,7 @@ export class ChatInterface extends Block {
 
   // Метод для получения сообщений
   public getMessage(): Message[] {
-    return this.props.messages || [];
+    return Array.isArray(this.props.messages) ? this.props.messages : [];
   }
 
   protected render(): string {

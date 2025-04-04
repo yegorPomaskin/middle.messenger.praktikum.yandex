@@ -2,12 +2,13 @@
  * Базовый компонент поля ввода
  * Оптимизирован для предотвращения перерисовки при каждом вводе символа
  */
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule, Validator } from '../../utils/validator';
 
 import styles from './input.module.css';
 
-interface InputProps {
+interface InputProps extends BlockProps {
+  [key: string]: unknown;
   name: string;
   type: string;
   value?: string;
@@ -15,15 +16,11 @@ interface InputProps {
   error?: boolean;
   validationRules?: ValidationRule[];
   className?: string;
-  events?: {
-    blur?: (e: FocusEvent) => void;
-    focus?: (e: FocusEvent) => void;
-    input?: (e: Event) => void;
-    change?: (e: Event) => void;
-  };
+  events?: Record<string, EventListenerOrEventListenerObject>;
+  styles?: Record<string, string>;
 }
 
-export class Input extends Block {
+export class Input extends Block<InputProps> {
   private validator: Validator | null = null;
 
   private _currentValue: string = '';
@@ -34,9 +31,24 @@ export class Input extends Block {
       value: props.value ?? '',
       events: {
         ...props.events,
-        blur: (e: FocusEvent) => this._handleBlur(e, props.events?.blur),
-        focus: (e: FocusEvent) => this._handleFocus(e, props.events?.focus),
-        input: (e: Event) => this._handleInput(e, props.events?.input),
+        blur: ((e: Event) => {
+          this._handleBlur(
+            e as FocusEvent,
+            props.events?.blur ? (props.events.blur as EventListener) : undefined,
+          );
+        }) as EventListener,
+        focus: ((e: Event) => {
+          this._handleFocus(
+            e as FocusEvent,
+            props.events?.focus ? (props.events.focus as EventListener) : undefined,
+          );
+        }) as EventListener,
+        input: ((e: Event) => {
+          this._handleInput(
+            e,
+            props.events?.input ? (props.events.input as EventListener) : undefined,
+          );
+        }) as EventListener,
       },
     };
 
@@ -44,7 +56,7 @@ export class Input extends Block {
 
     // Инициализируем локальное значение
     this._currentValue = safeProps.value;
-    
+
     // Синхронизируем с реактивной системой пропсов сразу
     this.setProps({ value: this._currentValue });
 
@@ -56,7 +68,7 @@ export class Input extends Block {
   /**
    * Обрабатывает событие потери фокуса
    */
-  private _handleBlur(e: FocusEvent, originalHandler?: (e: FocusEvent) => void): void {
+  private _handleBlur(e: FocusEvent, originalHandler?: EventListener): void {
     // При потере фокуса синхронизируем значение с props и валидируем
     this.setProps({ value: this._currentValue });
     this.validate();
@@ -70,7 +82,7 @@ export class Input extends Block {
   /**
    * Обрабатывает событие получения фокуса
    */
-  private _handleFocus(e: FocusEvent, originalHandler?: (e: FocusEvent) => void): void {
+  private _handleFocus(e: FocusEvent, originalHandler?: EventListener): void {
     if (originalHandler) {
       originalHandler(e);
     }
@@ -80,7 +92,7 @@ export class Input extends Block {
    * Обрабатывает событие ввода
    * Обновляет только локальное значение без перерисовки компонента
    */
-  private _handleInput(e: Event, originalHandler?: (e: Event) => void): void {
+  private _handleInput(e: Event, originalHandler?: EventListener): void {
     const input = e.target as HTMLInputElement;
     this._currentValue = input.value;
 
@@ -110,7 +122,8 @@ export class Input extends Block {
    * Возвращает имя поля
    */
   public getName(): string {
-    return this.props.name;
+    // Use type assertion since the base Block class uses unknown type for props
+    return this.props.name as string;
   }
 
   /**
@@ -122,21 +135,23 @@ export class Input extends Block {
 
   protected render(): string {
     // Используем как локальное значение, так и значение из пропсов в качестве запасного варианта
-    const value = this._currentValue || this.props.value || '';
-    
+    const value = this._currentValue || (this.props.value as string) || '';
+
     const inputClass = [
-      styles.input, 
-      this.props.className || '', 
-      this.props.error ? styles.inputError : '',
-    ].filter(Boolean).join(' ');
+      styles.input,
+      (this.props.className as string) || '',
+      (this.props.error as boolean) ? styles.inputError : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     return `
         <input 
           class="${inputClass}"
-          type="${this.props.type}" 
-          name="${this.props.name}" 
+          type="${this.props.type as string}" 
+          name="${this.props.name as string}" 
           value="${value}"
-          ${this.props.required ? 'required' : ''}
+          ${(this.props.required as boolean) ? 'required' : ''}
         >
     `;
   }

@@ -1,5 +1,5 @@
 import { AuthRegisterForm } from '../components/registerForm/registerForm';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 
 import { AuthPage } from './auth';
 
@@ -24,7 +24,12 @@ const REGISTER_FORM_CONFIG = {
   linkHref: '#login',
 };
 
-export class RegisterPage extends Block {
+interface RegisterPageProps extends BlockProps {
+  [key: string]: unknown;
+  RegisterForm?: AuthRegisterForm;
+}
+
+export class RegisterPage extends Block<RegisterPageProps> {
   constructor() {
     super({
       RegisterForm: new AuthRegisterForm({
@@ -35,8 +40,11 @@ export class RegisterPage extends Block {
           const app = document.getElementById('app');
           if (app) {
             app.innerHTML = '';
-            app.appendChild(authPage.getContent()!);
-            authPage.dispatchComponentDidMount();
+            const content = authPage.getContent();
+            if (content) {
+              app.appendChild(content);
+              authPage.dispatchComponentDidMount();
+            }
           }
         },
         onSubmit: (e: Event) => {
@@ -47,7 +55,7 @@ export class RegisterPage extends Block {
     });
   }
 
-  override render(): string {
+  protected render(): string {
     return `{{{ RegisterForm }}}`;
   }
 }

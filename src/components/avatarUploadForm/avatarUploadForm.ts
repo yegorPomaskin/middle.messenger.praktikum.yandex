@@ -1,18 +1,23 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { Button } from '../button/button';
-
 import buttonStyles from '../button/button.module.css';
+
 import template from './avatarUploadForm.hbs?raw';
 import styles from './avatarUploadForm.module.css';
 
-interface AvatarUploadFormProps {
+interface AvatarUploadFormProps extends BlockProps {
+  [key: string]: unknown;
   onSubmit?: (file: File) => void;
+  submitButton?: Button;
+  styles?: Record<string, string>;
 }
 
-export class AvatarUploadForm extends Block {
+export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
   private fileInputRef: HTMLInputElement | null = null;
 
   private selectedFile: File | null = null;
+
+  private _onSubmitCallback?: (file: File) => void;
 
   constructor(props: AvatarUploadFormProps) {
     const submitButton = new Button({
@@ -28,8 +33,9 @@ export class AvatarUploadForm extends Block {
       },
     });
 
+    const onSubmit = props.onSubmit;
+
     super({
-      ...props,
       submitButton,
       styles,
       events: {
@@ -48,6 +54,8 @@ export class AvatarUploadForm extends Block {
         },
       },
     });
+
+    this._onSubmitCallback = onSubmit;
   }
 
   protected componentDidMount(): void {
@@ -89,9 +97,9 @@ export class AvatarUploadForm extends Block {
       return;
     }
 
-    if (this.props.onSubmit) {
+    if (this._onSubmitCallback) {
       console.log('Вызов onSubmit с файлом:', this.selectedFile.name);
-      this.props.onSubmit(this.selectedFile);
+      this._onSubmitCallback(this.selectedFile);
 
       // Сбрасываем значение поля выбора файла
       if (this.fileInputRef) {

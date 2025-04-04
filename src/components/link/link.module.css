@@ -1,8 +1,8 @@
 .link {
-    font-size: 11px;
-    line-height: 11px;
-    color: var(--link-color);
-    text-align: center;
+  color: var(--link-color);
+  font-size: 11px;
+  line-height: 11px;
+  text-align: center;
 }
 
 .form__link {
@@ -10,13 +10,13 @@
 }
 
 .actionLink {
-  color: var(--link-color);
   border: none;
   border-radius: 5px;
-  text-decoration: none;
+  color: var(--link-color);
   margin-bottom: 16px;
+  text-decoration: none;
 }
 
 .logoutLink {
-  color: var(--error-color) !important; 
+  color: var(--error-color) !important;
 }

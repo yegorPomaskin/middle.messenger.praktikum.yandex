@@ -1,10 +1,14 @@
 import linkStyles from '../components/link/link.module.css';
 import { ProfilePage } from '../components/profile/profilePage';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 import { renderLinksPage } from '../pages/links';
 
+interface ProfilePageHandlerProps extends BlockProps {
+  [key: string]: unknown;
+  profilePage?: ProfilePage;
+}
 
-export class ProfilePageHandler extends Block {
+export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
   constructor() {
     // Создаем методы-обработчики для кнопок
     const handleEditData = (e: Event) => {
@@ -40,7 +44,7 @@ export class ProfilePageHandler extends Block {
         { name: 'display_name', label: 'Имя в чате', value: 'Иван' },
         { name: 'phone', label: 'Телефон', value: '+7 (909) 967 30 30' },
       ],
-      buttons: [
+      buttonSettings: [
         {
           href: '#',
           className: linkStyles.actionLink,

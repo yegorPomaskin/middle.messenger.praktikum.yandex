@@ -1,15 +1,12 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
+import { LOGIN_VALIDATION, PASSWORD_VALIDATION } from '../../utils/validationRules';
+import { ValidationRule } from '../../utils/validator';
 import { Button } from '../button/button';
 import { FormField } from '../formField/formField';
 import { Link } from '../link/link';
 
 import template from './authForm.hbs?raw';
 import styles from './authForm.module.css';
-
-/**
- * Компонент формы авторизации
- * Содержит поля ввода с простой валидацией, кнопку отправки и ссылку на регистрацию
- */
 
 export interface AuthField {
   label: string;
@@ -18,30 +15,45 @@ export interface AuthField {
   required: boolean;
 }
 
-export interface AuthFormProps {
+// Расширяем BlockProps для типизации пропсов AuthForm
+export interface AuthFormProps extends BlockProps {
   title: string;
-  fields: AuthField[];
+  fields: AuthField[]; // Исходные поля для инициализации
+  formFields?: FormField[]; // Поля после обработки (опциональные)
   buttonText: string;
   linkText: string;
   onLinkClick: (event: Event) => void;
   onSubmit: (event: Event) => void;
+  link?: Link;
+  button?: Button;
 }
 
-export class AuthForm extends Block {
+// Указываем дженерик-тип для Block
+export class AuthForm extends Block<AuthFormProps> {
+  // Сохраняем оригинальные колбэки как свойства класса
+  private _onSubmitCallback: ((event: Event) => void) | undefined;
+
   constructor(props: AuthFormProps) {
-    // Создаем компоненты для полей формы с базовой валидацией
-    const fields = props.fields.map(
-      (field) =>
-        new FormField({
-          ...field,
-          validationRules: [
-            {
-              validator: (value: string) => value.trim() !== '',
-              errorMessage: `Поле ${field.label.toLowerCase()} не может быть пустым`,
-            },
-          ],
-        }),
-    );
+    // Добавим правила валидации для полей
+    const formFields = props.fields.map((field) => {
+      //Явно указываем тип
+      let validationRules: ValidationRule[] = [];
+
+      // Определяем правила валидации на основе имени поля
+      switch (field.name) {
+        case 'login':
+          validationRules = LOGIN_VALIDATION;
+          break;
+        case 'password':
+          validationRules = PASSWORD_VALIDATION;
+          break;
+      }
+
+      return new FormField({
+        ...field,
+        validationRules,
+      });
+    });
 
     // Создаем компонент ссылки
     const link = new Link({
@@ -60,16 +72,29 @@ export class AuthForm extends Block {
       className: styles.button,
     });
 
+    // Сохраняем колбэки до вызова суперкласса
+    // Это позволит нам использовать их позже
+    const onSubmit = props.onSubmit;
+
+    // Вызываем конструктор базового класса с безопасными параметрами
     super({
-      ...props,
+      title: props.title,
+      fields: props.fields, // Передаем оригинальные поля
+      buttonText: props.buttonText,
+      linkText: props.linkText,
       styles,
-      fields,
+      formFields, // Передаем обработанные поля
       link,
       button,
+      onLinkClick: props.onLinkClick,
+      onSubmit: props.onSubmit,
       events: {
         submit: (e: Event) => this._handleSubmit(e),
       },
     });
+
+    // Инициализируем сохраненные колбэки после вызова super
+    this._onSubmitCallback = onSubmit;
   }
 
   /**
@@ -92,8 +117,9 @@ export class AuthForm extends Block {
       });
     }
 
-    if (isFormValid && this.props.onSubmit) {
-      this.props.onSubmit(e);
+    // Используем сохраненный колбэк вместо this.props.onSubmit
+    if (isFormValid && this._onSubmitCallback) {
+      this._onSubmitCallback(e);
     } else {
       console.log('Форма содержит ошибки');
     }

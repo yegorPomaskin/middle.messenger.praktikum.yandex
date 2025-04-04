@@ -1,11 +1,12 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule } from '../../utils/validator';
 import { Input } from '../input/input';
 
 import styles from './commonProfileStyles.module.css';
 import template from './profileField.hbs?raw';
 
-interface ProfileFieldProps {
+interface ProfileFieldProps extends BlockProps {
+  [key: string]: unknown;
   name: string;
   label: string;
   value: string;
@@ -15,15 +16,12 @@ interface ProfileFieldProps {
   validationRules?: ValidationRule[];
   required?: boolean;
   errorText?: string;
-  events?: {
-    focus?: (event: FocusEvent) => void;
-    blur?: (event: FocusEvent) => void;
-    change?: (event: Event) => void;
-  };
+  events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
-export class ProfileField extends Block {
+export class ProfileField extends Block<ProfileFieldProps> {
   private input: Input;
+
   private _currentValue: string = '';
 
   constructor(props: ProfileFieldProps) {
@@ -38,12 +36,26 @@ export class ProfileField extends Block {
       validationRules: props.validationRules,
       className: styles.profile__input,
       events: {
-        focus: (e: FocusEvent) => props.events?.focus?.(e),
-        blur: (e: FocusEvent) => this._handleInputBlur(e, props),
-        input: (e: Event) => {
-          this._currentValue = (e.target as HTMLInputElement).value;
-          props.events?.change?.(e);
-        },
+        focus: ((e: Event) => {
+          if (props.events?.focus) {
+            (props.events.focus as EventListener)(e);
+          }
+        }) as EventListener,
+        blur: ((e: Event) => {
+          this._handleInputBlur.bind(this)(e as FocusEvent, props);
+        }) as EventListener,
+        input: ((e: Event) => {
+          const target = e.target as HTMLInputElement;
+          // Сохраняем значение в локальной переменной
+          const value = target.value;
+          // Используем setTimeout, чтобы обновить _currentValue после инициализации
+          setTimeout(() => {
+            this._currentValue = value;
+            if (props.events?.change) {
+              (props.events.change as EventListener)(e);
+            }
+          }, 0);
+        }) as EventListener,
       },
     });
 
@@ -55,10 +67,10 @@ export class ProfileField extends Block {
       isViewMode: mode === 'view',
       isPassword: props.type === 'password',
       editable: props.editable !== false,
-      // ВАЖНО: добавляем явно error 
+      // ВАЖНО: добавляем явно error
       error: false,
       errorText: props.errorText ?? '',
-    }); 
+    });
 
     this.input = input;
     this._currentValue = props.value;
@@ -67,56 +79,59 @@ export class ProfileField extends Block {
 
   private _handleInputBlur(e: FocusEvent, props: ProfileFieldProps): void {
     const isValid = this.input.validate();
-    
+
     // Используем явное приведение типов
     const validationRules = props.validationRules ?? [];
-    
+
     if (!isValid && validationRules.length > 0) {
-      const errorMessage = validationRules
-        .find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
-        ?.errorMessage ?? 'Invalid input';
-      
-      this.setProps({ 
+      const errorMessage =
+        validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
+          ?.errorMessage ?? 'Invalid input';
+
+      this.setProps({
         errorText: errorMessage,
-        error: true, 
+        error: true,
       });
       this.input.setError(true);
     } else {
-      this.setProps({ 
+      this.setProps({
         errorText: '',
-        error: false, 
+        error: false,
       });
       this.input.setError(false);
     }
     // Вызываем оригинальный обработчик blur если он был передан
     if (props.events?.blur) {
-      props.events.blur(e);
+      (props.events.blur as EventListener)(e);
     }
   }
 
   public validate(): boolean {
     const isValid = this.input.validate();
-  
-    if (!isValid && this.props.validationRules?.length) {
-      const errorMessage = this.props.validationRules.find(
-        (rule: ValidationRule) => !rule.validator(this.input.getValue())
-      )?.errorMessage ?? 'Invalid input';
-  
+
+    // Безопасно получаем validationRules через type assertion
+    const validationRules = this.props.validationRules as ValidationRule[] | undefined;
+
+    if (!isValid && validationRules?.length) {
+      const errorMessage =
+        validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
+          ?.errorMessage ?? 'Invalid input';
+
       // ВАЖНО: устанавливаем и error, и errorText
-      this.setProps({ 
+      this.setProps({
         errorText: errorMessage,
-        error: true, 
+        error: true,
       });
       this.input.setError(true);
     } else {
       // Сбрасываем и error, и errorText
-      this.setProps({ 
+      this.setProps({
         errorText: '',
-        error: false, 
+        error: false,
       });
       this.input.setError(false);
     }
-  
+
     return isValid;
   }
 
@@ -125,7 +140,7 @@ export class ProfileField extends Block {
   }
 
   public getName(): string {
-    return this.props.name;
+    return this.props.name as string;
   }
 
   protected render(): string {

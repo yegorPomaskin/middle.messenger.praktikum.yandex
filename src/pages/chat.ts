@@ -1,16 +1,17 @@
 import { ChatInterface, Message } from '../components/chatInterface/chatInterface';
 import { ChatItem } from '../components/chatItem/chatItem';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 import styles from '../styles/pages/chat.module.css';
 import template from '../templates/chat.hbs?raw';
 
-interface ChatPageProps {
+interface ChatPageProps extends BlockProps {
+  [key: string]: unknown;
   activeChatId?: number;
   attachment: string;
   sendButton: string;
 }
 
-export class ChatPage extends Block {
+export class ChatPage extends Block<ChatPageProps> {
   constructor(props: ChatPageProps) {
     // Подготовка данных чатов
     const chatsData = [
@@ -61,7 +62,7 @@ export class ChatPage extends Block {
 
               // Обновляем состояние каждого чата в списке
               if (this.lists?.chatItems) {
-                this.lists.chatItems.forEach((item: any) => {
+                this.lists.chatItems.forEach((item) => {
                   if (item instanceof ChatItem) {
                     item.setProps({ isActive: item.getId() === chatData.id });
                   }

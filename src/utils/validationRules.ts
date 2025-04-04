@@ -5,7 +5,7 @@ export const VALIDATION_RULES = {
   name: (
     errorMessage = 'Первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)',
   ): ValidationRule => ({
-    validator: (value: string) => /^[A-ZА-Я][a-zа-яA-ZА-Я-]*$/.test(value),
+    validator: (value: string) => /^[A-ZА-ЯЁ][a-zа-яёA-ZА-ЯЁ-]*$/.test(value),
     errorMessage,
   }),
 
