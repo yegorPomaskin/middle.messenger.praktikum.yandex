@@ -1,15 +1,15 @@
 /* InputField.module.css */
 .input {
-  color: #fff;
-  width: 100%;
+  background: transparent;
   border: none;
   border-bottom: 1px solid #ccc;
-  background: transparent;
-  outline: none;
-  padding: 6px 0;
-  margin-bottom: 16px;
+  color: #fff;
   font-size: 13px;
   line-height: 13px;
+  margin-bottom: 16px;
+  outline: none;
+  padding: 6px 0;
+  width: 100%;
 }
 
 .input:focus {
