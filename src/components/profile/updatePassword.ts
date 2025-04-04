@@ -197,7 +197,7 @@ export class UpdatePasswordPage extends Block<UpdatePasswordPageProps> {
       },
     });
   }
-  
+
   protected componentDidMount(): void {
     // Создаем модальное окно для смены аватара
     this.createAvatarModal();

@@ -22,7 +22,7 @@
   margin-bottom: 8px;
 }
 
-.error__text{
+.error__text {
   color: var(--error-color);
   font-size: 9px;
   margin-bottom: 10px;
