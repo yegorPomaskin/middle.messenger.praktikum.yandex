@@ -1,0 +1,33 @@
+.profile__fieldItem {
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.profile__actionItem {
+  margin-bottom: 16px;
+}
+
+.profile__value {
+  color: var(--text-secondary);
+}
+
+.profile__input {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  outline: none;
+  padding: 0;
+  text-align: right;
+}
+
+.profile__errorText {
+  /* Стили для текста ошибки */
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}

@@ -1,0 +1,29 @@
+.form__input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  color: #fff;
+  font-size: 13px;
+  line-height: 13px;
+  margin-bottom: 16px;
+  outline: none;
+  padding: 6px 0;
+  width: 100%;
+}
+
+.form__input:focus {
+  border-bottom-color: #fff;
+}
+
+.form__label {
+  color: var(--secondary-color);
+  font-size: 9px;
+  line-height: 9px;
+  margin-bottom: 8px;
+}
+
+.error__text {
+  color: var(--error-color);
+  font-size: 9px;
+  margin-bottom: 10px;
+}

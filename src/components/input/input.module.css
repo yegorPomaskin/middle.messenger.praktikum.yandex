@@ -1,0 +1,21 @@
+/* InputField.module.css */
+.input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  color: #fff;
+  font-size: 13px;
+  line-height: 13px;
+  margin-bottom: 16px;
+  outline: none;
+  padding: 6px 0;
+  width: 100%;
+}
+
+.input:focus {
+  border-bottom-color: #fff;
+}
+
+.inputError {
+  border-bottom-color: red;
+}
