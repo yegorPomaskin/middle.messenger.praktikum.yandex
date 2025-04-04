@@ -1,5 +1,5 @@
 import { AuthForm, AuthField } from '../components/authForm/authForm';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 
 import { RegisterPage } from './register';
 
@@ -15,7 +15,12 @@ const AUTH_FORM_CONFIG = {
   linkText: 'Нет аккаунта?',
 };
 
-export class AuthPage extends Block {
+interface AuthPageProps extends BlockProps {
+  [key: string]: unknown;
+  AuthForm?: AuthForm;
+}
+
+export class AuthPage extends Block<AuthPageProps> {
   constructor() {
     super({
       AuthForm: new AuthForm({

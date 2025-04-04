@@ -1,16 +1,19 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import template from './modal.hbs?raw';
 import styles from './modal.module.css';
 
-interface ModalProps {
+interface ModalProps extends BlockProps {
+  [key: string]: unknown;
   title: string;
   isOpen?: boolean;
   contentBlock?: Block;
   onClose?: () => void;
+  styles?: Record<string, string>;
+  events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
-export class Modal extends Block {
+export class Modal extends Block<ModalProps> {
   // Add a private property to store the onClose callback
   private _onCloseCallback?: () => void;
 

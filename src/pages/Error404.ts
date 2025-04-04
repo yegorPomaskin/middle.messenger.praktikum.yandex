@@ -1,8 +1,13 @@
 import { ErrorPage } from '../components/error/ErrorPage';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 import { renderLinksPage } from '../pages/links';
 
-export class Error404Page extends Block {
+interface Error404PageProps extends BlockProps {
+  [key: string]: unknown;
+  errorPage?: ErrorPage;
+}
+
+export class Error404Page extends Block<Error404PageProps> {
   constructor() {
     super({
       errorPage: new ErrorPage({

@@ -1,8 +1,9 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import styles from './link.module.css';
 
-interface LinkProps {
+interface LinkProps extends BlockProps {
+  [key: string]: unknown;
   text: string;
   className?: string;
   events?: {
@@ -14,9 +15,10 @@ interface LinkProps {
   attr?: {
     'data-action': string;
   };
+  styles?: Record<string, string>;
 }
 
-export class Link extends Block {
+export class Link extends Block<LinkProps> {
   constructor(props: LinkProps) {
     const baseClass = props.useDefaultClass === false ? '' : styles.link;
 

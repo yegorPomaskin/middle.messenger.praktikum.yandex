@@ -1,11 +1,12 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule } from '../../utils/validator';
 import { Input } from '../input/input';
 
 import styles from './commonProfileStyles.module.css';
 import template from './profileField.hbs?raw';
 
-interface ProfileFieldProps {
+interface ProfileFieldProps extends BlockProps {
+  [key: string]: unknown;
   name: string;
   label: string;
   value: string;
@@ -18,7 +19,7 @@ interface ProfileFieldProps {
   events?: Record<string, EventListenerOrEventListenerObject>;
 }
 
-export class ProfileField extends Block {
+export class ProfileField extends Block<ProfileFieldProps> {
   private input: Input;
 
   private _currentValue: string = '';

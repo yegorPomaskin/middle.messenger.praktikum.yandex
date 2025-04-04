@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { Button } from '../button/button';
 import buttonStyles from '../button/button.module.css';
 import styles from '../profile/profile.module.css';
@@ -8,7 +8,8 @@ import { Sidebar } from '../sidebar/sidebar';
 
 import template from './profile.hbs?raw';
 
-interface UpdatePasswordPageProps {
+interface UpdatePasswordPageProps extends BlockProps {
+  [key: string]: unknown;
   profileImage: string;
   userName: string;
   sidebarData: {
@@ -24,9 +25,15 @@ interface UpdatePasswordPageProps {
     change?: EventListener;
     submit?: EventListener;
   };
+  sidebar?: Sidebar;
+  fields?: ProfileField[];
+  buttons?: Button[];
+  styles?: Record<string, string>;
+  commonStyles?: Record<string, string>;
+  isEditMode?: boolean;
 }
 
-export class UpdatePasswordPage extends Block {
+export class UpdatePasswordPage extends Block<UpdatePasswordPageProps> {
   constructor(props: UpdatePasswordPageProps) {
     // Create sidebar component
     const sidebar = new Sidebar({

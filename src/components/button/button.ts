@@ -1,19 +1,20 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import styles from './button.module.css';
 
-interface ButtonProps {
+interface ButtonProps extends BlockProps {
+  [key: string]: unknown;
   text: string;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
-  variant?: 'login' | 'register' | 'save' | 'cancel' | 'modal'; // Добавляем варианты кнопок
+  variant?: 'login' | 'register' | 'save' | 'cancel' | 'modal';
   attr?: Record<string, string>;
   events?: {
     click?: (event: Event) => void;
   };
 }
 
-export class Button extends Block {
+export class Button extends Block<ButtonProps> {
   constructor(props: ButtonProps) {
     // Базовый класс кнопки
     let buttonClass = styles.button;

@@ -1,8 +1,13 @@
 import { ErrorPage } from '../components/error/ErrorPage';
-import Block from '../framework/block';
+import Block, { BlockProps } from '../framework/block';
 import { renderLinksPage } from '../pages/links';
 
-export class Error505Page extends Block {
+interface Error505PageProps extends BlockProps {
+  [key: string]: unknown;
+  errorPage?: ErrorPage;
+}
+
+export class Error505Page extends Block<Error505PageProps> {
   constructor() {
     super({
       errorPage: new ErrorPage({

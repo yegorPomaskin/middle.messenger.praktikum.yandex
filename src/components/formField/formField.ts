@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule } from '../../utils/validator';
 import { Input } from '../input/input';
 
@@ -10,7 +10,8 @@ import styles from './formField.module.css';
  * Оборачивает базовый компонент Input и добавляет функциональность валидации
  */
 
-export interface FormFieldProps {
+export interface FormFieldProps extends BlockProps {
+  [key: string]: unknown;
   label: string;
   name: string;
   type: string;
@@ -19,9 +20,11 @@ export interface FormFieldProps {
   errorText?: string;
   validationRules?: ValidationRule[];
   events?: Record<string, EventListenerOrEventListenerObject>;
+  input?: Input;
+  styles?: Record<string, string>;
 }
 
-export class FormField extends Block {
+export class FormField extends Block<FormFieldProps> {
   private input: Input;
 
   constructor(props: FormFieldProps) {
@@ -42,15 +45,12 @@ export class FormField extends Block {
       },
     });
 
-    // Преобразуем события, чтобы они соответствовали типу в BlockProps
-    const blockProps: Record<string, unknown> = {
+    super({
       ...props,
       styles,
       input,
       errorText: props.errorText ?? '',
-    };
-
-    super(blockProps);
+    });
 
     this.input = input;
   }

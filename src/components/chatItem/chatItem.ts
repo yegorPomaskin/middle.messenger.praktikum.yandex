@@ -1,9 +1,10 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import template from './chatItem.hbs?raw';
 import styles from './chatItem.module.css';
 
-export interface ChatItemProps {
+export interface ChatItemProps extends BlockProps {
+  [key: string]: unknown;
   id: number;
   name: string;
   avatar: string;
@@ -14,9 +15,10 @@ export interface ChatItemProps {
   events?: {
     click?: EventListener;
   };
+  styles?: Record<string, string>;
 }
 
-export class ChatItem extends Block {
+export class ChatItem extends Block<ChatItemProps> {
   constructor(props: ChatItemProps) {
     super({
       ...props,

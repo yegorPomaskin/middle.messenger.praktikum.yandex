@@ -2,7 +2,7 @@ import Handlebars from 'handlebars';
 
 import EventBus, { EventCallback } from './eventBus';
 
-interface BlockProps {
+export interface BlockProps {
   [key: string]: unknown;
   events?: Record<string, EventListenerOrEventListenerObject>;
   attr?: Record<string, string>;
@@ -12,34 +12,34 @@ interface BlockList extends Array<unknown> {
   __listId?: string;
 }
 
-export default class Block {
+export default abstract class Block<Props extends BlockProps = BlockProps> {
   static EVENTS = {
     INIT: 'init',
     FLOW_CDM: 'flow:component-did-mount',
     FLOW_CDU: 'flow:component-did-update',
     FLOW_RENDER: 'flow:render',
-  } as const;
+  };
 
   protected _element: HTMLElement | null = null;
 
-  protected props: BlockProps;
+  protected props: Props;
 
   protected _id: number = this.generateId();
 
-  protected children: Record<string, Block>;
+  protected children: Record<string, Block<BlockProps>>;
 
   protected lists: Record<string, BlockList>;
 
   protected eventBus: () => EventBus;
 
-  constructor(propsWithChildren: BlockProps = {}) {
+  constructor(propsWithChildren: Props) {
     const eventBus = new EventBus();
     // Метод _getChildrenPropsAndProps возвращает объект, содержащий три части: props, children и lists
     const { props, children, lists } = this._getChildrenPropsAndProps(propsWithChildren);
 
-    this.props = this._makePropsProxy({ ...props });
+    this.props = this._makePropsProxy({ ...props } as Props);
     this.children = children;
-    this.lists = this._makePropsProxy({ ...lists });
+    this.lists = this._makePropsProxy({ ...lists } as unknown as Props) as unknown as Record<string, BlockList>;
     this.eventBus = () => eventBus;
 
     this._registerEvents(eventBus);
@@ -54,7 +54,7 @@ export default class Block {
     const { events = {} } = this.props;
     Object.keys(events).forEach((eventName) => {
       if (this._element) {
-        this._element!.addEventListener(eventName, events[eventName] as EventListener);
+        this._element.addEventListener(eventName, events[eventName] as EventListener);
       }
     });
   }
@@ -62,7 +62,7 @@ export default class Block {
   private _registerEvents(eventBus: EventBus): void {
     eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-    eventBus.on(Block.EVENTS.FLOW_CDU, ((oldProps: BlockProps, newProps: BlockProps) => {
+    eventBus.on(Block.EVENTS.FLOW_CDU, ((oldProps: Props, newProps: Props) => {
       this._componentDidUpdate(oldProps, newProps);
     }) as EventCallback);
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
@@ -83,25 +83,25 @@ export default class Block {
     this.eventBus().emit(Block.EVENTS.FLOW_CDM);
   }
 
-  private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+  private _componentDidUpdate(oldProps: Props, newProps: Props): void {
     const response = this.componentDidUpdate(oldProps, newProps);
     if (response) {
       this._render();
     }
   }
 
-  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-    console.log(typeof oldProps, typeof newProps);
+  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+    console.log(oldProps, newProps);
     return true;
   }
 
-  private _getChildrenPropsAndProps(propsAndChildren: BlockProps): {
-    children: Record<string, Block>;
-    props: BlockProps;
+  private _getChildrenPropsAndProps(propsAndChildren: Props): {
+    children: Record<string, Block<BlockProps>>;
+    props: Partial<Props>;
     lists: Record<string, BlockList>;
   } {
-    const children: Record<string, Block> = {};
-    const props: BlockProps = {};
+    const children: Record<string, Block<BlockProps>> = {};
+    const props: Partial<Props> = {};
     const lists: Record<string, BlockList> = {};
 
     Object.entries(propsAndChildren).forEach(([key, value]) => {
@@ -110,7 +110,7 @@ export default class Block {
       } else if (Array.isArray(value)) {
         lists[key] = value as BlockList;
       } else {
-        props[key] = value;
+        props[key as keyof Props] = value as Props[keyof Props];
       }
     });
 
@@ -125,14 +125,13 @@ export default class Block {
     }
   }
 
-  public setProps = (nextProps: BlockProps): void => {
-    // Улучшена реактивность - чего
+  public setProps = (nextProps: Partial<Props>): void => {
     if (!nextProps) {
       return;
     }
 
     Object.entries(nextProps).forEach(([key, value]) => {
-      this.props[key] = value;
+      this.props[key as keyof Props] = value as Props[keyof Props];
     });
   };
 
@@ -150,13 +149,13 @@ export default class Block {
   _removeEvents() {
     // Получаем все зарегистрированные события на элементе
     const events = this.props.events;
-    
+
     if (!events || !this._element) {
       return;
     }
-    
+
     // Проходим по всем событиям и удаляем обработчики
-    Object.keys(events).forEach(eventName => {
+    Object.keys(events).forEach((eventName) => {
       this._element!.removeEventListener(eventName, events[eventName]);
     });
   }
@@ -168,13 +167,15 @@ export default class Block {
 
     // Создание заглушек для детей-компонентов
     Object.entries(this.children).forEach(([key, child]) => {
-      propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
+      propsAndStubs[key as keyof Props] =
+        `<div data-id="${child._id}"></div>` as unknown as Props[keyof Props];
     });
 
     // Создание уникальных заглушек для каждого списка
     Object.entries(this.lists).forEach(([key, childList]) => {
       const listId = `__l_${key}_${this.generateId()}`;
-      propsAndStubs[key] = `<div data-id="__l_${listId}"></div>`;
+      propsAndStubs[key as keyof Props] =
+        `<div data-id="__l_${listId}"></div>` as unknown as Props[keyof Props];
       childList.__listId = listId; // временно запоминаем id заглушки для списка
     });
 
@@ -224,10 +225,8 @@ export default class Block {
     this.setAttributes(this.props.attr || {});
   }
 
-  // Может переопределять пользователь, необязательно трогать
-  protected render(): string {
-    return '';
-  }
+  // Абстрактный метод render должен быть реализован в дочерних классах
+  protected abstract render(): string;
 
   public getContent(): HTMLElement {
     if (!this._element) {

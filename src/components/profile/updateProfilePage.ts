@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import {
   LOGIN_VALIDATION,
   EMAIL_VALIDATION,
@@ -16,7 +16,8 @@ import commonStyles from '../profileField/commonProfileStyles.module.css';
 import { ProfileField } from '../profileField/profileField';
 import { Sidebar } from '../sidebar/sidebar';
 
-interface UpdateProfilePageProps {
+interface UpdateProfilePageProps extends BlockProps {
+  [key: string]: unknown;
   profileImage: string;
   userName: string;
   userFields: Array<{
@@ -36,7 +37,7 @@ interface UpdateProfilePageProps {
   onAvatarUpload?: (file: File) => Promise<string>;
 }
 
-export class UpdateProfilePage extends Block {
+export class UpdateProfilePage extends Block<UpdateProfilePageProps> {
   private avatarModal: Modal | null = null;
 
   constructor(props: UpdateProfilePageProps) {

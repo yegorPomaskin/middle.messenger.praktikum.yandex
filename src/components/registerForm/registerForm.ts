@@ -1,4 +1,4 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import {
   LOGIN_VALIDATION,
   PASSWORD_VALIDATION,
@@ -21,9 +21,11 @@ export interface AuthField {
   required: boolean;
 }
 
-export interface AuthRegisterFormProps {
+export interface AuthRegisterFormProps extends BlockProps {
+  [key: string]: unknown;
   title: string;
   fields: AuthField[];
+  formFields?: FormField[];
   buttonText: string;
   linkText: string;
   isLogin: boolean;
@@ -31,7 +33,7 @@ export interface AuthRegisterFormProps {
   onSubmit: (event: Event) => void;
 }
 
-export class AuthRegisterForm extends Block {
+export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
   private _onSubmitCallback: ((event: Event) => void) | undefined;
 
   constructor(props: AuthRegisterFormProps) {
@@ -39,7 +41,7 @@ export class AuthRegisterForm extends Block {
     const modifier = isLogin ? styles.auth : styles.register;
 
     // Добавим правила валидации для полей
-    const fieldsWithValidation = props.fields.map((field) => {
+    const formFields = props.fields.map((field) => {
       // Явно указываем тип для validationRules
       let validationRules: ValidationRule[] = [];
 
@@ -95,7 +97,7 @@ export class AuthRegisterForm extends Block {
     super({
       ...props,
       styles,
-      fields: fieldsWithValidation,
+      formFields,
       link,
       button,
       sectionModifier: modifier,

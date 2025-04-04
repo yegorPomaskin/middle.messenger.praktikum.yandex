@@ -1,15 +1,18 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { Button } from '../button/button';
 import buttonStyles from '../button/button.module.css';
 
 import template from './avatarUploadForm.hbs?raw';
 import styles from './avatarUploadForm.module.css';
 
-interface AvatarUploadFormProps {
+interface AvatarUploadFormProps extends BlockProps {
+  [key: string]: unknown;
   onSubmit?: (file: File) => void;
+  submitButton?: Button;
+  styles?: Record<string, string>;
 }
 
-export class AvatarUploadForm extends Block {
+export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
   private fileInputRef: HTMLInputElement | null = null;
 
   private selectedFile: File | null = null;

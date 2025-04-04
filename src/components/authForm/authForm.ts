@@ -1,8 +1,5 @@
-import Block from '../../framework/block';
-import {
-  LOGIN_VALIDATION,
-  PASSWORD_VALIDATION
-} from '../../utils/validationRules';
+import Block, { BlockProps } from '../../framework/block';
+import { LOGIN_VALIDATION, PASSWORD_VALIDATION } from '../../utils/validationRules';
 import { ValidationRule } from '../../utils/validator';
 import { Button } from '../button/button';
 import { FormField } from '../formField/formField';
@@ -18,22 +15,27 @@ export interface AuthField {
   required: boolean;
 }
 
-export interface AuthFormProps {
+// Расширяем BlockProps для типизации пропсов AuthForm
+export interface AuthFormProps extends BlockProps {
   title: string;
-  fields: AuthField[];
+  fields: AuthField[]; // Исходные поля для инициализации
+  formFields?: FormField[]; // Поля после обработки (опциональные)
   buttonText: string;
   linkText: string;
   onLinkClick: (event: Event) => void;
   onSubmit: (event: Event) => void;
+  link?: Link;
+  button?: Button;
 }
 
-export class AuthForm extends Block {
+// Указываем дженерик-тип для Block
+export class AuthForm extends Block<AuthFormProps> {
   // Сохраняем оригинальные колбэки как свойства класса
   private _onSubmitCallback: ((event: Event) => void) | undefined;
 
   constructor(props: AuthFormProps) {
     // Добавим правила валидации для полей
-    const fieldsWithValidation = props.fields.map((field) => {
+    const formFields = props.fields.map((field) => {
       //Явно указываем тип
       let validationRules: ValidationRule[] = [];
 
@@ -42,7 +44,7 @@ export class AuthForm extends Block {
         case 'login':
           validationRules = LOGIN_VALIDATION;
           break;
-        case 'password': 
+        case 'password':
           validationRules = PASSWORD_VALIDATION;
           break;
       }
@@ -77,16 +79,18 @@ export class AuthForm extends Block {
     // Вызываем конструктор базового класса с безопасными параметрами
     super({
       title: props.title,
+      fields: props.fields, // Передаем оригинальные поля
       buttonText: props.buttonText,
       linkText: props.linkText,
       styles,
-      fields: fieldsWithValidation,
+      formFields, // Передаем обработанные поля
       link,
       button,
+      onLinkClick: props.onLinkClick,
+      onSubmit: props.onSubmit,
       events: {
         submit: (e: Event) => this._handleSubmit(e),
       },
-      // Не передаем onSubmit и onLinkClick в базовый класс
     });
 
     // Инициализируем сохраненные колбэки после вызова super

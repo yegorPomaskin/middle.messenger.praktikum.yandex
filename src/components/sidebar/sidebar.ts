@@ -1,15 +1,16 @@
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 
 import template from './sidebar.hbs?raw';
 import styles from './sidebar.module.css';
 
-export interface SidebarProps {
+export interface SidebarProps extends BlockProps {
+  [key: string]: unknown;
   href: string;
   iconSrc: string;
   onClick?: (event: Event) => void;
 }
 
-export class Sidebar extends Block {
+export class Sidebar extends Block<SidebarProps> {
   constructor(props: SidebarProps) {
     super({
       ...props,

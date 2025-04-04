@@ -2,12 +2,13 @@
  * Базовый компонент поля ввода
  * Оптимизирован для предотвращения перерисовки при каждом вводе символа
  */
-import Block from '../../framework/block';
+import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule, Validator } from '../../utils/validator';
 
 import styles from './input.module.css';
 
-interface InputProps {
+interface InputProps extends BlockProps {
+  [key: string]: unknown;
   name: string;
   type: string;
   value?: string;
@@ -16,9 +17,10 @@ interface InputProps {
   validationRules?: ValidationRule[];
   className?: string;
   events?: Record<string, EventListenerOrEventListenerObject>;
+  styles?: Record<string, string>;
 }
 
-export class Input extends Block {
+export class Input extends Block<InputProps> {
   private validator: Validator | null = null;
 
   private _currentValue: string = '';
