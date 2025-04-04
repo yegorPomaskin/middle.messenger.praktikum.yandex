@@ -62,7 +62,7 @@ export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
           validationRules = PHONE_VALIDATION;
           break;
         case 'first_name':
-        case 'second_name':
+        case 'last_name':
         case 'display_name':
           validationRules = NAME_VALIDATION;
           break;
@@ -120,8 +120,8 @@ export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
     let isFormValid = true;
     const formData: Record<string, string> = {};
 
-    if (this.lists && this.lists.fields) {
-      this.lists.fields.forEach((field) => {
+    if (this.lists && this.lists.formFields) {
+      this.lists.formFields.forEach((field) => {
         if (field instanceof FormField) {
           const isFieldValid = field.validate();
           isFormValid = isFormValid && isFieldValid;
