@@ -39,7 +39,10 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
 
     this.props = this._makePropsProxy({ ...props } as Props);
     this.children = children;
-    this.lists = this._makePropsProxy({ ...lists } as unknown as Props) as unknown as Record<string, BlockList>;
+    this.lists = this._makePropsProxy({ ...lists } as unknown as Props) as unknown as Record<
+    string,
+    BlockList
+    >;
     this.eventBus = () => eventBus;
 
     this._registerEvents(eventBus);
