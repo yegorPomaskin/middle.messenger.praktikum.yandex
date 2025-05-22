@@ -1,7 +1,6 @@
 import linkStyles from '../components/link/link.module.css';
 import { ProfilePage } from '../components/profile/profilePage';
 import Block, { BlockProps } from '../framework/block';
-import { renderLinksPage } from '../pages/links';
 
 interface ProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;
@@ -70,7 +69,6 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
       sidebarData: {
         href: '#',
         iconSrc: '/back-arrow.png',
-        onClick: () => renderLinksPage(),
       },
     });
 

@@ -1,6 +1,5 @@
 import { ErrorPage } from '../components/error/ErrorPage';
 import Block, { BlockProps } from '../framework/block';
-import { renderLinksPage } from '../pages/links';
 
 interface Error505PageProps extends BlockProps {
   [key: string]: unknown;
@@ -16,7 +15,6 @@ export class Error505Page extends Block<Error505PageProps> {
         linkText: 'Назад к чатам',
         onLinkClick: (e: Event) => {
           e.preventDefault();
-          renderLinksPage();
         },
       }),
     });
