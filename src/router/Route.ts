@@ -6,17 +6,28 @@ function isEqual(lhs: string, rhs: string): boolean {
 
 function render(query: string, block: Block): HTMLElement | null {
   const root = document.querySelector(query) as HTMLElement | null;
-  if (root) {
-    // Очищаем содержимое корневого элемента
-    root.innerHTML = '';
-    // Добавляем контент блока
-    const content = block.getContent();
-    if (content) {
-      root.appendChild(content);
-      // Вызываем componentDidMount для инициализации компонента
-      block.dispatchComponentDidMount();
-    }
+  
+  if (!root) {
+    console.error(`Root element not found: ${query}`);
+    return null;
   }
+
+  // Очищаем содержимое корневого элемента
+  root.innerHTML = '';
+  
+  // Убеждаемся, что элемент полностью очищен
+  while (root.firstChild) {
+    root.removeChild(root.firstChild);
+  }
+  
+  // Добавляем контент блока
+  const content = block.getContent();
+  if (content) {
+    root.appendChild(content);
+    // Вызываем componentDidMount для инициализации компонента
+    block.dispatchComponentDidMount();
+  }
+  
   return root;
 }
 
@@ -46,7 +57,14 @@ export default class Route {
 
   leave(): void {
     if (this._block) {
-      this._block.hide();
+      // Полностью удаляем блок из DOM вместо скрытия
+      if (typeof this._block.destroy === 'function') {
+        this._block.destroy();
+      } else {
+        // Fallback если destroy не существует
+        this._block.hide();
+      }
+      this._block = null;
     }
   }
 
@@ -56,7 +74,13 @@ export default class Route {
 
   render(): void {
     if (!this._block) {
-      this._block = new this._blockClass();
+      try {
+        this._block = new this._blockClass();
+      } catch (error) {
+        console.error('Error creating block instance:', error);
+        return;
+      }
+      
       render(this._props.rootQuery, this._block);
       return;
     }

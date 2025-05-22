@@ -1,5 +1,6 @@
 import { UpdatePasswordPage } from '../components/profile/updatePassword';
 import Block, { BlockProps } from '../framework/block';
+import { router } from '../router/Router';
 
 interface UpdatePasswordPageHandlerProps extends BlockProps {
   [key: string]: unknown;
@@ -9,21 +10,28 @@ interface UpdatePasswordPageHandlerProps extends BlockProps {
 export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerProps> {
   constructor() {
     // Обработчики событий для кнопок
+    const handleSidebarClick = (e: Event) => {
+      e.preventDefault();
+      console.log('Возврат к профилю');
+      router.go('/settings');
+    };
+
     const handleSavePassword = (passwordData: Record<string, string>) => {
       console.log('Сохранение нового пароля:', passwordData);
 
-      // Проверяем, что строки не пустые
-      if (!this.validatePasswords(passwordData)) {
+      if (!validatePasswords(passwordData)) {
         return;
       }
 
-      // Здесь будет логика отправки данных на сервер
-      // Например: UserController.changePassword(passwordData).then(...)
+      console.log('Пароль успешно изменен');
+      // Здесь будет логика отправки на сервер
+      // UserController.changePassword(passwordData).then(...)
+      router.go('/settings');
     };
 
     const handleCancel = () => {
       console.log('Отмена изменения пароля');
-      // Возвращаемся на страницу профиля без сохранения
+      router.go('/settings');
     };
 
     // Создаем экземпляр UpdatePasswordPage
@@ -31,8 +39,9 @@ export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerPr
       profileImage: '/profile-pic.png',
       userName: 'Иван',
       sidebarData: {
-        href: '#',
+        href: '/settings',
         iconSrc: '/back-arrow.png',
+        onClick: handleSidebarClick,
       },
       onSave: handleSavePassword,
       onCancel: handleCancel,
@@ -43,14 +52,32 @@ export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerPr
     });
   }
 
-  // Простая валидация - проверяем, что строки не пустые
-  private validatePasswords(passwordData: Record<string, string>): boolean {
-    const { oldPassword, newPassword, confirmPassword } = passwordData;
-
-    return Boolean(oldPassword && newPassword && confirmPassword);
-  }
-
   protected render(): string {
     return `{{{ updatePasswordPage }}}`;
   }
 }
+
+// Локальная функция валидации
+const validatePasswords = (passwordData: Record<string, string>): boolean => {
+  const { oldPassword, newPassword, confirmPassword } = passwordData;
+
+  // Проверяем, что все поля заполнены
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    console.error('Ошибка: Все поля должны быть заполнены');
+    return false;
+  }
+
+  // Проверяем, что новый пароль и подтверждение совпадают
+  if (newPassword !== confirmPassword) {
+    console.error('Ошибка: Новый пароль и подтверждение не совпадают');
+    return false;
+  }
+
+  // Проверяем, что новый пароль отличается от старого
+  if (oldPassword === newPassword) {
+    console.error('Ошибка: Новый пароль должен отличаться от старого');
+    return false;
+  }
+
+  return true;
+};

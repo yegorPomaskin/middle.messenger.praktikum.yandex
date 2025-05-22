@@ -1,6 +1,7 @@
 import linkStyles from '../components/link/link.module.css';
 import { ProfilePage } from '../components/profile/profilePage';
 import Block, { BlockProps } from '../framework/block';
+import { router } from '../router/Router';
 
 interface ProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;
@@ -9,26 +10,31 @@ interface ProfilePageHandlerProps extends BlockProps {
 
 export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
   constructor() {
-    // Создаем методы-обработчики для кнопок
+
     const handleEditData = (e: Event) => {
       e.preventDefault();
       console.log('Переход на страницу редактирования данных');
-      // Здесь будет логика перехода на страницу редактирования
-      // Когда будет роутер: router.go('/edit-profile');
+      router.go('/settings/edit-profile');
     };
 
     const handleChangePassword = (e: Event) => {
       e.preventDefault();
       console.log('Переход на страницу изменения пароля');
-      // Логика перехода на страницу изменения пароля
-      // Когда будет роутер: router.go('/change-password');
+      router.go('/settings/change-password');
     };
 
     const handleLogout = (e: Event) => {
       e.preventDefault();
       console.log('Выход из профиля');
       // Логика выхода из профиля
-      // Например: AuthController.logout().then(() => router.go('/login'));
+      // Например: AuthController.logout().then(() => router.go('/'));
+      router.go('/');
+    };
+
+    const handleSidebarClick = (e: Event) => {
+      e.preventDefault();
+      console.log('Возврат к чатам');
+      router.go('/messenger');
     };
 
     // Создаем экземпляр ProfilePage с настроенными обработчиками событий
@@ -45,21 +51,21 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
       ],
       buttonSettings: [
         {
-          href: '#',
+          href: '/settings/edit-profile',
           className: linkStyles.actionLink,
           text: 'Изменить данные',
           useDefaultClass: false,
           onClick: handleEditData,
         },
         {
-          href: '#',
+          href: '/settings/change-password',
           className: linkStyles.actionLink,
           text: 'Изменить пароль',
           useDefaultClass: false,
           onClick: handleChangePassword,
         },
         {
-          href: '#',
+          href: '/',
           className: linkStyles.logoutLink,
           text: 'Выйти',
           useDefaultClass: false,
@@ -67,8 +73,9 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
         },
       ],
       sidebarData: {
-        href: '#',
+        href: '/messenger',
         iconSrc: '/back-arrow.png',
+        onClick: handleSidebarClick,
       },
     });
 
@@ -78,8 +85,6 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
   }
 
   protected render(): string {
-    return `
-            {{{ profilePage }}}
-        `;
+    return `{{{ profilePage }}}`;
   }
 }

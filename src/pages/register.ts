@@ -1,7 +1,6 @@
 import { AuthRegisterForm } from '../components/registerForm/registerForm';
 import Block, { BlockProps } from '../framework/block';
-
-import { AuthPage } from './auth';
+import { router } from '../router/Router';
 
 const REGISTER_FORM_CONFIG = {
   title: 'Регистрация',
@@ -35,21 +34,15 @@ export class RegisterPage extends Block<RegisterPageProps> {
       RegisterForm: new AuthRegisterForm({
         ...REGISTER_FORM_CONFIG,
         isLogin: false,
-        onLinkClick: () => {
-          const authPage = new AuthPage();
-          const app = document.getElementById('app');
-          if (app) {
-            app.innerHTML = '';
-            const content = authPage.getContent();
-            if (content) {
-              app.appendChild(content);
-              authPage.dispatchComponentDidMount();
-            }
-          }
+        onLinkClick: (e: Event) => {
+          e.preventDefault();
+          // Переходим на страницу авторизации через роутер
+          router.go('/');
         },
         onSubmit: (e: Event) => {
           e.preventDefault();
-          // Логика отправки формы авторизации
+          // После успешной регистрации переходим в мессенджер
+          router.go('/messenger');
         },
       }),
     });

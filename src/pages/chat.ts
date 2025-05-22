@@ -1,6 +1,8 @@
 import { ChatInterface, Message } from '../components/chatInterface/chatInterface';
 import { ChatItem } from '../components/chatItem/chatItem';
+import { Link } from '../components/link/link';
 import Block, { BlockProps } from '../framework/block';
+import { router } from '../router/Router';
 import styles from '../styles/pages/chat.module.css';
 import template from '../templates/chat.hbs?raw';
 
@@ -13,7 +15,7 @@ interface ChatPageProps extends BlockProps {
 
 export class ChatPage extends Block<ChatPageProps> {
   constructor(props: ChatPageProps) {
-    // Подготовка данных чатов
+
     const chatsData = [
       {
         id: 1,
@@ -44,7 +46,6 @@ export class ChatPage extends Block<ChatPageProps> {
       },
     ];
 
-    // Сообщения для чата
     const messages: Message[] = [
       { userName: 'Андрей', time: '10:49', text: 'Привет, как дела?' },
       { userName: 'Виктор', time: '10:52', text: 'Все хорошо, а у тебя?' },
@@ -80,10 +81,25 @@ export class ChatPage extends Block<ChatPageProps> {
       sendButton: props.sendButton,
     });
 
+    const profileLink = new Link({
+      text: 'Профиль',
+      href: '/settings',
+      className: 'chat__item-link',
+      useDefaultClass: false,
+      events: {
+        click: (e: Event) => {
+          e.preventDefault();
+          console.log('Переход на страницу профиля');
+          router.go('/settings');
+        },
+      },
+    });
+
     super({
       ...props,
       chatItems,
       chatInterface,
+      profileLink,
       styles,
     });
   }

@@ -23,21 +23,16 @@ class MessengerPage extends ChatPage {
 
 // Инициализация приложения
 function initApp() {
-  console.log('Инициализация приложения...');
-  
-  // Конфигурируем роуты точно по образцу из курса
+  // Конфигурируем роуты
   router
     .use('/', AuthPage) // Главная страница - авторизация
-    .use('/sign-up', RegisterPage)
+    .use('/register', RegisterPage)
     .use('/messenger', MessengerPage)
     .use('/settings', ProfilePageHandler)
     .use('/settings/edit-profile', UpdateProfilePageHandler)
     .use('/settings/change-password', UpdatePasswordPageHandler)
     .use('/404', Error404Page)
-    .start(); // Запускаем роутер - он автоматически загрузит страницу по текущему URL
-  
-  console.log('Приложение запущено!');
-  console.log('Текущий путь:', window.location.pathname);
+    .start(); // Запускаем роутер
 }
 
 // Запускаем приложение после загрузки DOM

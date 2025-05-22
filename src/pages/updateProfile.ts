@@ -1,5 +1,6 @@
 import { UpdateProfilePage } from '../components/profile/updateProfilePage';
 import Block, { BlockProps } from '../framework/block';
+import { router } from '../router/Router';
 
 interface UpdateProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;
@@ -8,10 +9,32 @@ interface UpdateProfilePageHandlerProps extends BlockProps {
 
 export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProps> {
   constructor() {
-    // Create the UpdateProfilePage component with the existing profile template
+
+    const handleSidebarClick = (e: Event) => {
+      e.preventDefault();
+      console.log('Возврат к чатам');
+      router.go('/messenger');
+    };
+
+    // Обработчик сохранения профиля
+    const handleSaveProfile = (formData: Record<string, string>) => {
+      console.log('Сохранение данных профиля:', formData);
+      
+      // Здесь будет логика отправки данных на сервер
+      // Например: UserController.updateProfile(formData).then(...)
+      
+      // После успешного сохранения возвращаемся к просмотру профиля
+      router.go('/settings');
+    };
+
+    const handleCancel = () => {
+      console.log('Отмена редактирования профиля');
+      router.go('/settings');
+    };
+    
     const updateProfilePage = new UpdateProfilePage({
       profileImage: '/profile-pic.png',
-      userName: 'Иван', // Show the user name in the profile
+      userName: 'Иван', 
       userFields: [
         { name: 'email', label: 'Почта', value: 'test@mail.com' },
         { name: 'login', label: 'Логин', value: 'ivanivanov' },
@@ -21,27 +44,17 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
         { name: 'phone', label: 'Телефон', value: '+7 (909) 967 30 30' },
       ],
       sidebarData: {
-        href: '#',
+        href: '/messenger',
         iconSrc: '/back-arrow.png',
-        onClick: () => this.handleBackClick(),
+        onClick: handleSidebarClick,
       },
-      onSave: (formData) => this.handleSaveProfile(formData),
-      onCancel: (): void => {
-        this.handleBackClick();
-      },
+      onSave: handleSaveProfile,
+      onCancel: handleCancel,
     });
 
     super({
       updateProfilePage,
     });
-  }
-
-  private handleBackClick(): void {
-    console.warn('Back to profile page');
-  }
-
-  private handleSaveProfile(formData: Record<string, string>): void {
-    console.warn('Saving profile data:', formData);
   }
 
   protected render(): string {

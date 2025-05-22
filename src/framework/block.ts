@@ -40,8 +40,8 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
     this.props = this._makePropsProxy({ ...props } as Props);
     this.children = children;
     this.lists = this._makePropsProxy({ ...lists } as unknown as Props) as unknown as Record<
-    string,
-    BlockList
+      string,
+      BlockList
     >;
     this.eventBus = () => eventBus;
 
@@ -274,5 +274,18 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
     if (content) {
       this.getContent().style.display = 'none';
     }
+  }
+
+  destroy(): void {
+    // Удаляем обработчики событий
+    this._removeEvents();
+
+    // Удаляем элемент из DOM
+    if (this._element && this._element.parentNode) {
+      this._element.parentNode.removeChild(this._element);
+    }
+
+    // Обнуляем ссылку на элемент
+    this._element = null;
   }
 }
