@@ -10,6 +10,7 @@ import { ProfilePageHandler } from './pages/profile';
 import { UpdateProfilePageHandler } from './pages/updateProfile';
 import { UpdatePasswordPageHandler } from './pages/updatePassword';
 import { Error404Page } from './pages/Error404';
+import { Error505Page } from './pages/Error505';
 
 // Создаем класс-обертку для ChatPage с пропсами
 class MessengerPage extends ChatPage {
@@ -32,6 +33,7 @@ function initApp() {
     .use('/settings/edit-profile', UpdateProfilePageHandler)
     .use('/settings/change-password', UpdatePasswordPageHandler)
     .use('/404', Error404Page)
+    .use('/505', Error505Page)
     .start(); // Запускаем роутер
 }
 
