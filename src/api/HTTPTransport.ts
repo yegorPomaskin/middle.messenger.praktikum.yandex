@@ -49,6 +49,7 @@ export default class HTTPTransport {
    * @param {RequestOptions} options - Опции запроса
    * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
    */
+
   public get(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.GET }, options.timeout);
   }
@@ -111,6 +112,8 @@ export default class HTTPTransport {
         method,
         isGet && !!data ? `${url}${queryStringify(data as Record<string, unknown>)}` : url,
       );
+
+       xhr.withCredentials = true;
 
       // Установка заголовков
       Object.keys(headers).forEach((key) => {
