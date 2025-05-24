@@ -23,15 +23,14 @@ export interface AuthFormProps extends BlockProps {
   buttonText: string;
   linkText: string;
   onLinkClick: (event: Event) => void;
-  onSubmit: (event: Event) => void;
+  onSubmit: (formData: Record<string, string>) => void;
   link?: Link;
   button?: Button;
 }
 
-// Указываем дженерик-тип для Block
 export class AuthForm extends Block<AuthFormProps> {
   // Сохраняем оригинальные колбэки как свойства класса
-  private _onSubmitCallback: ((event: Event) => void) | undefined;
+  private _onSubmitCallback: ((formData: Record<string, string>) => void) | undefined;
 
   constructor(props: AuthFormProps) {
     // Добавим правила валидации для полей
@@ -107,8 +106,8 @@ export class AuthForm extends Block<AuthFormProps> {
     let isFormValid = true;
     const formData: Record<string, string> = {};
 
-    if (this.lists?.fields) {
-      this.lists.fields.forEach((field) => {
+    if (this.lists?.formFields) {
+      this.lists.formFields.forEach((field) => {
         if (field instanceof FormField) {
           const isFieldValid = field.validate();
           isFormValid = isFormValid && isFieldValid;
@@ -119,7 +118,8 @@ export class AuthForm extends Block<AuthFormProps> {
 
     // Используем сохраненный колбэк вместо this.props.onSubmit
     if (isFormValid && this._onSubmitCallback) {
-      this._onSubmitCallback(e);
+      console.log('Данные формы:', formData);
+      this._onSubmitCallback(formData);
     } else {
       console.log('Форма содержит ошибки');
     }

@@ -2,6 +2,7 @@ import linkStyles from '../components/link/link.module.css';
 import { ProfilePage } from '../components/profile/profilePage';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
+import AuthController from '../controllers/AuthController';
 
 interface ProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;
@@ -23,12 +24,19 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
       router.go('/settings/change-password');
     };
 
-    const handleLogout = (e: Event) => {
+    const handleLogout = async (e: Event) => {
       e.preventDefault();
       console.log('Выход из профиля');
       // Логика выхода из профиля
       // Например: AuthController.logout().then(() => router.go('/'));
-      router.go('/');
+      try {
+        await AuthController.logout();
+        // AuthController сам перенаправит на главную страницу
+      } catch (error) {
+        console.error('Ошибка при выходе:', error);
+        // Даже при ошибке API перенаправляем на главную
+        router.go('/');
+      }
     };
 
     const handleSidebarClick = (e: Event) => {

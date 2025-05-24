@@ -1,6 +1,7 @@
 import { AuthForm, AuthField } from '../components/authForm/authForm';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
+import AuthController from '../controllers/AuthController';
 
 const fields: AuthField[] = [
   { label: 'Логин', name: 'login', type: 'text', required: true },
@@ -28,11 +29,16 @@ export class AuthPage extends Block<AuthPageProps> {
           e.preventDefault();
           router.go('/register');
         },
-        onSubmit: (e: Event) => {
-          e.preventDefault();
-          // Логика отправки формы авторизации
-          console.log('Форма авторизации отправлена');
-          router.go('/messenger');
+        onSubmit: async (formData: Record<string, string>) => {
+          try {
+            await AuthController.signIn({
+              login: formData.login,
+              password: formData.password,
+            });
+            
+          } catch (error) {
+            console.error('Ошибка авторизации:', error);
+          }
         },
       }),
     });
