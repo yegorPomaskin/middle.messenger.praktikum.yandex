@@ -1,18 +1,21 @@
-// src/controllers/AuthController.ts
 import AuthAPI, { SignInData, SignUpData, UserData } from '../api/authAPI';
 import { router } from '../router/Router';
+import Store from '../store/store';
 
 class AuthController {
-  private currentUser: UserData | null = null;
-
   // Регистрация нового пользователя
   async signUp(data: SignUpData): Promise<void> {
     try {
       console.log('🚀 Начинаем регистрацию:', data.login);
       
+      Store.setUserLoading(true);
+      Store.clearUserError();
+      
       // Вызываем API регистрации
       const user = await AuthAPI.create(data);
-      this.currentUser = user;
+      
+      // Сохраняем данные в Store
+      Store.setCurrentUser(user);
       
       console.log('✅ Регистрация успешна:', user);
       
@@ -21,8 +24,13 @@ class AuthController {
       
     } catch (error) {
       console.error('❌ Ошибка регистрации:', error);
-      // Пробрасываем ошибку дальше, чтобы UI мог её обработать
+      
+      const errorMessage = error instanceof Error ? error.message : 'Ошибка регистрации';
+      Store.setUserError(errorMessage);
+      
       throw error;
+    } finally {
+      Store.setUserLoading(false);
     }
   }
 
@@ -31,12 +39,17 @@ class AuthController {
     try {
       console.log('🚀 Начинаем авторизацию:', data.login);
       
+      Store.setUserLoading(true);
+      Store.clearUserError();
+      
       // Вызываем API авторизации
       await AuthAPI.signIn(data);
       
       // После успешной авторизации получаем данные пользователя
       const user = await AuthAPI.request();
-      this.currentUser = user;
+      
+      // Сохраняем данные в Store
+      Store.setCurrentUser(user);
       
       console.log('✅ Авторизация успешна:', user);
       
@@ -45,7 +58,13 @@ class AuthController {
       
     } catch (error) {
       console.error('❌ Ошибка авторизации:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Ошибка авторизации';
+      Store.setUserError(errorMessage);
+      
       throw error;
+    } finally {
+      Store.setUserLoading(false);
     }
   }
 
@@ -55,7 +74,9 @@ class AuthController {
       console.log('🚀 Выходим из системы');
       
       await AuthAPI.logout();
-      this.currentUser = null;
+      
+      // Очищаем Store полностью
+      Store.reset();
       
       console.log('✅ Выход выполнен');
       
@@ -64,6 +85,11 @@ class AuthController {
       
     } catch (error) {
       console.error('❌ Ошибка при выходе:', error);
+      
+      // Даже при ошибке очищаем Store и перенаправляем
+      Store.reset();
+      router.go('/');
+      
       throw error;
     }
   }
@@ -71,19 +97,29 @@ class AuthController {
   // Получение текущего пользователя
   async getCurrentUser(): Promise<UserData | null> {
     try {
-      // Если пользователь уже загружен, возвращаем его
-      if (this.currentUser) {
-        return this.currentUser;
+      // Если пользователь уже есть в Store, возвращаем его
+      const currentUser = Store.getCurrentUser();
+      if (currentUser) {
+        return currentUser;
       }
 
+      console.log('🔄 Загружаем данные пользователя с сервера...');
+      Store.setUserLoading(true);
+      
       // Иначе пытаемся получить из API
       const user = await AuthAPI.request();
-      this.currentUser = user;
+      
+      // Сохраняем в Store
+      Store.setCurrentUser(user);
+      
       return user;
     } catch (error) {
       console.log('ℹ️ Пользователь не авторизован');
-      this.currentUser = null;
+      
+      Store.setCurrentUser(null);
       return null;
+    } finally {
+      Store.setUserLoading(false);
     }
   }
 
@@ -97,15 +133,14 @@ class AuthController {
     }
   }
 
-  // Получить данные текущего пользователя (синхронно, для использования в UI)
+  // Получить данные текущего пользователя из Store (синхронно)
   getUserData(): UserData | null {
-    console.log('🔍 getUserData вызван, currentUser:', this.currentUser);
-    return this.currentUser;
+    return Store.getCurrentUser();
   }
 
   // Обновить данные пользователя (после обновления профиля)
   updateUserData(userData: UserData): void {
-    this.currentUser = userData;
+    Store.setCurrentUser(userData);
     console.log('ℹ️ Данные пользователя обновлены:', userData);
   }
 }

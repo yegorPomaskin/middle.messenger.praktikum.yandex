@@ -1,4 +1,3 @@
-// src/api/AuthAPI.ts
 import HTTPTransport from './HTTPTransport';
 import { BaseAPI } from './baseAPI';
 

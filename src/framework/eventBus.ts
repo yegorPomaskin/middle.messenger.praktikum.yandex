@@ -28,10 +28,10 @@ export default class EventBus {
 
   public emit<T extends unknown[] = unknown[]>(event: string, ...args: T): void {
     const listeners = this.listeners[event];
-    if (!listeners) {
-      throw new Error(`Нет события: ${event}`);
+    if (!listeners || listeners.length === 0) {
+      console.log(`ℹ️ Нет подписчиков на событие: ${event}`);
+      return; // Просто выходим, не выбрасываем ошибку
     }
-
     listeners.forEach((listener) => listener(...args));
   }
 }

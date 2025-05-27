@@ -5,6 +5,7 @@ import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
 import styles from '../styles/pages/chat.module.css';
 import template from '../templates/chat.hbs?raw';
+import { AddNewChatButton } from '../components/addNewChatButton/addNewChatButton';
 
 interface ChatPageProps extends BlockProps {
   [key: string]: unknown;
@@ -95,12 +96,21 @@ export class ChatPage extends Block<ChatPageProps> {
       },
     });
 
+    const addNewChatButton = new AddNewChatButton({
+      onClick: (e: Event) => {
+        console.log('Add new chat clicked');
+        // Пока простая реализация
+        this.handleAddNewChat();
+      },
+    });
+
     super({
       ...props,
       chatItems,
       chatInterface,
       profileLink,
       styles,
+      addNewChatButton,
     });
   }
 

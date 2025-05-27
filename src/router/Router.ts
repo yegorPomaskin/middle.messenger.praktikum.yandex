@@ -1,5 +1,6 @@
 import Route from './Route';
 import Block, { BlockProps } from '../framework/block';
+import { RouteGuard } from '../utils/routeGuard';
 
 export default class Router {
   private static __instance: Router;
@@ -27,12 +28,26 @@ export default class Router {
     return this;
   }
 
-  start(): void {
-    window.onpopstate = (event: PopStateEvent) => {
-      this._onRoute((event.currentTarget as Window).location.pathname);
+  async start(): Promise<void> {
+    // Инициализируем защиту роутов
+    await RouteGuard.initGuard();
+
+    window.onpopstate = async (event: PopStateEvent) => {
+      const pathname = (event.currentTarget as Window).location.pathname;
+      
+      // Проверяем доступ перед переходом
+      const hasAccess = await RouteGuard.beforeRouteChange(pathname);
+      if (hasAccess) {
+        this._onRoute(pathname);
+      }
     };
 
-    this._onRoute(window.location.pathname);
+    // Проверяем текущий путь только если у нас есть доступ
+    const currentPath = window.location.pathname;
+    const hasAccess = await RouteGuard.checkAccess(currentPath);
+    if (hasAccess) {
+      this._onRoute(currentPath);
+    }
   }
 
   private _onRoute(pathname: string): void {
@@ -55,9 +70,14 @@ export default class Router {
     route.render();
   }
 
-  go(pathname: string): void {
-    this.history.pushState({}, '', pathname);
-    this._onRoute(pathname);
+  async go(pathname: string): Promise<void> {
+    // Проверяем доступ перед переходом
+    const hasAccess = await RouteGuard.beforeRouteChange(pathname);
+    
+    if (hasAccess) {
+      this.history.pushState({}, '', pathname);
+      this._onRoute(pathname);
+    }
   }
 
   back(): void {

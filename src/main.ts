@@ -1,4 +1,4 @@
-// src/main.ts - Главный файл с роутингом
+// src/main.ts - ОБНОВЛЕННАЯ ВЕРСИЯ С ЗАЩИТОЙ РОУТОВ
 import './styles/global.css';
 import { router } from './router/Router';
 
@@ -23,18 +23,28 @@ class MessengerPage extends ChatPage {
 }
 
 // Инициализация приложения
-function initApp() {
-  // Конфигурируем роуты
-  router
-    .use('/', AuthPage) // Главная страница - авторизация
-    .use('/register', RegisterPage)
-    .use('/messenger', MessengerPage)
-    .use('/settings', ProfilePageHandler)
-    .use('/settings/edit-profile', UpdateProfilePageHandler)
-    .use('/settings/change-password', UpdatePasswordPageHandler)
-    .use('/404', Error404Page)
-    .use('/505', Error505Page)
-    .start(); // Запускаем роутер
+async function initApp() {
+  console.log('🚀 Инициализация приложения...');
+
+  try {
+    // Конфигурируем роуты
+    router
+      .use('/', AuthPage) // Главная страница - авторизация
+      .use('/register', RegisterPage)
+      .use('/messenger', MessengerPage)
+      .use('/settings', ProfilePageHandler)
+      .use('/settings/edit-profile', UpdateProfilePageHandler)
+      .use('/settings/change-password', UpdatePasswordPageHandler)
+      .use('/404', Error404Page)
+      .use('/505', Error505Page);
+
+    // Запускаем роутер с защитой
+    await router.start();
+
+    console.log('✅ Приложение инициализировано');
+  } catch (error) {
+    console.error('❌ Ошибка инициализации приложения:', error);
+  }
 }
 
 // Запускаем приложение после загрузки DOM
