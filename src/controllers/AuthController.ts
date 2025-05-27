@@ -99,6 +99,7 @@ class AuthController {
 
   // Получить данные текущего пользователя (синхронно, для использования в UI)
   getUserData(): UserData | null {
+    console.log('🔍 getUserData вызван, currentUser:', this.currentUser);
     return this.currentUser;
   }
 
