@@ -2,7 +2,7 @@ import EventBus from '../framework/eventBus';
 import { StoreEvents } from './storeEvents';
 import { set, get } from '../utils/helpers';
 import { ChatData } from '../api/chatAPI';
-import { MessageData } from '../utils/WebSocketManager';
+import { MessageData } from '../utils/webSocketManager.ts';
 import { UserData } from '../api/authAPI';
 
 // Интерфейс всего состояния приложения
