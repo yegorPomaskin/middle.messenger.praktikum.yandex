@@ -18,9 +18,9 @@
 }
 
 .chat__item-search {
-  margin-bottom: 13px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 13px;
 }
 
 .search-input {
