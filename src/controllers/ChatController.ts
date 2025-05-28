@@ -1,75 +1,45 @@
-// src/controllers/ChatController.ts (полная версия)
-import ChatAPI, { CreateChatData, ChatData, ChatUsersData } from '../api/chatAPI';
+// src/controllers/ChatController.ts
+import ChatAPI, { ChatData } from '../api/chatAPI';
 import Store from '../store/store';
+import { MessageData } from '../utils/webSocketManager';
 
 class ChatController {
-
-  // === ЗАГРУЗКА ДАННЫХ ===
-
   // Загрузить список чатов пользователя
   async loadChats(): Promise<void> {
+    Store.setChatLoading(true);
+    Store.clearChatError();
+
     try {
-      console.log('💬 ChatController: Загрузка списка чатов...');
-      
-      // Устанавливаем состояние загрузки
-      Store.setChatLoading(true);
-      Store.clearChatError();
-      
-      // Запрашиваем данные через API
       const chats = await ChatAPI.request();
-      
-      // Сохраняем в Store
       Store.setChats(chats);
-      
-      console.log('✅ ChatController: Чаты загружены и сохранены в Store:', chats.length);
-      
+
+      const currentChatId = Store.getCurrentChatId();
+      const chatExists = chats.some((chat) => chat.id === currentChatId);
+
+      if (!chatExists) {
+        Store.setCurrentChat(null);
+      }
     } catch (error) {
-      console.error('❌ ChatController: Ошибка загрузки чатов:', error);
-      
-      // Сохраняем ошибку в Store
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка загрузки чатов';
-      Store.setChatError(errorMessage);
-      
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка загрузки чатов');
       throw error;
     } finally {
-      // Убираем индикатор загрузки
       Store.setChatLoading(false);
     }
   }
 
-  // === УПРАВЛЕНИЕ ЧАТАМИ ===
-
   // Создать новый чат
   async createChat(title: string): Promise<void> {
+    if (!title || title.trim().length < 2) {
+      throw new Error('Название чата должно содержать минимум 2 символа');
+    }
+    Store.setChatLoading(true);
+    Store.clearChatError();
+
     try {
-      console.log('➕ ChatController: Создание нового чата:', title);
-      
-      // Валидация
-      if (!title || !title.trim()) {
-        throw new Error('Название чата не может быть пустым');
-      }
-
-      if (title.trim().length < 2) {
-        throw new Error('Название чата должно содержать минимум 2 символа');
-      }
-
-      Store.setChatLoading(true);
-      Store.clearChatError();
-      
-      // Создаем чат через API
-      const result = await ChatAPI.create({ title: title.trim() });
-      
-      console.log('✅ ChatController: Чат создан с ID:', result.id);
-      
-      // Перезагружаем список чатов чтобы увидеть новый
+      await ChatAPI.create({ title: title.trim() });
       await this.loadChats();
-      
     } catch (error) {
-      console.error('❌ ChatController: Ошибка создания чата:', error);
-      
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка создания чата';
-      Store.setChatError(errorMessage);
-      
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка создания чата');
       throw error;
     } finally {
       Store.setChatLoading(false);
@@ -78,61 +48,34 @@ class ChatController {
 
   // Удалить чат
   async deleteChat(chatId: number): Promise<void> {
+    Store.setChatLoading(true);
+    Store.clearChatError();
+
     try {
-      console.log('🗑️ ChatController: Удаление чата:', chatId);
-
-      Store.setChatLoading(true);
-      Store.clearChatError();
-
-      // Удаляем чат через API
       await ChatAPI.deleteChat(chatId);
-
-      console.log('✅ ChatController: Чат удален');
-
-      // Перезагружаем список чатов
       await this.loadChats();
-
     } catch (error) {
-      console.error('❌ ChatController: Ошибка удаления чата:', error);
-
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка удаления чата';
-      Store.setChatError(errorMessage);
-
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка удаления чата');
       throw error;
     } finally {
       Store.setChatLoading(false);
     }
   }
 
-  // === УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ===
-
   // Добавить пользователей в чат
   async addUsersToChat(chatId: number, userIds: number[]): Promise<void> {
-    try {
-      console.log('👥➕ ChatController: Добавление пользователей в чат:', chatId, userIds);
-      
-      // Валидация
-      if (!userIds || userIds.length === 0) {
-        throw new Error('Необходимо указать пользователей для добавления');
-      }
+    if (!userIds?.length) {
+      throw new Error('Необходимо указать хотя бы одного пользователя');
+    }
+    Store.setChatLoading(true);
+    Store.clearChatError();
 
-      Store.setChatLoading(true);
-      Store.clearChatError();
-      
-      // Добавляем через API
-      await ChatAPI.addUsersToChat({
-        chatId,
-        users: userIds,
-      });
-      
-      console.log('✅ ChatController: Пользователи добавлены в чат');
-      
+    try {
+      await ChatAPI.addUsersToChat({ chatId, users: userIds });
     } catch (error) {
-      console.error('❌ ChatController: Ошибка добавления пользователей:', error);
-      
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка добавления пользователей';
-      Store.setChatError(errorMessage);
-      
+      Store.setChatError(
+        error instanceof Error ? error.message : 'Ошибка добавления пользователей'
+      );
       throw error;
     } finally {
       Store.setChatLoading(false);
@@ -141,31 +84,16 @@ class ChatController {
 
   // Удалить пользователей из чата
   async removeUsersFromChat(chatId: number, userIds: number[]): Promise<void> {
-    try {
-      console.log('👥➖ ChatController: Удаление пользователей из чата:', chatId, userIds);
-      
-      // Валидация
-      if (!userIds || userIds.length === 0) {
-        throw new Error('Необходимо указать пользователей для удаления');
-      }
+    if (!userIds?.length) {
+      throw new Error('Необходимо указать хотя бы одного пользователя');
+    }
+    Store.setChatLoading(true);
+    Store.clearChatError();
 
-      Store.setChatLoading(true);
-      Store.clearChatError();
-      
-      // Удаляем через API
-      await ChatAPI.removeUsersFromChat({
-        chatId,
-        users: userIds,
-      });
-      
-      console.log('✅ ChatController: Пользователи удалены из чата');
-      
+    try {
+      await ChatAPI.removeUsersFromChat({ chatId, users: userIds });
     } catch (error) {
-      console.error('❌ ChatController: Ошибка удаления пользователей:', error);
-      
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка удаления пользователей';
-      Store.setChatError(errorMessage);
-      
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка удаления пользователей');
       throw error;
     } finally {
       Store.setChatLoading(false);
@@ -175,43 +103,20 @@ class ChatController {
   // Получить пользователей чата
   async getChatUsers(chatId: number): Promise<any[]> {
     try {
-      console.log('👥 ChatController: Получение пользователей чата:', chatId);
-
-      const users = await ChatAPI.getChatUsers(chatId);
-
-      console.log('✅ ChatController: Пользователи чата получены:', users.length);
-
-      return users;
-
+      return await ChatAPI.getChatUsers(chatId);
     } catch (error) {
-      console.error('❌ ChatController: Ошибка получения пользователей чата:', error);
-
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка получения пользователей';
-      Store.setChatError(errorMessage);
-
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка получения пользователей');
       throw error;
     }
   }
 
-  // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
-
   // Получить токен для подключения к WebSocket
   async getChatToken(chatId: number): Promise<string> {
     try {
-      console.log('🔑 ChatController: Получение токена для чата:', chatId);
-      
       const result = await ChatAPI.getChatToken(chatId);
-      
-      console.log('✅ ChatController: Токен получен для чата:', chatId);
-      
       return result.token;
-      
     } catch (error) {
-      console.error('❌ ChatController: Ошибка получения токена:', error);
-      
-      const errorMessage = error instanceof Error ? error.message : 'Ошибка получения токена';
-      Store.setChatError(errorMessage);
-      
+      Store.setChatError(error instanceof Error ? error.message : 'Ошибка получения токена');
       throw error;
     }
   }
@@ -219,113 +124,82 @@ class ChatController {
   // Получить количество непрочитанных сообщений
   async getNewMessagesCount(chatId: number): Promise<number> {
     try {
-      console.log('📊 ChatController: Получение количества непрочитанных сообщений:', chatId);
-
       const result = await ChatAPI.getNewMessagesCount(chatId);
-
-      console.log('✅ ChatController: Количество непрочитанных сообщений:', result.unread_count);
-
       return result.unread_count;
-
-    } catch (error) {
-      console.error('❌ ChatController: Ошибка получения количества сообщений:', error);
+    } catch {
       return 0;
     }
   }
 
-  // === ИНТЕГРАЦИЯ С WEBSOCKET ===
-
-  // Обработка нового сообщения из WebSocket
-  handleNewMessage(message: any): void {
-    console.log('💬 ChatController: Новое сообщение через WebSocket:', message);
-    
-    // Добавляем сообщение в Store
+  // Добавить новое сообщение в Store
+  handleNewMessage(message: MessageData): void {
     Store.addMessage(message);
   }
 
-  // Обработка истории сообщений из WebSocket
-  handleMessagesHistory(messages: any[]): void {
-    console.log('📜 ChatController: История сообщений через WebSocket:', messages.length);
-    
-    // Добавляем историю в Store
+  // Добавить историю сообщений в Store
+  handleMessagesHistory(messages: MessageData[]): void {
     Store.addMessagesHistory(messages);
   }
 
-  // === МЕТОДЫ ДЛЯ UI ===
-
   // Установить активный чат
   setActiveChat(chatId: number | null): void {
-    console.log('🎯 ChatController: Установка активного чата:', chatId);
     Store.setCurrentChat(chatId);
   }
 
-  // Получить данные из Store для UI
+  // Получить список чатов из Store
   getChats(): ChatData[] {
     return Store.getChats();
   }
 
+  // Получить ID текущего чата
   getCurrentChatId(): number | null {
     return Store.getCurrentChatId();
   }
 
+  // Получить данные текущего чата
   getCurrentChat(): ChatData | null {
     return Store.getCurrentChat();
   }
 
+  // Проверка загрузки
   isLoading(): boolean {
     return Store.get('chats.isLoading') as boolean;
   }
 
+  // Получить ошибку
   getError(): string | null {
     return Store.get('chats.error') as string | null;
   }
 
-  // Очистить ошибки
+  // Очистить ошибку
   clearError(): void {
     Store.clearChatError();
   }
 
-  // === ПОДПИСКИ НА ИЗМЕНЕНИЯ (для UI компонентов) ===
-
-  // Подписаться на изменения списка чатов
+  // Подписки на изменения
   onChatsChange(callback: (chats: ChatData[]) => void): () => void {
     return Store.onChatsChange(callback);
   }
 
-  // Подписаться на изменения активного чата
+  onMessagesChange(callback: (messages: MessageData[]) => void): () => void {
+    return Store.onMessagesChange(callback);
+  }
+
   onCurrentChatChange(callback: (chatId: number | null) => void): () => void {
     return Store.onCurrentChatChange(callback);
   }
 
-  // Подписаться на изменения состояния загрузки
   onLoadingChange(callback: (isLoading: boolean) => void): () => void {
-    const handler = () => {
-      const isLoading = Store.get('chats.isLoading') as boolean;
-      callback(isLoading);
-    };
-
+    const handler = () => callback(Store.get('chats.isLoading') as boolean);
     Store.on('updated', handler);
-
-    // Возвращаем функцию отписки
-    return () => {
-      Store.off('updated', handler);
-    };
+    return () => Store.off('updated', handler);
   }
 
-  // Подписаться на ошибки
   onErrorChange(callback: (error: string | null) => void): () => void {
-    const handler = () => {
-      const error = Store.get('chats.error') as string | null;
-      callback(error);
-    };
-
+    const handler = () => callback(Store.get('chats.error') as string | null);
     Store.on('updated', handler);
-
-    return () => {
-      Store.off('updated', handler);
-    };
+    return () => Store.off('updated', handler);
   }
 }
 
-// Экспортируем единственный экземпляр
 export default new ChatController();

@@ -93,8 +93,7 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
     }
   }
 
-  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
-    console.log(oldProps, newProps);
+  protected componentDidUpdate(_oldProps: Props, _newProps: Props): boolean {
     return true;
   }
 

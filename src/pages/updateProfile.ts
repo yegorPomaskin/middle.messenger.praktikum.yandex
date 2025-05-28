@@ -34,9 +34,9 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
         });
 
       } catch (error) {
-        console.error('💥 Ошибка сохранения профиля:', error);
+        console.error('Ошибка сохранения профиля:', error);
         const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
-        alert(`❌ Ошибка сохранения: ${errorMessage}`);
+        alert(`Ошибка сохранения: ${errorMessage}`);
       }
     };
 

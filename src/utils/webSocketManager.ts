@@ -1,278 +1,152 @@
-// src/utils/webSocketManager.ts
-import ChatController from '../controllers/ChatController';
+import ChatAPI from '../api/chatAPI';
 import AuthController from '../controllers/AuthController';
 
 export interface MessageData {
-  id: string;
-  time: string;
+  id?: string;
   user_id: string;
   content: string;
-  type: 'message' | 'file' | 'sticker';
-  chat_id?: number;
-  file?: {
-    id: number;
-    user_id: number;
-    path: string;
-    filename: string;
-    content_type: string;
-    content_size: number;
-    upload_date: string;
-  };
+  time: string;
+  type?: 'message' | 'file' | 'sticker' | string;
 }
 
-export interface WebSocketMessage {
-  content: string;
-  type: 'message' | 'file' | 'sticker' | 'get old' | 'ping' | 'pong' | 'user connected';
-}
+type MessageHandler = (msg: MessageData) => void;
+type HistoryHandler = (msgs: MessageData[]) => void;
+type UserConnectHandler = (userId: string) => void;
 
 class WebSocketManager {
   private socket: WebSocket | null = null;
-  private chatId: number | null = null;
   private userId: number | null = null;
-  private token: string | null = null;
-  private pingInterval: number | null = null;
-  private onMessageCallback?: (message: MessageData) => void;
-  private onHistoryCallback?: (messages: MessageData[]) => void;
-  private onUserConnectedCallback?: (userId: string) => void;
+  private chatId: number | null = null;
 
-  // Подключение к чату с токеном
-  async connect(chatId: number): Promise<void> {
-    try {
-      const currentUser = AuthController.getUserData();
-      if (!currentUser) {
-        throw new Error('Пользователь не авторизован');
-      }
+  private onMessageCallback?: MessageHandler;
+  private onHistoryCallback?: HistoryHandler;
+  private onUserConnectedCallback?: UserConnectHandler;
 
-      this.userId = currentUser.id;
-
-      if (this.socket) {
-        this.disconnect();
-      }
-
-      this.chatId = chatId;
-
-      try {
-        this.token = await ChatController.getChatToken(chatId);
-      } catch (tokenError) {
-        throw new Error('Не удалось получить токен для чата');
-      }
-
-      const wsUrl = `wss://ya-praktikum.tech/ws/chats/${this.userId}/${chatId}/${this.token}`;
-      this.socket = new WebSocket(wsUrl);
-
-      this.setupEventHandlers();
-      await this.waitForConnection();
-      this.startPing();
-
-    } catch (error) {
-      this.cleanup();
-      throw error;
+  async connect(
+    chatId: number,
+    handlers?: {
+      onMessage?: MessageHandler;
+      onHistory?: HistoryHandler;
+      onUserConnected?: UserConnectHandler;
     }
-  }
+  ): Promise<void> {
+    const user = AuthController.getUserData();
+    this.userId = user?.id || null;
+    this.chatId = chatId;
 
-  // Альтернативное подключение с куки
-  async connectWithCookies(chatId: number): Promise<void> {
-    try {
-      const currentUser = AuthController.getUserData();
-      if (!currentUser) {
-        throw new Error('Пользователь не авторизован');
-      }
+    const { token } = await ChatAPI.getChatToken(chatId);
+    if (!this.userId || !token) throw new Error('Нет userId или token');
 
-      if (this.socket) {
-        this.disconnect();
-      }
+    const url = `wss://ya-praktikum.tech/ws/chats/${this.userId}/${chatId}/${token}`;
+    this.socket = new WebSocket(url);
 
-      this.chatId = chatId;
-      this.userId = currentUser.id;
+    this.onMessageCallback = handlers?.onMessage;
+    this.onHistoryCallback = handlers?.onHistory;
+    this.onUserConnectedCallback = handlers?.onUserConnected;
 
-      const wsUrl = `wss://ya-praktikum.tech/ws/chats/${chatId}/`;
-      this.socket = new WebSocket(wsUrl);
-
-      this.setupEventHandlers();
-      await this.waitForConnection();
-      this.startPing();
-
-    } catch (error) {
-      this.cleanup();
-      throw error;
-    }
-  }
-
-  private waitForConnection(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.socket) {
-        reject(new Error('Socket не инициализирован'));
-        return;
-      }
-
-      const timeout = setTimeout(() => {
-        reject(new Error('Timeout подключения к WebSocket'));
-      }, 15000);
-
-      this.socket.onopen = () => {
-        clearTimeout(timeout);
+    await new Promise<void>((resolve, reject) => {
+      if (!this.socket) return reject(new Error('Нет WebSocket'));
+      this.socket.addEventListener('open', () => {
+        this.send({ content: '0', type: 'get old' });
         resolve();
-      };
+      });
+      this.socket.addEventListener('error', (e) => {
+        console.error('WebSocket error:', e);
+        reject(e);
+      });
+    });
 
-      this.socket.onerror = () => {
-        clearTimeout(timeout);
-        reject(new Error('Ошибка WebSocket подключения'));
-      };
+    this.socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+
+      if (Array.isArray(data)) {
+        this.onHistoryCallback?.(data);
+      } else if (data.type === 'message') {
+        this.onMessageCallback?.(data);
+      } else if (data.type === 'user connected') {
+        this.onUserConnectedCallback?.(data.content);
+      }
+    });
+
+    this.socket.addEventListener('close', () => {
+      console.warn('WebSocket закрыт');
     });
   }
 
-  private setupEventHandlers(): void {
-    if (!this.socket) return;
+  async connectWithCookies(
+    chatId: number,
+    handlers?: {
+      onMessage?: MessageHandler;
+      onHistory?: HistoryHandler;
+      onUserConnected?: UserConnectHandler;
+    }
+  ): Promise<void> {
+    const { token } = await ChatAPI.getChatToken(chatId);
+    const user = AuthController.getUserData();
+    this.userId = user?.id || null;
+    this.chatId = chatId;
 
-    this.socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        this.handleMessage(data);
-      } catch (error) {
-        console.error('Ошибка парсинга WebSocket сообщения:', error);
+    if (!this.userId || !token) throw new Error('Нет userId или token');
+
+    const url = `wss://ya-praktikum.tech/ws/chats/${this.userId}/${chatId}/${token}`;
+    this.socket = new WebSocket(url);
+
+    this.onMessageCallback = handlers?.onMessage;
+    this.onHistoryCallback = handlers?.onHistory;
+    this.onUserConnectedCallback = handlers?.onUserConnected;
+
+    await new Promise<void>((resolve, reject) => {
+      if (!this.socket) return reject(new Error('Нет WebSocket'));
+      this.socket.addEventListener('open', () => {
+        this.send({ content: '0', type: 'get old' });
+        resolve();
+      });
+      this.socket.addEventListener('error', (e) => {
+        console.error('WebSocket error (cookies):', e);
+        reject(e);
+      });
+    });
+
+    this.socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+
+      if (Array.isArray(data)) {
+        this.onHistoryCallback?.(data);
+      } else if (data.type === 'message') {
+        this.onMessageCallback?.(data);
+      } else if (data.type === 'user connected') {
+        this.onUserConnectedCallback?.(data.content);
       }
-    };
+    });
 
-    this.socket.onclose = () => {
-      this.stopPing();
-    };
-
-    this.socket.onerror = (error) => {
-      console.error('WebSocket ошибка:', error);
-    };
+    this.socket.addEventListener('close', () => {
+      console.warn('WebSocket закрыт (cookies)');
+    });
   }
 
-  private handleMessage(data: any): void {
-    if (Array.isArray(data)) {
-      if (this.onHistoryCallback) {
-        this.onHistoryCallback(data as MessageData[]);
-      }
-      return;
-    }
-
-    switch (data.type) {
-      case 'message':
-      case 'file':
-      case 'sticker':
-        if (this.onMessageCallback) {
-          this.onMessageCallback(data as MessageData);
-        }
-        break;
-
-      case 'user connected':
-        if (this.onUserConnectedCallback) {
-          this.onUserConnectedCallback(data.content);
-        }
-        break;
-
-      case 'pong':
-        // Pong обработан
-        break;
-
-      default:
-        console.log('Неизвестное WebSocket сообщение:', data);
-    }
+  public sendMessage(content: string): void {
+    this.send({ content, type: 'message' });
   }
 
-  sendMessage(content: string): void {
+  public getOldMessages(offset = 0): void {
+    this.send({ content: String(offset), type: 'get old' });
+  }
+
+  private send(data: Record<string, unknown>): void {
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-      throw new Error('WebSocket соединение не активно');
+      throw new Error('WebSocket не подключён');
     }
-
-    const message: WebSocketMessage = {
-      content,
-      type: 'message'
-    };
-
-    this.socket.send(JSON.stringify(message));
+    this.socket.send(JSON.stringify(data));
   }
 
-  getOldMessages(offset: number = 0): void {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-      console.error('WebSocket не подключен для запроса истории');
-      return;
-    }
-
-    const message: WebSocketMessage = {
-      content: offset.toString(),
-      type: 'get old'
-    };
-
-    this.socket.send(JSON.stringify(message));
-  }
-
-  private startPing(): void {
-    this.pingInterval = window.setInterval(() => {
-      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-        const pingMessage: WebSocketMessage = {
-          content: '',
-          type: 'ping'
-        };
-        
-        this.socket.send(JSON.stringify(pingMessage));
-      } else {
-        this.stopPing();
-      }
-    }, 25000);
-  }
-
-  private stopPing(): void {
-    if (this.pingInterval) {
-      clearInterval(this.pingInterval);
-      this.pingInterval = null;
-    }
-  }
-
-  private cleanup(): void {
-    this.stopPing();
+  public disconnect(): void {
+    this.socket?.close();
+    this.socket = null;
     this.chatId = null;
-    this.userId = null;
-    this.token = null;
   }
 
-  disconnect(): void {
-    this.cleanup();
-
-    if (this.socket) {
-      if (this.socket.readyState === WebSocket.OPEN) {
-        this.socket.close(1000, 'Client disconnecting');
-      }
-      this.socket = null;
-    }
-  }
-
-  // Колбэки
-  onMessage(callback: (message: MessageData) => void): void {
-    this.onMessageCallback = callback;
-  }
-
-  onHistory(callback: (messages: MessageData[]) => void): void {
-    this.onHistoryCallback = callback;
-  }
-
-  onUserConnected(callback: (userId: string) => void): void {
-    this.onUserConnectedCallback = callback;
-  }
-
-  // Геттеры
-  isConnected(): boolean {
-    return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
-  }
-
-  getCurrentChatId(): number | null {
-    return this.chatId;
-  }
-
-  getConnectionState(): string {
-    if (!this.socket) return 'NOT_INITIALIZED';
-    
-    switch (this.socket.readyState) {
-      case WebSocket.CONNECTING: return 'CONNECTING';
-      case WebSocket.OPEN: return 'OPEN';
-      case WebSocket.CLOSING: return 'CLOSING';
-      case WebSocket.CLOSED: return 'CLOSED';
-      default: return 'UNKNOWN';
-    }
+  public isConnected(): boolean {
+    return this.socket?.readyState === WebSocket.OPEN;
   }
 }
 

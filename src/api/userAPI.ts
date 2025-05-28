@@ -1,9 +1,7 @@
-// src/api/UserAPI.ts
 import HTTPTransport from './HTTPTransport';
 import { BaseAPI } from './baseAPI';
 import { UserData } from './authAPI';
 
-// Типы данных для обновления профиля
 export interface UpdateUserData {
   first_name: string;
   second_name: string;
@@ -13,85 +11,69 @@ export interface UpdateUserData {
   phone: string;
 }
 
-// Типы данных для смены пароля
 export interface UpdatePasswordData {
   oldPassword: string;
   newPassword: string;
 }
 
-// Используем существующий HTTPTransport
-const httpTransport = new HTTPTransport();
-
 class UserAPI extends BaseAPI {
-  private readonly baseUrl = 'https://ya-praktikum.tech/api/v2/user';
+  private readonly base = 'https://ya-praktikum.tech/api/v2/user';
+  private readonly http = new HTTPTransport();
 
-  // Обновление профиля пользователя
-  async update(data: UpdateUserData): Promise<UserData> {
-    const response = await httpTransport.put(`${this.baseUrl}/profile`, {
-      data,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
+    const res = await promise;
+    const isJSON = res.getResponseHeader('Content-Type')?.includes('application/json');
+    const data = isJSON ? JSON.parse(res.responseText) : res.responseText;
 
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка обновления профиля');
+    if (res.status !== 200) {
+      throw new Error(data.reason || errorMsg);
     }
 
-    return JSON.parse(response.responseText);
+    return data;
   }
 
-  // Обновление пароля
-  async updatePassword(data: UpdatePasswordData): Promise<void> {
-    const response = await httpTransport.put(`${this.baseUrl}/password`, {
-      data,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка обновления пароля');
-    }
+  update(data: UpdateUserData): Promise<UserData> {
+    return this.handle(
+      this.http.put(`${this.base}/profile`, {
+        data,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      'Ошибка обновления профиля'
+    );
   }
 
-  // Обновление аватара
-  async updateAvatar(file: File): Promise<UserData> {
+  updatePassword(data: UpdatePasswordData): Promise<void> {
+    return this.handle(
+      this.http.put(`${this.base}/password`, {
+        data,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      'Ошибка обновления пароля'
+    );
+  }
+
+  updateAvatar(file: File): Promise<UserData> {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const response = await httpTransport.put(`${this.baseUrl}/profile/avatar`, {
-      data: formData,
-      // Для FormData не устанавливаем Content-Type - браузер сам установит
-    });
-
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка обновления аватара');
-    }
-
-    return JSON.parse(response.responseText);
+    return this.handle(
+      this.http.put(`${this.base}/profile/avatar`, {
+        data: formData,
+        // Content-Type не указываем — браузер сам выставит
+      }),
+      'Ошибка обновления аватара'
+    );
   }
 
-  // Поиск пользователей (для чатов)
-  async searchUsers(login: string): Promise<UserData[]> {
-    const response = await httpTransport.post(`${this.baseUrl}/search`, {
-      data: { login },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка поиска пользователей');
-    }
-
-    return JSON.parse(response.responseText);
+  searchUsers(login: string): Promise<UserData[]> {
+    return this.handle(
+      this.http.post(`${this.base}/search`, {
+        data: { login },
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      'Ошибка поиска пользователей'
+    );
   }
 }
 
-// Экспортируем единственный экземпляр
 export default new UserAPI();

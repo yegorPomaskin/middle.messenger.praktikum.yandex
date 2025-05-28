@@ -1,4 +1,3 @@
-// src/components/chatInterface/chatInterface.ts - Финальная версия
 import Block, { BlockProps } from '../../framework/block';
 import WebSocketManager, { MessageData } from '../../utils/webSocketManager';
 import AuthController from '../../controllers/AuthController';
@@ -18,7 +17,6 @@ export interface Message {
 }
 
 export interface ChatInterfaceProps extends BlockProps {
-  [key: string]: unknown;
   messages?: Message[];
   attachment: string;
   sendButton: string;
@@ -31,7 +29,7 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
   private currentChatId: number | null = null;
   private messagesData: Message[] = [];
   private currentUserId: string | null = null;
-  private isInternalUpdate: boolean = false;
+  private isInternalUpdate = false;
 
   constructor(props: ChatInterfaceProps) {
     super({
@@ -45,8 +43,10 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
         },
         click: (e: Event) => {
           const target = e.target as HTMLElement;
-          if (target.classList.contains('chat__interface-sendButton') || 
-              target.closest('.chat__interface-sendButton')) {
+          if (
+            target.classList.contains('chat__interface-sendButton') ||
+            target.closest('.chat__interface-sendButton')
+          ) {
             e.preventDefault();
             this.handleSendMessage();
           }
@@ -54,93 +54,58 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
       },
     });
 
-    // Регистрируем хелпер eq для Handlebars
-    Handlebars.registerHelper('eq', function (a, b) {
-      return a === b;
-    });
+    Handlebars.registerHelper('eq', (a, b) => a === b);
 
     this.messagesData = props.messages || [];
-    
     const currentUser = AuthController.getUserData();
     this.currentUserId = currentUser ? currentUser.id.toString() : null;
-    
-    this.setupWebSocketCallbacks();
   }
 
-  protected componentDidUpdate(oldProps: ChatInterfaceProps, newProps: ChatInterfaceProps): boolean {
+  protected componentDidUpdate(): boolean {
     if (this.isInternalUpdate) {
       this.isInternalUpdate = false;
       return true;
     }
-
-    const oldMessages = oldProps.messages || [];
-    const newMessages = newProps.messages || [];
-    
-    if (oldMessages.length !== newMessages.length) {
-      return false;
-    }
-
-    return true;
-  }
-
-  private setupWebSocketCallbacks(): void {
-    WebSocketManager.onMessage((messageData: MessageData) => {
-      this.addMessage(messageData);
-    });
-
-    WebSocketManager.onHistory((messages: MessageData[]) => {
-      this.loadMessagesHistory(messages);
-    });
-
-    WebSocketManager.onUserConnected((userId: string) => {
-      this.addSystemMessage(`Пользователь ${userId} подключился к чату`);
-    });
+    return false;
   }
 
   async connectToChat(chatId: number): Promise<void> {
+    const currentUser = AuthController.getUserData();
+    if (!currentUser) throw new Error('Пользователь не авторизован');
+
+    this.currentUserId = currentUser.id.toString();
+    if (this.currentChatId === chatId && WebSocketManager.isConnected()) return;
+
+    this.currentChatId = chatId;
+    this.messagesData = [];
+    this.updateMessages();
+    this.addSystemMessage('Подключение к чату...');
+
     try {
-      const currentUser = AuthController.getUserData();
-      if (!currentUser) {
-        throw new Error('Пользователь не авторизован');
-      }
-
-      this.currentUserId = currentUser.id.toString();
-
-      if (this.currentChatId === chatId && WebSocketManager.isConnected()) {
-        return;
-      }
-
-      this.currentChatId = chatId;
-      this.messagesData = [];
-      this.updateMessages();
-      
-      this.addSystemMessage('Подключение к чату...');
-
-      try {
-        await WebSocketManager.connect(chatId);
-      } catch (tokenError) {
-        await WebSocketManager.connectWithCookies(chatId);
-      }
-
-      if (!WebSocketManager.isConnected()) {
-        throw new Error('Не удалось установить WebSocket соединение');
-      }
-
-      this.clearSystemMessages();
-      this.addSystemMessage('✅ Подключено к чату');
-
-      setTimeout(() => {
-        if (WebSocketManager.isConnected()) {
-          this.addSystemMessage('Загрузка истории сообщений...');
-          WebSocketManager.getOldMessages(0);
-        }
-      }, 1000);
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
-      this.addSystemMessage(`❌ Ошибка подключения: ${errorMessage}`);
-      throw error;
+      await WebSocketManager.connect(chatId, {
+        onMessage: (msg) => this.addMessage(msg),
+        onHistory: (msgs) => this.loadMessagesHistory(msgs),
+        onUserConnected: (userId) =>
+          this.addSystemMessage(`Пользователь ${userId} подключился к чату`),
+      });
+    } catch {
+      await WebSocketManager.connectWithCookies(chatId);
     }
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    if (!WebSocketManager.isConnected()) {
+      this.addSystemMessage('❌ Не удалось установить WebSocket соединение');
+      throw new Error('Не удалось установить WebSocket соединение');
+    }
+
+    this.clearSystemMessages();
+    this.addSystemMessage('✅ Подключено к чату');
+    setTimeout(() => {
+      if (WebSocketManager.isConnected()) {
+        this.addSystemMessage('Загрузка истории сообщений...');
+        WebSocketManager.getOldMessages(0);
+      }
+    }, 1000);
   }
 
   disconnectFromChat(): void {
@@ -152,7 +117,6 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
 
   private handleSendMessage(): void {
     const input = this.element?.querySelector('input[name="message"]') as HTMLInputElement;
-    
     if (!input) return;
 
     const messageText = input.value.trim();
@@ -162,28 +126,29 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
       this.addSystemMessage('❌ Соединение потеряно. Переподключитесь к чату.');
       return;
     }
-
     if (!this.currentChatId) {
       this.addSystemMessage('❌ Выберите чат для отправки сообщения');
       return;
     }
-
     try {
       WebSocketManager.sendMessage(messageText);
       input.value = '';
-    } catch (error) {
+    } catch {
       this.addSystemMessage('❌ Ошибка отправки сообщения');
     }
   }
 
   private addMessage(messageData: MessageData): void {
+    const type: 'message' | 'file' | 'sticker' =
+      messageData.type === 'file' || messageData.type === 'sticker' ? messageData.type : 'message';
+
     const message: Message = {
       id: messageData.id || `msg-${Date.now()}`,
       userName: this.getUserName(messageData.user_id),
       time: this.formatTime(messageData.time),
       text: messageData.content,
       userId: messageData.user_id,
-      type: messageData.type || 'message',
+      type,
       isOwn: messageData.user_id === this.currentUserId,
     };
 
@@ -193,41 +158,34 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
   }
 
   private loadMessagesHistory(messages: MessageData[]): void {
-    if (messages.length === 0) {
-      this.addSystemMessage('📝 История сообщений пуста. Напишите первое сообщение!');
+    if (!messages.length) {
+      this.addSystemMessage('История сообщений пуста. Напишите первое сообщение!');
       return;
     }
-
-    const historyMessages: Message[] = messages.map((messageData) => ({
-      id: messageData.id,
-      userName: this.getUserName(messageData.user_id),
-      time: this.formatTime(messageData.time),
-      text: messageData.content,
-      userId: messageData.user_id,
-      type: messageData.type,
-      isOwn: messageData.user_id === this.currentUserId,
+    const history: Message[] = messages.map((m) => ({
+      id: m.id,
+      userName: this.getUserName(m.user_id),
+      time: this.formatTime(m.time),
+      text: m.content,
+      userId: m.user_id,
+      type: m.type === 'file' || m.type === 'sticker' ? m.type : 'message',
+      isOwn: m.user_id === this.currentUserId,
     }));
-
-    this.messagesData = [...historyMessages.reverse()];
+    this.messagesData = [...history.reverse()];
     this.updateMessages();
     this.scrollToBottom();
   }
 
   private addSystemMessage(text: string): void {
-    const systemMessage: Message = {
+    this.messagesData.push({
       id: `system-${Date.now()}`,
       userName: 'Система',
-      time: new Date().toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
       text,
       userId: 'system',
       type: 'message',
       isOwn: false,
-    };
-
-    this.messagesData.push(systemMessage);
+    });
     this.updateMessages();
     this.scrollToBottom();
   }
@@ -246,49 +204,31 @@ export class ChatInterface extends Block<ChatInterfaceProps> {
     requestAnimationFrame(() => {
       setTimeout(() => {
         const messagesContainer = this.element?.querySelector('.chat__messages');
-        if (messagesContainer) {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }, 50);
     });
   }
 
   private getUserName(userId: string): string {
-    if (userId === this.currentUserId) {
-      return 'Вы';
-    }
-    if (userId === 'system') {
-      return 'Система';
-    }
+    if (userId === this.currentUserId) return 'Вы';
+    if (userId === 'system') return 'Система';
     return `Пользователь ${userId}`;
   }
 
   private formatTime(timeString: string): string {
     try {
       const date = new Date(timeString);
-      return date.toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch (error) {
+      return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    } catch {
       return timeString;
     }
   }
 
   protected render(): string {
-    const messagesForTemplate = this.props.messages as Message[] || [];
-    
-    const context = {
-      ...this.props,
-      messages: messagesForTemplate,
-      styles
-    };
-    
-    const compiledTemplate = Handlebars.compile(template);
-    return compiledTemplate(context);
+    const messagesForTemplate = (this.props.messages as Message[]) || [];
+    return Handlebars.compile(template)({ ...this.props, messages: messagesForTemplate, styles });
   }
 
-  // Публичные методы
   async setActiveChat(chatId: number): Promise<void> {
     if (this.currentChatId !== chatId) {
       await this.connectToChat(chatId);

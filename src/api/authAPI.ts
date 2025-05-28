@@ -1,7 +1,6 @@
 import HTTPTransport from './HTTPTransport';
 import { BaseAPI } from './baseAPI';
 
-// Типы данных для запросов
 export interface SignInData {
   login: string;
   password: string;
@@ -16,7 +15,6 @@ export interface SignUpData {
   phone: string;
 }
 
-// Тип данных пользователя
 export interface UserData {
   id: number;
   first_name: string;
@@ -28,66 +26,58 @@ export interface UserData {
   avatar: string;
 }
 
-// Используем существующий HTTPTransport
-const httpTransport = new HTTPTransport();
+const http = new HTTPTransport();
 
 class AuthAPI extends BaseAPI {
-  private readonly baseUrl = 'https://ya-praktikum.tech/api/v2/auth';
+  private readonly base = 'https://ya-praktikum.tech/api/v2/auth';
 
-  // Регистрация нового пользователя
-  async create(data: SignUpData): Promise<UserData> {
-    const response = await httpTransport.post(`${this.baseUrl}/signup`, {
-      data,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
+    const res = await promise;
+    const contentType = res.getResponseHeader('Content-Type');
 
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка регистрации');
+    const isJSON = contentType?.includes('application/json');
+    const data = isJSON ? JSON.parse(res.responseText) : res.responseText;
+
+    if (res.status !== 200) {
+      throw new Error(data.reason || errorMsg);
     }
 
-    return JSON.parse(response.responseText);
+    return data;
   }
 
-  // Авторизация пользователя
-  async signIn(data: SignInData): Promise<void> {
-    const response = await httpTransport.post(`${this.baseUrl}/signin`, {
-      data,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка авторизации');
-    }
+  create(data: SignUpData): Promise<UserData> {
+    return this.handle(
+      http.post(`${this.base}/signup`, {
+        data,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      'Ошибка регистрации'
+    );
   }
 
-  // Получение информации о текущем пользователе
-  async request(): Promise<UserData> {
-    const response = await httpTransport.get(`${this.baseUrl}/user`);
-
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Пользователь не авторизован');
-    }
-
-    return JSON.parse(response.responseText);
+  signIn(data: SignInData): Promise<void> {
+    return this.handle(
+      http.post(`${this.base}/signin`, {
+        data,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      'Ошибка авторизации'
+    );
   }
 
-  // Выход из системы
-  async logout(): Promise<void> {
-    const response = await httpTransport.post(`${this.baseUrl}/logout`);
+  request(): Promise<UserData> {
+    return this.handle(
+      http.get(`${this.base}/user`),
+      'Пользователь не авторизован'
+    );
+  }
 
-    if (response.status !== 200) {
-      const error = JSON.parse(response.responseText);
-      throw new Error(error.reason || 'Ошибка при выходе');
-    }
+  logout(): Promise<void> {
+    return this.handle(
+      http.post(`${this.base}/logout`),
+      'Ошибка при выходе'
+    );
   }
 }
 
-// Экспортируем единственный экземпляр
 export default new AuthAPI();

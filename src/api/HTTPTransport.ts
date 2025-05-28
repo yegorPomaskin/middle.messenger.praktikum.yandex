@@ -1,4 +1,3 @@
-// Перечисление доступных HTTP методов
 export enum METHODS {
   GET = 'GET',
   POST = 'POST',
@@ -13,11 +12,6 @@ interface RequestOptions {
   timeout?: number;
 }
 
-/**
- * Преобразует объект в строку запроса
- * @param {Record<string, unknown>} data - Объект для преобразования
- * @returns {string} - Строка запроса
- */
 function queryStringify(data: Record<string, unknown>): string {
   if (typeof data !== 'object' || data === null) {
     throw new Error('Data must be object');
@@ -31,7 +25,6 @@ function queryStringify(data: Record<string, unknown>): string {
   return keys.reduce((result, key, index) => {
     let value = data[key];
 
-    // Преобразование значений в строку
     if (Array.isArray(value)) {
       value = value.join(',');
     } else if (typeof value === 'object' && value !== null) {
@@ -43,54 +36,23 @@ function queryStringify(data: Record<string, unknown>): string {
 }
 
 export default class HTTPTransport {
-  /**
-   * GET-запрос
-   * @param {string} url - URL запроса
-   * @param {RequestOptions} options - Опции запроса
-   * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
-   */
 
   public get(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.GET }, options.timeout);
   }
 
-  /**
-   * POST-запрос
-   * @param {string} url - URL запроса
-   * @param {RequestOptions} options - Опции запроса
-   * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
-   */
   public post(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
   }
 
-  /**
-   * PUT-запрос
-   * @param {string} url - URL запроса
-   * @param {RequestOptions} options - Опции запроса
-   * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
-   */
   public put(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
   }
 
-  /**
-   * DELETE-запрос
-   * @param {string} url - URL запроса
-   * @param {RequestOptions} options - Опции запроса
-   * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
-   */
   public delete(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
-  /**
-   * Основной метод для выполнения запросов
-   * @param {string} url - URL запроса
-   * @param {RequestOptions} options - Опции запроса
-   * @param {number} timeout - Таймаут запроса
-   * @returns {Promise<XMLHttpRequest>} - Promise с объектом XMLHttpRequest
-   */
   private request(
     url: string,
     options: RequestOptions = {},
@@ -107,7 +69,6 @@ export default class HTTPTransport {
       const xhr = new XMLHttpRequest();
       const isGet = method === METHODS.GET;
 
-      // Для GET-запроса добавляем параметры в URL
       xhr.open(
         method,
         isGet && !!data ? `${url}${queryStringify(data as Record<string, unknown>)}` : url,
@@ -115,12 +76,10 @@ export default class HTTPTransport {
 
        xhr.withCredentials = true;
 
-      // Установка заголовков
       Object.keys(headers).forEach((key) => {
         xhr.setRequestHeader(key, headers[key]);
       });
 
-      // Обработчики событий
       xhr.onload = function () {
         resolve(xhr);
       };
@@ -131,7 +90,6 @@ export default class HTTPTransport {
 
       xhr.timeout = timeout;
 
-      // Отправка запроса
       if (isGet || !data) {
         xhr.send();
       } else {

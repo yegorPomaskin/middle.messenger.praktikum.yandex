@@ -42,15 +42,15 @@ class AuthController {
     try {
       await AuthAPI.logout();
     } catch (error) {
-      // Игнорируем ошибки logout - все равно очищаем сессию
       console.warn('Logout error:', error);
     }
-    
+
     Store.reset();
     router.go('/');
   }
 
-  async getCurrentUser(): Promise<UserData | null> {
+  // 🔁 Было: getCurrentUser
+  async fetchUser(): Promise<UserData | null> {
     const cached = Store.getCurrentUser();
     if (cached) return cached;
 
@@ -68,7 +68,7 @@ class AuthController {
   }
 
   async isAuthenticated(): Promise<boolean> {
-    const user = await this.getCurrentUser();
+    const user = await this.fetchUser();
     return user !== null;
   }
 

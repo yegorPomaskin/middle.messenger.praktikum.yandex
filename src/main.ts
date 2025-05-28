@@ -1,6 +1,6 @@
-// src/main.ts - ОБНОВЛЕННАЯ ВЕРСИЯ С ЗАЩИТОЙ РОУТОВ
 import './styles/global.css';
 import { router } from './router/Router';
+import AuthController from './controllers/AuthController';
 
 // Импортируем все страницы
 import { AuthPage } from './pages/auth';
@@ -27,9 +27,9 @@ async function initApp() {
   console.log('🚀 Инициализация приложения...');
 
   try {
-    // Конфигурируем роуты
+    // Конфигурируем роуты заранее
     router
-      .use('/', AuthPage) // Главная страница - авторизация
+      .use('/', AuthPage)
       .use('/register', RegisterPage)
       .use('/messenger', MessengerPage)
       .use('/settings', ProfilePageHandler)
@@ -38,12 +38,19 @@ async function initApp() {
       .use('/404', Error404Page)
       .use('/505', Error505Page);
 
-    // Запускаем роутер с защитой
+    // Проверим авторизацию
+    await AuthController.fetchUser(); // получим данные с /auth/user
+    const user = AuthController.getUserData();
+
     await router.start();
 
-    console.log('✅ Приложение инициализировано');
+    if (user) {
+      router.go('/messenger'); // авторизован → в мессенджер
+    }
   } catch (error) {
-    console.error('❌ Ошибка инициализации приложения:', error);
+    console.warn('🔒 Пользователь не авторизован:', error);
+    await router.start(); // даже если ошибка — запускаем роутер
+    router.go('/');
   }
 }
 
