@@ -1,7 +1,3 @@
-/**
- * Базовый компонент поля ввода
- * Оптимизирован для предотвращения перерисовки при каждом вводе символа
- */
 import Block, { BlockProps } from '../../framework/block';
 import { ValidationRule, Validator } from '../../utils/validator';
 
@@ -54,10 +50,8 @@ export class Input extends Block<InputProps> {
 
     super(safeProps);
 
-    // Инициализируем локальное значение
     this._currentValue = safeProps.value;
 
-    // Синхронизируем с реактивной системой пропсов сразу
     this.setProps({ value: this._currentValue });
 
     if (props.validationRules?.length) {
@@ -65,9 +59,6 @@ export class Input extends Block<InputProps> {
     }
   }
 
-  /**
-   * Обрабатывает событие потери фокуса
-   */
   private _handleBlur(e: FocusEvent, originalHandler?: EventListener): void {
     // При потере фокуса синхронизируем значение с props и валидируем
     this.setProps({ value: this._currentValue });
@@ -79,19 +70,12 @@ export class Input extends Block<InputProps> {
     }
   }
 
-  /**
-   * Обрабатывает событие получения фокуса
-   */
   private _handleFocus(e: FocusEvent, originalHandler?: EventListener): void {
     if (originalHandler) {
       originalHandler(e);
     }
   }
 
-  /**
-   * Обрабатывает событие ввода
-   * Обновляет только локальное значение без перерисовки компонента
-   */
   private _handleInput(e: Event, originalHandler?: EventListener): void {
     const input = e.target as HTMLInputElement;
     this._currentValue = input.value;
@@ -101,9 +85,6 @@ export class Input extends Block<InputProps> {
     }
   }
 
-  /**
-   * Проверяет введенное значение по установленным правилам валидации
-   */
   public validate(): boolean {
     if (!this.validator) return true;
 
@@ -111,30 +92,19 @@ export class Input extends Block<InputProps> {
     return result.isValid;
   }
 
-  /**
-   * Возвращает текущее значение поля
-   */
   public getValue(): string {
     return this._currentValue;
   }
 
-  /**
-   * Возвращает имя поля
-   */
   public getName(): string {
-    // Use type assertion since the base Block class uses unknown type for props
     return this.props.name as string;
   }
 
-  /**
-   * Устанавливает состояние ошибки
-   */
   public setError(hasError: boolean): void {
     this.setProps({ error: hasError });
   }
 
   protected render(): string {
-    // Используем как локальное значение, так и значение из пропсов в качестве запасного варианта
     const value = this._currentValue || (this.props.value as string) || '';
 
     const inputClass = [

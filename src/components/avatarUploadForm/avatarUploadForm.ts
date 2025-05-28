@@ -45,10 +45,18 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
             e.preventDefault();
             console.log('Кнопка выбора файла нажата');
 
-            if (this.fileInputRef) {
-              this.fileInputRef.click();
+            // Проверяем, что this.element точно есть
+            if (this.element) {
+              this.fileInputRef = this.element.querySelector(
+                '#avatarFileInput',
+              ) as HTMLInputElement | null;
+              if (this.fileInputRef) {
+                this.fileInputRef.click();
+              } else {
+                console.error('fileInputRef не инициализирован даже после повторного поиска!');
+              }
             } else {
-              console.error('fileInputRef не инициализирован');
+              console.error('this.element не определён!');
             }
           }
         },
@@ -62,7 +70,7 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
     console.log('AvatarUploadForm смонтирован');
 
     if (this.element) {
-      this.fileInputRef = this.element.querySelector('input[type="file"]');
+      this.fileInputRef = this.element.querySelector('#avatarFileInput');
 
       if (this.fileInputRef) {
         console.log('fileInputRef найден и инициализирован');

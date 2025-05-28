@@ -1,7 +1,7 @@
-import { AuthRegisterForm } from '../components/registerForm/registerForm';
+import { RegisterForm } from '../components/registerForm/registerForm';
+import AuthController from '../controllers/AuthController';
 import Block, { BlockProps } from '../framework/block';
-
-import { AuthPage } from './auth';
+import { router } from '../router/Router';
 
 const REGISTER_FORM_CONFIG = {
   title: 'Регистрация',
@@ -9,7 +9,7 @@ const REGISTER_FORM_CONFIG = {
     { label: 'Почта', name: 'email', type: 'email', required: true },
     { label: 'Логин', name: 'login', type: 'text', required: true },
     { label: 'Имя', name: 'first_name', type: 'text', required: true },
-    { label: 'Фамилия', name: 'last_name', type: 'text', required: true },
+    { label: 'Фамилия', name: 'second_name', type: 'text', required: true },
     { label: 'Телефон', name: 'phone', type: 'tel', required: true },
     { label: 'Пароль', name: 'password', type: 'password', required: true },
     {
@@ -26,30 +26,33 @@ const REGISTER_FORM_CONFIG = {
 
 interface RegisterPageProps extends BlockProps {
   [key: string]: unknown;
-  RegisterForm?: AuthRegisterForm;
+  RegisterForm?: RegisterForm;
 }
 
 export class RegisterPage extends Block<RegisterPageProps> {
   constructor() {
     super({
-      RegisterForm: new AuthRegisterForm({
+      RegisterForm: new RegisterForm({
         ...REGISTER_FORM_CONFIG,
         isLogin: false,
-        onLinkClick: () => {
-          const authPage = new AuthPage();
-          const app = document.getElementById('app');
-          if (app) {
-            app.innerHTML = '';
-            const content = authPage.getContent();
-            if (content) {
-              app.appendChild(content);
-              authPage.dispatchComponentDidMount();
-            }
-          }
-        },
-        onSubmit: (e: Event) => {
+        onLinkClick: (e: Event) => {
           e.preventDefault();
-          // Логика отправки формы авторизации
+          // Переходим на страницу авторизации через роутер
+          router.go('/');
+        },
+        onSubmit: async (formData: Record<string, string>) => {
+          try {
+            await AuthController.signUp({
+              email: formData.email,
+              login: formData.login,
+              first_name: formData.first_name,
+              second_name: formData.second_name,
+              phone: formData.phone,
+              password: formData.password,
+            });
+          } catch (error) {
+            console.error('Ошибка регистрации:', error);
+          }
         },
       }),
     });

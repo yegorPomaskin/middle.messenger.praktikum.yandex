@@ -21,7 +21,7 @@ export interface AuthField {
   required: boolean;
 }
 
-export interface AuthRegisterFormProps extends BlockProps {
+export interface RegisterFormProps extends BlockProps {
   [key: string]: unknown;
   title: string;
   fields: AuthField[];
@@ -30,13 +30,13 @@ export interface AuthRegisterFormProps extends BlockProps {
   linkText: string;
   isLogin: boolean;
   onLinkClick: (event: Event) => void;
-  onSubmit: (event: Event) => void;
+  onSubmit: (formData: Record<string, string>) => void;
 }
 
-export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
-  private _onSubmitCallback: ((event: Event) => void) | undefined;
+export class RegisterForm extends Block<RegisterFormProps> {
+  private _onSubmitCallback: ((formData: Record<string, string>) => void) | undefined;
 
-  constructor(props: AuthRegisterFormProps) {
+  constructor(props: RegisterFormProps) {
     const isLogin = props.isLogin;
     const modifier = isLogin ? styles.auth : styles.register;
 
@@ -62,7 +62,7 @@ export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
           validationRules = PHONE_VALIDATION;
           break;
         case 'first_name':
-        case 'last_name':
+        case 'second_name':
         case 'display_name':
           validationRules = NAME_VALIDATION;
           break;
@@ -125,9 +125,6 @@ export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
         if (field instanceof FormField) {
           const isFieldValid = field.validate();
           isFormValid = isFormValid && isFieldValid;
-
-          // Собираем данные формы
-          // Используем метод getValue вместо прямого доступа к props
           formData[field.getName()] = field.getValue();
         }
       });
@@ -136,7 +133,7 @@ export class AuthRegisterForm extends Block<AuthRegisterFormProps> {
     // Если форма валидна, передаем данные обработчику
     if (isFormValid && this._onSubmitCallback) {
       console.log('Form data:', formData);
-      this._onSubmitCallback(e);
+      this._onSubmitCallback(formData);
     } else {
       console.log('Form validation failed');
     }

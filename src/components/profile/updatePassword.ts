@@ -41,14 +41,13 @@ export class UpdatePasswordPage extends Block<UpdatePasswordPageProps> {
   private avatarModal: Modal | null = null;
 
   constructor(props: UpdatePasswordPageProps) {
-    // Create sidebar component
+    
     const sidebar = new Sidebar({
       href: props.sidebarData.href,
       iconSrc: props.sidebarData.iconSrc,
       onClick: props.sidebarData.onClick,
     });
 
-    // Create password fields
     const fields = [
       new ProfileField({
         name: 'oldPassword',

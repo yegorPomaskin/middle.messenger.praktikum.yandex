@@ -18,6 +18,8 @@
 }
 
 .chat__item-search {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 13px;
 }
 

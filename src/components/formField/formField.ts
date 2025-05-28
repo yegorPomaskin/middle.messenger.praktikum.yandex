@@ -5,11 +5,6 @@ import { Input } from '../input/input';
 import template from './formField.hbs?raw';
 import styles from './formField.module.css';
 
-/**
- * Компонент поля формы для AUTH и REGISTER с меткой и отображением ошибок
- * Оборачивает базовый компонент Input и добавляет функциональность валидации
- */
-
 export interface FormFieldProps extends BlockProps {
   [key: string]: unknown;
   label: string;
@@ -28,7 +23,6 @@ export class FormField extends Block<FormFieldProps> {
   private input: Input;
 
   constructor(props: FormFieldProps) {
-    // Create Input instance with correct event handler types
     const input = new Input({
       name: props.name,
       type: props.type,
@@ -55,14 +49,10 @@ export class FormField extends Block<FormFieldProps> {
     this.input = input;
   }
 
-  /**
-   * Обрабатывает событие потери фокуса полем ввода
-   */
   private _handleInputBlur(e: FocusEvent, props: FormFieldProps): void {
     const isValid = this.input.validate();
 
     if (!isValid && props.validationRules?.length) {
-      // Находим сообщение об ошибке из первого неуспешного правила
       const errorMessage =
         props.validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
           ?.errorMessage ?? 'Invalid input';
@@ -74,15 +64,11 @@ export class FormField extends Block<FormFieldProps> {
       this.input.setError(false);
     }
 
-    // Вызываем оригинальный обработчик blur если он был передан
     if (props.events?.blur) {
       (props.events.blur as EventListener)(e);
     }
   }
 
-  /**
-   * Проверяет введенное значение по установленным правилам валидации
-   */
   public validate(): boolean {
     const isValid = this.input.validate();
 
@@ -104,16 +90,10 @@ export class FormField extends Block<FormFieldProps> {
     return isValid;
   }
 
-  /**
-   * Возвращает имя поля
-   */
   public getName(): string {
     return this.props.name as string;
   }
 
-  /**
-   * Возвращает текущее значение поля
-   */
   public getValue(): string {
     return this.input.getValue();
   }

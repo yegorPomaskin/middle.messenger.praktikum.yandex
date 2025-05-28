@@ -1,53 +1,83 @@
 import { UpdatePasswordPage } from '../components/profile/updatePassword';
+import AuthController from '../controllers/AuthController';
+import UserController from '../controllers/UserController';
 import Block, { BlockProps } from '../framework/block';
+import { router } from '../router/Router';
+
+interface PasswordData {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
 interface UpdatePasswordPageHandlerProps extends BlockProps {
-  [key: string]: unknown;
   updatePasswordPage?: UpdatePasswordPage;
 }
 
+const validatePasswords = (data: PasswordData): string | null => {
+  const { oldPassword, newPassword, confirmPassword } = data;
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    return 'Все поля должны быть заполнены';
+  }
+  if (newPassword !== confirmPassword) {
+    return 'Новый пароль и подтверждение не совпадают';
+  }
+  if (oldPassword === newPassword) {
+    return 'Новый пароль должен отличаться от старого';
+  }
+  return null;
+};
+
 export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerProps> {
   constructor() {
-    // Обработчики событий для кнопок
-    const handleSavePassword = (passwordData: Record<string, string>) => {
-      console.log('Сохранение нового пароля:', passwordData);
+    // Переход назад
+    const handleSidebarClick = (e: Event) => {
+      e.preventDefault();
+      router.go('/settings');
+    };
 
-      // Проверяем, что строки не пустые
-      if (!this.validatePasswords(passwordData)) {
+    const handleSavePassword = async (passwordData: PasswordData) => {
+      const validationError = validatePasswords(passwordData);
+      if (validationError) {
+        alert(validationError);
         return;
       }
-
-      // Здесь будет логика отправки данных на сервер
-      // Например: UserController.changePassword(passwordData).then(...)
+      try {
+        await UserController.updatePassword({
+          oldPassword: passwordData.oldPassword,
+          newPassword: passwordData.newPassword,
+        });
+        // UserController сам перенаправит на /settings
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+        alert(`Ошибка смены пароля: ${errorMessage}`);
+      }
     };
 
+    // Отмена
     const handleCancel = () => {
-      console.log('Отмена изменения пароля');
-      // Возвращаемся на страницу профиля без сохранения
+      router.go('/settings');
     };
 
-    // Создаем экземпляр UpdatePasswordPage
+    const currentUser = AuthController.getUserData();
     const updatePasswordPage = new UpdatePasswordPage({
-      profileImage: '/profile-pic.png',
-      userName: 'Иван',
+      profileImage: currentUser?.avatar || '/profile-pic.png',
+      userName: currentUser?.first_name || 'Иван',
       sidebarData: {
-        href: '#',
+        href: '/settings',
         iconSrc: '/back-arrow.png',
+        onClick: handleSidebarClick,
       },
-      onSave: handleSavePassword,
+      onSave: (data) =>
+        handleSavePassword({
+          oldPassword: data.oldPassword ?? '',
+          newPassword: data.newPassword ?? '',
+          confirmPassword: data.confirmPassword ?? '',
+        }),
       onCancel: handleCancel,
     });
 
-    super({
-      updatePasswordPage,
-    });
-  }
-
-  // Простая валидация - проверяем, что строки не пустые
-  private validatePasswords(passwordData: Record<string, string>): boolean {
-    const { oldPassword, newPassword, confirmPassword } = passwordData;
-
-    return Boolean(oldPassword && newPassword && confirmPassword);
+    super({ updatePasswordPage });
   }
 
   protected render(): string {

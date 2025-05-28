@@ -1,7 +1,7 @@
 import { AuthForm, AuthField } from '../components/authForm/authForm';
+import AuthController from '../controllers/AuthController';
 import Block, { BlockProps } from '../framework/block';
-
-import { RegisterPage } from './register';
+import { router } from '../router/Router';
 
 const fields: AuthField[] = [
   { label: 'Логин', name: 'login', type: 'text', required: true },
@@ -25,22 +25,19 @@ export class AuthPage extends Block<AuthPageProps> {
     super({
       AuthForm: new AuthForm({
         ...AUTH_FORM_CONFIG,
-        onLinkClick: () => {
-          const registerPage = new RegisterPage();
-          const app = document.getElementById('app');
-          if (app) {
-            app.innerHTML = '';
-            const content = registerPage.getContent();
-            if (content) {
-              app.appendChild(content);
-              registerPage.dispatchComponentDidMount();
-            }
-          }
-        },
-        onSubmit: (e: Event) => {
+        onLinkClick: (e: Event) => {
           e.preventDefault();
-          // Логика отправки формы авторизации
-          console.log('Форма авторизации отправлена');
+          router.go('/register');
+        },
+        onSubmit: async (formData: Record<string, string>) => {
+          try {
+            await AuthController.signIn({
+              login: formData.login,
+              password: formData.password,
+            });
+          } catch (error) {
+            console.error('Ошибка авторизации:', error);
+          }
         },
       }),
     });

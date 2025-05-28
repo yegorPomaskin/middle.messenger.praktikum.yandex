@@ -93,8 +93,7 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
     }
   }
 
-  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
-    console.log(oldProps, newProps);
+  protected componentDidUpdate(_oldProps: Props, _newProps: Props): boolean {
     return true;
   }
 
@@ -274,5 +273,18 @@ export default abstract class Block<Props extends BlockProps = BlockProps> {
     if (content) {
       this.getContent().style.display = 'none';
     }
+  }
+
+  destroy(): void {
+    // Удаляем обработчики событий
+    this._removeEvents();
+
+    // Удаляем элемент из DOM
+    if (this._element && this._element.parentNode) {
+      this._element.parentNode.removeChild(this._element);
+    }
+
+    // Обнуляем ссылку на элемент
+    this._element = null;
   }
 }

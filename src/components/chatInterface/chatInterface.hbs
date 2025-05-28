@@ -1,17 +1,24 @@
+<!-- src/components/chatInterface/chatInterface.hbs -->
 <div class="{{styles.chat__interface}}">
   <!-- Основная область для сообщений -->
-  <div class="{{styles.chat__messages}}">
-    {{#each messages}}
-      <div class="{{styles.chat__message}}">
-        <div class="{{styles.chat__message-info}}">
-          <span class="{{styles.chat__message-user}}">{{userName}}</span>
-          <span class="{{styles.chat__message-time}}">{{time}}</span>
+  <div class="{{styles.chat__messages}}" id="messages-container">
+    {{#if messages.length}}
+      {{#each messages}}
+        <div class="{{../styles.chat__message}} {{#if isOwn}}{{../styles.chat__message_own}}{{else}}{{../styles.chat__message_other}}{{/if}}">
+          <div class="{{../styles.chat__message-info}}">
+            <span class="{{../styles.chat__message-user}}">{{userName}}</span>
+            <span class="{{../styles.chat__message-time}}">{{time}}</span>
+          </div>
+          <div class="{{../styles.chat__message-text}}">
+            {{text}}
+          </div>
         </div>
-        <div class="{{styles.chat__message-text}}">
-          {{text}}
-        </div>
+      {{/each}}
+    {{else}}
+      <div class="{{styles.chat__empty}}">
+        <p>Выберите чат, чтобы начать общение</p>
       </div>
-    {{/each}}
+    {{/if}}
   </div>
 
   <form class="{{styles.chat__interface-area}}">
@@ -21,6 +28,7 @@
       name="message"
       class="{{styles.chat__interface-input}}"
       placeholder="Напишите сообщение..."
+      autocomplete="off"
     />
     <button type="submit" class="{{styles.chat__interface-sendButton}}">
       <img src="{{sendButton}}" alt="Отправить" class="{{styles.chat__interface-sendIcon}}" />

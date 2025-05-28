@@ -1,0 +1,33 @@
+/* src/components/addChatButton/addChatButton.module.css */
+.addChatButton {
+  align-items: center;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 40px;
+  justify-content: center;
+  margin-left: 5px;
+  transition: all 0.2s ease;
+  width: 40px;
+}
+
+.addChatButton:hover {
+  background-color: #e03a15;
+  box-shadow: 0 2px 8px rgb(246 72 25 / 30%);
+  transform: translateY(-1px);
+}
+
+.addChatButton:active {
+  box-shadow: 0 1px 4px rgb(246 72 25 / 30%);
+  transform: translateY(0);
+}
+
+.addChatIcon {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
