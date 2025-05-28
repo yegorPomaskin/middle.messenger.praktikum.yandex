@@ -1,12 +1,17 @@
-import Route from './Route';
 import Block, { BlockProps } from '../framework/block';
 import { RouteGuard } from '../utils/routeGuard';
 
+import Route from './Route';
+
 export default class Router {
   private static __instance: Router;
+
   private routes: Route[] = [];
+
   private history: History = window.history;
+
   private _currentRoute: Route | null = null;
+
   private _rootQuery!: string;
 
   constructor(rootQuery: string) {

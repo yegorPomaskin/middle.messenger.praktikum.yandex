@@ -1,5 +1,5 @@
 // src/controllers/ChatController.ts
-import ChatAPI, { ChatData } from '../api/chatAPI';
+import ChatAPI, { ChatData, ChatUser } from '../api/chatAPI';
 import Store from '../store/store';
 import { MessageData } from '../utils/webSocketManager';
 
@@ -74,7 +74,7 @@ class ChatController {
       await ChatAPI.addUsersToChat({ chatId, users: userIds });
     } catch (error) {
       Store.setChatError(
-        error instanceof Error ? error.message : 'Ошибка добавления пользователей'
+        error instanceof Error ? error.message : 'Ошибка добавления пользователей',
       );
       throw error;
     } finally {
@@ -101,7 +101,7 @@ class ChatController {
   }
 
   // Получить пользователей чата
-  async getChatUsers(chatId: number): Promise<any[]> {
+  async getChatUsers(chatId: number): Promise<ChatUser[]> {
     try {
       return await ChatAPI.getChatUsers(chatId);
     } catch (error) {
@@ -131,52 +131,42 @@ class ChatController {
     }
   }
 
-  // Добавить новое сообщение в Store
   handleNewMessage(message: MessageData): void {
     Store.addMessage(message);
   }
 
-  // Добавить историю сообщений в Store
   handleMessagesHistory(messages: MessageData[]): void {
     Store.addMessagesHistory(messages);
   }
 
-  // Установить активный чат
   setActiveChat(chatId: number | null): void {
     Store.setCurrentChat(chatId);
   }
 
-  // Получить список чатов из Store
   getChats(): ChatData[] {
     return Store.getChats();
   }
 
-  // Получить ID текущего чата
   getCurrentChatId(): number | null {
     return Store.getCurrentChatId();
   }
 
-  // Получить данные текущего чата
   getCurrentChat(): ChatData | null {
     return Store.getCurrentChat();
   }
 
-  // Проверка загрузки
   isLoading(): boolean {
     return Store.get('chats.isLoading') as boolean;
   }
 
-  // Получить ошибку
   getError(): string | null {
     return Store.get('chats.error') as string | null;
   }
 
-  // Очистить ошибку
   clearError(): void {
     Store.clearChatError();
   }
 
-  // Подписки на изменения
   onChatsChange(callback: (chats: ChatData[]) => void): () => void {
     return Store.onChatsChange(callback);
   }

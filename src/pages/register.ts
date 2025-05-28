@@ -1,7 +1,7 @@
 import { RegisterForm } from '../components/registerForm/registerForm';
+import AuthController from '../controllers/AuthController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import AuthController from '../controllers/AuthController';
 
 const REGISTER_FORM_CONFIG = {
   title: 'Регистрация',

@@ -1,5 +1,6 @@
-import HTTPTransport from './HTTPTransport';
 import { BaseAPI } from './baseAPI';
+import HTTPTransport from './HTTPTransport';
+
 
 export interface ChatData {
   id: number;
@@ -19,6 +20,18 @@ export interface ChatData {
   } | null;
 }
 
+export interface ChatUser {
+  id: number;
+  first_name: string;
+  second_name: string;
+  display_name: string | null;
+  login: string;
+  avatar: string | null;
+  role?: string;
+  email?: string;
+  phone?: string;
+}
+
 export interface CreateChatData {
   title: string;
 }
@@ -34,6 +47,7 @@ export interface CreateChatResponse {
 
 class ChatAPI extends BaseAPI {
   private readonly http = new HTTPTransport();
+  
   private readonly base = 'https://ya-praktikum.tech/api/v2/chats';
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
@@ -64,7 +78,7 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка создания чата'
+      'Ошибка создания чата',
     );
   }
 
@@ -74,7 +88,7 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка добавления пользователей в чат'
+      'Ошибка добавления пользователей в чат',
     );
   }
 
@@ -84,21 +98,21 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка удаления пользователей из чата'
+      'Ошибка удаления пользователей из чата',
     );
   }
 
-  getChatUsers(chatId: number): Promise<any[]> {
+  getChatUsers(chatId: number): Promise<ChatUser[]> {
     return this.handle(
       this.http.get(`${this.base}/${chatId}/users`),
-      'Ошибка получения пользователей чата'
+      'Ошибка получения пользователей чата',
     );
   }
 
   getChatToken(chatId: number): Promise<{ token: string }> {
     return this.handle(
       this.http.post(`${this.base}/token/${chatId}`),
-      'Ошибка получения токена чата'
+      'Ошибка получения токена чата',
     );
   }
 
@@ -108,14 +122,14 @@ class ChatAPI extends BaseAPI {
         data: { chatId },
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка удаления чата'
+      'Ошибка удаления чата',
     );
   }
 
   getNewMessagesCount(chatId: number): Promise<{ unread_count: number }> {
     return this.handle(
       this.http.get(`${this.base}/${chatId}/new`),
-      'Ошибка получения количества сообщений'
+      'Ошибка получения количества сообщений',
     );
   }
 }

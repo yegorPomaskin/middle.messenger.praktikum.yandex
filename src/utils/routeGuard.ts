@@ -55,6 +55,6 @@ export class RouteGuard {
   }
 
   public static async beforeRouteChange(pathname: string): Promise<boolean> {
-    return await this.checkAccess(pathname);
+    return this.checkAccess(pathname);
   }
 }

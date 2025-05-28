@@ -1,8 +1,8 @@
 import linkStyles from '../components/link/link.module.css';
 import { ProfilePage } from '../components/profile/profilePage';
+import AuthController from '../controllers/AuthController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import AuthController from '../controllers/AuthController';
 
 interface ProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;

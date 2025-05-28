@@ -1,7 +1,7 @@
 import { AuthForm, AuthField } from '../components/authForm/authForm';
+import AuthController from '../controllers/AuthController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import AuthController from '../controllers/AuthController';
 
 const fields: AuthField[] = [
   { label: 'Логин', name: 'login', type: 'text', required: true },

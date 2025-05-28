@@ -1,7 +1,8 @@
+import Handlebars from 'handlebars';
+
+import AuthController from '../../controllers/AuthController';
 import Block, { BlockProps } from '../../framework/block';
 import WebSocketManager, { MessageData } from '../../utils/webSocketManager';
-import AuthController from '../../controllers/AuthController';
-import Handlebars from 'handlebars';
 
 import template from './chatInterface.hbs?raw';
 import styles from './chatInterface.module.css';
@@ -27,8 +28,11 @@ export interface ChatInterfaceProps extends BlockProps {
 
 export class ChatInterface extends Block<ChatInterfaceProps> {
   private currentChatId: number | null = null;
+
   private messagesData: Message[] = [];
+
   private currentUserId: string | null = null;
+
   private isInternalUpdate = false;
 
   constructor(props: ChatInterfaceProps) {

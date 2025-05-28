@@ -1,8 +1,8 @@
 import { UpdateProfilePage } from '../components/profile/updateProfilePage';
+import AuthController from '../controllers/AuthController';
+import UserController from '../controllers/UserController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import UserController from '../controllers/UserController';
-import AuthController from '../controllers/AuthController';
 
 interface UpdateProfilePageHandlerProps extends BlockProps {
   [key: string]: unknown;

@@ -15,11 +15,15 @@ type UserConnectHandler = (userId: string) => void;
 
 class WebSocketManager {
   private socket: WebSocket | null = null;
+
   private userId: number | null = null;
+
   private chatId: number | null = null;
 
   private onMessageCallback?: MessageHandler;
+
   private onHistoryCallback?: HistoryHandler;
+
   private onUserConnectedCallback?: UserConnectHandler;
 
   async connect(
@@ -28,7 +32,7 @@ class WebSocketManager {
       onMessage?: MessageHandler;
       onHistory?: HistoryHandler;
       onUserConnected?: UserConnectHandler;
-    }
+    },
   ): Promise<void> {
     const user = AuthController.getUserData();
     this.userId = user?.id || null;
@@ -79,7 +83,7 @@ class WebSocketManager {
       onMessage?: MessageHandler;
       onHistory?: HistoryHandler;
       onUserConnected?: UserConnectHandler;
-    }
+    },
   ): Promise<void> {
     const { token } = await ChatAPI.getChatToken(chatId);
     const user = AuthController.getUserData();

@@ -1,12 +1,13 @@
-import EventBus from '../framework/eventBus';
-import { StoreEvents } from './storeEvents';
-import { set, get } from '../utils/helpers';
-import { ChatData } from '../api/chatAPI';
-import { MessageData } from '../utils/webSocketManager.ts';
 import { UserData } from '../api/authAPI';
+import { ChatData } from '../api/chatAPI';
+import EventBus from '../framework/eventBus';
+import { set, get } from '../utils/helpers';
+import { MessageData } from '../utils/webSocketManager';
 
-// Интерфейс всего состояния приложения
+import { StoreEvents } from './storeEvents';
+
 export interface AppState {
+  [key: string]: unknown;
   user: {
     currentUser: UserData | null;
     isAuthenticated: boolean;

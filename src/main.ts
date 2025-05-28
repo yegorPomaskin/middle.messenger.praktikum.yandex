@@ -1,18 +1,15 @@
 import './styles/global.css';
-import { router } from './router/Router';
 import AuthController from './controllers/AuthController';
-
-// Импортируем все страницы
 import { AuthPage } from './pages/auth';
-import { RegisterPage } from './pages/register';
 import { ChatPage } from './pages/chat';
-import { ProfilePageHandler } from './pages/profile';
-import { UpdateProfilePageHandler } from './pages/updateProfile';
-import { UpdatePasswordPageHandler } from './pages/updatePassword';
 import { Error404Page } from './pages/Error404';
 import { Error505Page } from './pages/Error505';
+import { ProfilePageHandler } from './pages/profile';
+import { RegisterPage } from './pages/register';
+import { UpdatePasswordPageHandler } from './pages/updatePassword';
+import { UpdateProfilePageHandler } from './pages/updateProfile';
+import { router } from './router/Router';
 
-// Создаем класс-обертку для ChatPage с пропсами
 class MessengerPage extends ChatPage {
   constructor() {
     super({
@@ -45,7 +42,7 @@ async function initApp() {
     await router.start();
 
     if (user) {
-      router.go('/messenger'); // авторизован → в мессенджер
+      router.go('/messenger'); 
     }
   } catch (error) {
     console.warn('🔒 Пользователь не авторизован:', error);
@@ -54,8 +51,6 @@ async function initApp() {
   }
 }
 
-// Запускаем приложение после загрузки DOM
 document.addEventListener('DOMContentLoaded', initApp);
 
-// Экспортируем роутер для использования в компонентах
 export { router };

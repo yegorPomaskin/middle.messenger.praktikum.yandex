@@ -1,16 +1,15 @@
+import { AddNewChatButton } from '../components/addNewChatButton/addNewChatButton';
 import { ChatInterface, Message } from '../components/chatInterface/chatInterface';
 import { ChatItem } from '../components/chatItem/chatItem';
 import { Link } from '../components/link/link';
+import AuthController from '../controllers/AuthController';
+import ChatController from '../controllers/ChatController';
+import UserController from '../controllers/UserController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
 import styles from '../styles/pages/chat.module.css';
 import template from '../templates/chat.hbs?raw';
-import { AddNewChatButton } from '../components/addNewChatButton/addNewChatButton';
-import ChatController from '../controllers/ChatController';
-import UserController from '../controllers/UserController';
-import AuthController from '../controllers/AuthController';
-import WebSocketManager from '../utils/webSocketManager';
-import { MessageData } from '../utils/webSocketManager';
+import WebSocketManager, { MessageData } from '../utils/webSocketManager';
 
 interface ChatPageProps extends BlockProps {
   attachment: string;
@@ -19,7 +18,9 @@ interface ChatPageProps extends BlockProps {
 
 export class ChatPage extends Block<ChatPageProps> {
   private chatInterface: ChatInterface | null = null;
+
   private unsubscribeFromChats: (() => void) | null = null;
+
   private unsubscribeFromMessages: (() => void) | null = null;
 
   constructor(props: ChatPageProps) {
@@ -107,9 +108,9 @@ export class ChatPage extends Block<ChatPageProps> {
           lastMessage: chat.last_message?.content || 'Нет сообщений',
           time: chat.last_message?.time
             ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
+              hour: '2-digit',
+              minute: '2-digit',
+            })
             : '',
           unreadCount: chat.unread_count,
           isActive: activeChatId === chat.id,
@@ -124,7 +125,7 @@ export class ChatPage extends Block<ChatPageProps> {
               }
             },
           },
-        })
+        }),
     );
 
     this.setList({ chatItems });
@@ -161,7 +162,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка выбора чата:', error);
       alert(
-        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
     }
   }
@@ -214,7 +215,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка создания чата с пользователями:', error);
       alert(
-        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
     }
   }

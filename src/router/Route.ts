@@ -37,8 +37,11 @@ export interface RouteProps {
 
 export default class Route {
   private _pathname: string;
+
   private _blockClass: new () => Block<BlockProps>;
+
   private _block: Block<BlockProps> | null = null;
+
   private _props: RouteProps;
 
   constructor(pathname: string, view: new () => Block<BlockProps>, props: RouteProps) {

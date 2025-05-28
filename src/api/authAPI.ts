@@ -1,5 +1,6 @@
-import HTTPTransport from './HTTPTransport';
 import { BaseAPI } from './baseAPI';
+import HTTPTransport from './HTTPTransport';
+
 
 export interface SignInData {
   login: string;
@@ -51,7 +52,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка регистрации'
+      'Ошибка регистрации',
     );
   }
 
@@ -61,7 +62,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка авторизации'
+      'Ошибка авторизации',
     );
   }
 

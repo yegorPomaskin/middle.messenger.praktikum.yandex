@@ -1,57 +1,64 @@
 import { UpdatePasswordPage } from '../components/profile/updatePassword';
+import AuthController from '../controllers/AuthController';
+import UserController from '../controllers/UserController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import UserController from '../controllers/UserController';
-import AuthController from '../controllers/AuthController';
+
+interface PasswordData {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
 interface UpdatePasswordPageHandlerProps extends BlockProps {
-  [key: string]: unknown;
   updatePasswordPage?: UpdatePasswordPage;
 }
 
+const validatePasswords = (data: PasswordData): string | null => {
+  const { oldPassword, newPassword, confirmPassword } = data;
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    return 'Все поля должны быть заполнены';
+  }
+  if (newPassword !== confirmPassword) {
+    return 'Новый пароль и подтверждение не совпадают';
+  }
+  if (oldPassword === newPassword) {
+    return 'Новый пароль должен отличаться от старого';
+  }
+  return null;
+};
+
 export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerProps> {
   constructor() {
-    // Обработчики событий для кнопок
+    // Переход назад
     const handleSidebarClick = (e: Event) => {
       e.preventDefault();
-      console.log('Возврат к профилю');
       router.go('/settings');
     };
 
-    const handleSavePassword = async (passwordData: Record<string, string>) => {
+    const handleSavePassword = async (passwordData: PasswordData) => {
+      const validationError = validatePasswords(passwordData);
+      if (validationError) {
+        alert(validationError);
+        return;
+      }
       try {
-        console.log('🔒 Смена пароля...');
-
-        // Валидация паролей на фронте
-        const validationError = validatePasswords(passwordData);
-        if (validationError) {
-          console.error('❌ Ошибка валидации:', validationError);
-          alert(validationError);
-          return;
-        }
-
-        // Отправляем данные через UserController
         await UserController.updatePassword({
           oldPassword: passwordData.oldPassword,
           newPassword: passwordData.newPassword,
         });
-
-        // UserController сам перенаправит на /settings при успехе
+        // UserController сам перенаправит на /settings
       } catch (error) {
-        console.error('💥 Ошибка смены пароля:', error);
-
-        // Показываем ошибку пользователю
         const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
-        alert(`❌ Ошибка смены пароля: ${errorMessage}`);
+        alert(`Ошибка смены пароля: ${errorMessage}`);
       }
     };
 
+    // Отмена
     const handleCancel = () => {
-      console.log('Отмена изменения пароля');
       router.go('/settings');
     };
 
-    // Создаем экземпляр UpdatePasswordPage
     const currentUser = AuthController.getUserData();
     const updatePasswordPage = new UpdatePasswordPage({
       profileImage: currentUser?.avatar || '/profile-pic.png',
@@ -61,41 +68,19 @@ export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerPr
         iconSrc: '/back-arrow.png',
         onClick: handleSidebarClick,
       },
-      onSave: handleSavePassword,
+      onSave: (data) =>
+        handleSavePassword({
+          oldPassword: data.oldPassword ?? '',
+          newPassword: data.newPassword ?? '',
+          confirmPassword: data.confirmPassword ?? '',
+        }),
       onCancel: handleCancel,
     });
 
-    super({
-      updatePasswordPage,
-    });
+    super({ updatePasswordPage });
   }
 
   protected render(): string {
     return `{{{ updatePasswordPage }}}`;
   }
 }
-
-// Локальная функция валидации
-const validatePasswords = (passwordData: Record<string, string>): string | null => {
-  const { oldPassword, newPassword, confirmPassword } = passwordData;
-
-  // Проверяем, что все поля заполнены
-  if (!oldPassword || !newPassword || !confirmPassword) {
-    console.error('Ошибка: Все поля должны быть заполнены');
-    return 'Все поля должны быть заполнены';
-  }
-
-  // Проверяем, что новый пароль и подтверждение совпадают
-  if (newPassword !== confirmPassword) {
-    console.error('Ошибка: Новый пароль и подтверждение не совпадают');
-    return 'Новый пароль и подтверждение не совпадают';
-  }
-
-  // Проверяем, что новый пароль отличается от старого
-  if (oldPassword === newPassword) {
-    console.error('Ошибка: Новый пароль должен отличаться от старого');
-    return 'Новый пароль должен отличаться от старого';
-  }
-
-  return null;
-};

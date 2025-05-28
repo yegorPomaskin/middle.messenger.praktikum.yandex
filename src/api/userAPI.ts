@@ -1,6 +1,6 @@
-import HTTPTransport from './HTTPTransport';
-import { BaseAPI } from './baseAPI';
 import { UserData } from './authAPI';
+import { BaseAPI } from './baseAPI';
+import HTTPTransport from './HTTPTransport';
 
 export interface UpdateUserData {
   first_name: string;
@@ -18,6 +18,7 @@ export interface UpdatePasswordData {
 
 class UserAPI extends BaseAPI {
   private readonly base = 'https://ya-praktikum.tech/api/v2/user';
+
   private readonly http = new HTTPTransport();
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
@@ -38,7 +39,7 @@ class UserAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка обновления профиля'
+      'Ошибка обновления профиля',
     );
   }
 
@@ -48,7 +49,7 @@ class UserAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка обновления пароля'
+      'Ошибка обновления пароля',
     );
   }
 
@@ -59,9 +60,8 @@ class UserAPI extends BaseAPI {
     return this.handle(
       this.http.put(`${this.base}/profile/avatar`, {
         data: formData,
-        // Content-Type не указываем — браузер сам выставит
       }),
-      'Ошибка обновления аватара'
+      'Ошибка обновления аватара',
     );
   }
 
@@ -71,7 +71,7 @@ class UserAPI extends BaseAPI {
         data: { login },
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка поиска пользователей'
+      'Ошибка поиска пользователей',
     );
   }
 }
