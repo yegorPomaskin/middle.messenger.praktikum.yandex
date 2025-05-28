@@ -11,7 +11,6 @@ interface UpdateProfilePageHandlerProps extends BlockProps {
 
 export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProps> {
   constructor() {
-
     const handleSidebarClick = (e: Event) => {
       e.preventDefault();
       console.log('Возврат к чатам');
@@ -22,7 +21,7 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
     const handleSaveProfile = async (formData: Record<string, string>) => {
       try {
         console.log('💾 Сохранение данных профиля:', formData);
-        
+
         // Отправляем данные через UserController
         await UserController.updateProfile({
           first_name: formData.first_name,
@@ -32,7 +31,6 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
           email: formData.email,
           phone: formData.phone,
         });
-
       } catch (error) {
         console.error('Ошибка сохранения профиля:', error);
         const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
@@ -45,9 +43,9 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
       router.go('/settings');
     };
 
-     const getCurrentUserData = () => {
+    const getCurrentUserData = () => {
       const currentUser = AuthController.getUserData();
-      
+
       if (currentUser) {
         return [
           { name: 'email', label: 'Почта', value: currentUser.email },
@@ -58,7 +56,7 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
           { name: 'phone', label: 'Телефон', value: currentUser.phone },
         ];
       }
-      
+
       // Fallback данные, если пользователь не загружен
       return [
         { name: 'email', label: 'Почта', value: 'test@mail.com' },
@@ -73,28 +71,27 @@ export class UpdateProfilePageHandler extends Block<UpdateProfilePageHandlerProp
     const handleAvatarUpload = async (file: File): Promise<string> => {
       try {
         console.log('📷 Загрузка аватара:', file.name);
-        
+
         const newAvatarUrl = await UserController.updateAvatar(file);
-        
+
         console.log('✅ Аватар загружен:', newAvatarUrl);
-        
+
         return newAvatarUrl;
-        
       } catch (error) {
         console.error('💥 Ошибка загрузки аватара:', error);
-        
+
         const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
         alert(`❌ Ошибка загрузки аватара: ${errorMessage}`);
-        
+
         throw error;
       }
     };
 
     const currentUser = AuthController.getUserData();
-    
+
     const updateProfilePage = new UpdateProfilePage({
       profileImage: currentUser?.avatar || '/profile-pic.png',
-      userName: currentUser?.first_name || 'Пользователь', 
+      userName: currentUser?.first_name || 'Пользователь',
       userFields: getCurrentUserData(),
       sidebarData: {
         href: '/messenger',

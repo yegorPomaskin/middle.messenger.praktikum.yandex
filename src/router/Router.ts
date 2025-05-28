@@ -34,7 +34,7 @@ export default class Router {
 
     window.onpopstate = async (event: PopStateEvent) => {
       const pathname = (event.currentTarget as Window).location.pathname;
-      
+
       // Проверяем доступ перед переходом
       const hasAccess = await RouteGuard.beforeRouteChange(pathname);
       if (hasAccess) {
@@ -73,7 +73,7 @@ export default class Router {
   async go(pathname: string): Promise<void> {
     // Проверяем доступ перед переходом
     const hasAccess = await RouteGuard.beforeRouteChange(pathname);
-    
+
     if (hasAccess) {
       this.history.pushState({}, '', pathname);
       this._onRoute(pathname);
@@ -89,7 +89,7 @@ export default class Router {
   }
 
   getRoute(pathname: string): Route | undefined {
-    return this.routes.find(route => route.match(pathname));
+    return this.routes.find((route) => route.match(pathname));
   }
 
   getCurrentPath(): string {

@@ -18,7 +18,7 @@ export class AddNewChatButton extends Block<AddNewChatButtonProps> {
         click: (e: Event) => {
           e.preventDefault();
           console.log('Add chat button clicked');
-          
+
           if (props.onClick) {
             props.onClick(e);
           }

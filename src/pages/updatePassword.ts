@@ -37,10 +37,9 @@ export class UpdatePasswordPageHandler extends Block<UpdatePasswordPageHandlerPr
         });
 
         // UserController сам перенаправит на /settings при успехе
-
       } catch (error) {
         console.error('💥 Ошибка смены пароля:', error);
-        
+
         // Показываем ошибку пользователю
         const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
         alert(`❌ Ошибка смены пароля: ${errorMessage}`);
@@ -83,7 +82,7 @@ const validatePasswords = (passwordData: Record<string, string>): string | null 
   // Проверяем, что все поля заполнены
   if (!oldPassword || !newPassword || !confirmPassword) {
     console.error('Ошибка: Все поля должны быть заполнены');
-     return 'Все поля должны быть заполнены';
+    return 'Все поля должны быть заполнены';
   }
 
   // Проверяем, что новый пароль и подтверждение совпадают

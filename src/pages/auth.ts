@@ -35,7 +35,6 @@ export class AuthPage extends Block<AuthPageProps> {
               login: formData.login,
               password: formData.password,
             });
-            
           } catch (error) {
             console.error('Ошибка авторизации:', error);
           }

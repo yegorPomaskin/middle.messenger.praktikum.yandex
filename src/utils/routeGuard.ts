@@ -6,15 +6,10 @@ export class RouteGuard {
     '/messenger',
     '/settings',
     '/settings/edit-profile',
-    '/settings/change-password'
+    '/settings/change-password',
   ];
 
-  private static publicRoutes = [
-    '/',
-    '/register',
-    '/404',
-    '/505'
-  ];
+  private static publicRoutes = ['/', '/register', '/404', '/505'];
 
   public static isProtectedRoute(pathname: string): boolean {
     return this.protectedRoutes.includes(pathname);
@@ -28,28 +23,28 @@ export class RouteGuard {
     console.log('🛡️ Проверка доступа к:', pathname);
 
     const isProtected = this.isProtectedRoute(pathname);
-    
+
     if (!isProtected) {
       console.log('✅ Публичный роут, доступ разрешен');
-      return true; 
+      return true;
     }
 
     console.log('🔒 Защищенный роут, проверяем авторизацию...');
-    
+
     try {
       const user = await AuthController.fetchUser();
-      
+
       if (user) {
         console.log('✅ Пользователь авторизован:', user.login);
         return true;
       } else {
         console.log('❌ Пользователь не авторизован');
-        router.go('/'); 
+        router.go('/');
         return false;
       }
     } catch (error) {
       console.log('❌ Ошибка проверки авторизации:', error);
-      router.go('/'); 
+      router.go('/');
       return false;
     }
   }

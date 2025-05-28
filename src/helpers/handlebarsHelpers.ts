@@ -21,9 +21,9 @@ Handlebars.registerHelper('debug', function (value) {
 Handlebars.registerHelper('formatTime', function (timeString) {
   try {
     const date = new Date(timeString);
-    return date.toLocaleTimeString('ru-RU', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit',
     });
   } catch (error) {
     return timeString;

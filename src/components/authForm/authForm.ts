@@ -17,8 +17,8 @@ export interface AuthField {
 
 export interface AuthFormProps extends BlockProps {
   title: string;
-  fields: AuthField[]; 
-  formFields?: FormField[]; 
+  fields: AuthField[];
+  formFields?: FormField[];
   buttonText: string;
   linkText: string;
   onLinkClick: (event: Event) => void;
@@ -28,13 +28,10 @@ export interface AuthFormProps extends BlockProps {
 }
 
 export class AuthForm extends Block<AuthFormProps> {
-
   private _onSubmitCallback: ((formData: Record<string, string>) => void) | undefined;
 
   constructor(props: AuthFormProps) {
-
     const formFields = props.fields.map((field) => {
-
       let validationRules: ValidationRule[] = [];
 
       switch (field.name) {
@@ -71,11 +68,11 @@ export class AuthForm extends Block<AuthFormProps> {
 
     super({
       title: props.title,
-      fields: props.fields, 
+      fields: props.fields,
       buttonText: props.buttonText,
       linkText: props.linkText,
       styles,
-      formFields, 
+      formFields,
       link,
       button,
       onLinkClick: props.onLinkClick,

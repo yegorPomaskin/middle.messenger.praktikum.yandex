@@ -66,17 +66,11 @@ class AuthAPI extends BaseAPI {
   }
 
   request(): Promise<UserData> {
-    return this.handle(
-      http.get(`${this.base}/user`),
-      'Пользователь не авторизован'
-    );
+    return this.handle(http.get(`${this.base}/user`), 'Пользователь не авторизован');
   }
 
   logout(): Promise<void> {
-    return this.handle(
-      http.post(`${this.base}/logout`),
-      'Ошибка при выходе'
-    );
+    return this.handle(http.post(`${this.base}/logout`), 'Ошибка при выходе');
   }
 }
 

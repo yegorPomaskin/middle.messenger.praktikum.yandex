@@ -29,7 +29,7 @@ class Store extends EventBus {
 
   constructor() {
     super();
-    
+
     this.state = {
       user: {
         currentUser: null,
@@ -52,12 +52,12 @@ class Store extends EventBus {
   // Установить значение по пути
   public set(path: string, value: unknown): void {
     const oldValue = get(this.state, path);
-    
+
     if (oldValue !== value) {
       set(this.state, path, value);
-      
+
       console.log('🔄 Store обновлен:', { path, oldValue, newValue: value });
-      
+
       // Уведомляем подписчиков через EventBus
       this.emit(StoreEvents.Updated, { path, value, state: this.getState() });
     }
@@ -127,9 +127,9 @@ class Store extends EventBus {
   public getCurrentChat(): ChatData | null {
     const chatId = this.getCurrentChatId();
     if (!chatId) return null;
-    
+
     const chats = this.getChats();
-    return chats.find(chat => chat.id === chatId) || null;
+    return chats.find((chat) => chat.id === chatId) || null;
   }
 
   public setMessages(messages: MessageData[]): void {

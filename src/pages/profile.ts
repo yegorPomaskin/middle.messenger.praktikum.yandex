@@ -11,7 +11,6 @@ interface ProfilePageHandlerProps extends BlockProps {
 
 export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
   constructor() {
-
     const handleEditData = (e: Event) => {
       e.preventDefault();
       console.log('Переход на страницу редактирования данных');
@@ -42,11 +41,11 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
       router.go('/messenger');
     };
 
-     const getUserData = () => {
+    const getUserData = () => {
       const currentUser = AuthController.getUserData();
 
       console.log('🔍 Текущий пользователь:', currentUser);
-      
+
       if (currentUser) {
         console.log('✅ Пользователь найден, создаем данные');
         return {
@@ -57,13 +56,16 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
             { name: 'login', label: 'Логин', value: currentUser.login },
             { name: 'first_name', label: 'Имя', value: currentUser.first_name },
             { name: 'second_name', label: 'Фамилия', value: currentUser.second_name },
-            { name: 'display_name', label: 'Имя в чате', value: currentUser.display_name || currentUser.first_name },
+            {
+              name: 'display_name',
+              label: 'Имя в чате',
+              value: currentUser.display_name || currentUser.first_name,
+            },
             { name: 'phone', label: 'Телефон', value: currentUser.phone },
-          ]
+          ],
         };
       }
 
-       
       // Fallback данные, если пользователь не загружен
       console.log('❌ Пользователь не найден, используем fallback');
       return {
@@ -76,16 +78,16 @@ export class ProfilePageHandler extends Block<ProfilePageHandlerProps> {
           { name: 'second_name', label: 'Фамилия', value: 'Загрузка...' },
           { name: 'display_name', label: 'Имя в чате', value: 'Загрузка...' },
           { name: 'phone', label: 'Телефон', value: 'Загрузка...' },
-        ]
+        ],
       };
     };
 
-     const userData = getUserData();
+    const userData = getUserData();
 
     // Создаем экземпляр ProfilePage с настроенными обработчиками событий
     const profilePage = new ProfilePage({
-      profileImage: userData.profileImage, 
-      userName: userData.userName,          
+      profileImage: userData.profileImage,
+      userName: userData.userName,
       userFields: userData.userFields,
       buttonSettings: [
         {

@@ -53,7 +53,6 @@ export class FormField extends Block<FormFieldProps> {
     const isValid = this.input.validate();
 
     if (!isValid && props.validationRules?.length) {
-
       const errorMessage =
         props.validationRules.find((rule: ValidationRule) => !rule.validator(this.input.getValue()))
           ?.errorMessage ?? 'Invalid input';

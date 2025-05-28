@@ -98,32 +98,33 @@ export class ChatPage extends Block<ChatPageProps> {
     const chats = ChatController.getChats();
     const activeChatId = ChatController.getCurrentChatId();
 
-    const chatItems = chats.map((chat) =>
-      new ChatItem({
-        id: chat.id,
-        name: chat.title,
-        avatar: chat.avatar || '/avatar.png',
-        lastMessage: chat.last_message?.content || 'Нет сообщений',
-        time: chat.last_message?.time
-          ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          : '',
-        unreadCount: chat.unread_count,
-        isActive: activeChatId === chat.id,
-        events: {
-          click: (e: Event) => {
-            e.preventDefault();
-            const target = e.target as HTMLElement;
-            if (target.dataset.action === 'delete') {
-              this.handleDeleteChat(chat.id);
-            } else {
-              this.selectChat(chat.id);
-            }
+    const chatItems = chats.map(
+      (chat) =>
+        new ChatItem({
+          id: chat.id,
+          name: chat.title,
+          avatar: chat.avatar || '/avatar.png',
+          lastMessage: chat.last_message?.content || 'Нет сообщений',
+          time: chat.last_message?.time
+            ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '',
+          unreadCount: chat.unread_count,
+          isActive: activeChatId === chat.id,
+          events: {
+            click: (e: Event) => {
+              e.preventDefault();
+              const target = e.target as HTMLElement;
+              if (target.dataset.action === 'delete') {
+                this.handleDeleteChat(chat.id);
+              } else {
+                this.selectChat(chat.id);
+              }
+            },
           },
-        },
-      }),
+        })
     );
 
     this.setList({ chatItems });
@@ -160,7 +161,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка выбора чата:', error);
       alert(
-        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
       );
     }
   }
@@ -213,7 +214,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка создания чата с пользователями:', error);
       alert(
-        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
       );
     }
   }

@@ -16,7 +16,7 @@ export class Error505Page extends Block<Error505PageProps> {
         linkText: 'Назад к чатам',
         onLinkClick: (e: Event) => {
           e.preventDefault();
-          router.go('/messenger')
+          router.go('/messenger');
         },
       }),
     });

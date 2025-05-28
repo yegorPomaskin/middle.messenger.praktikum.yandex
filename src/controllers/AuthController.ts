@@ -6,7 +6,7 @@ class AuthController {
   async signUp(data: SignUpData): Promise<void> {
     Store.setUserLoading(true);
     Store.clearUserError();
-    
+
     try {
       const user = await AuthAPI.create(data);
       Store.setCurrentUser(user);
@@ -23,7 +23,7 @@ class AuthController {
   async signIn(data: SignInData): Promise<void> {
     Store.setUserLoading(true);
     Store.clearUserError();
-    
+
     try {
       await AuthAPI.signIn(data);
       const user = await AuthAPI.request();

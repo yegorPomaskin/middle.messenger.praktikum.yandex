@@ -37,22 +37,22 @@ class ChatAPI extends BaseAPI {
   private readonly base = 'https://ya-praktikum.tech/api/v2/chats';
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
-  const res = await promise;
+    const res = await promise;
 
-  // Успешный ответ — без JSON
-  if (res.status === 200 && res.responseText === 'OK') {
-    return {} as T;
+    // Успешный ответ — без JSON
+    if (res.status === 200 && res.responseText === 'OK') {
+      return {} as T;
+    }
+
+    // Остальные случаи — парсим JSON
+    const data = JSON.parse(res.responseText);
+
+    if (res.status !== 200) {
+      throw new Error(data.reason || errorMsg);
+    }
+
+    return data;
   }
-
-  // Остальные случаи — парсим JSON
-  const data = JSON.parse(res.responseText);
-
-  if (res.status !== 200) {
-    throw new Error(data.reason || errorMsg);
-  }
-
-  return data;
-}
 
   request(): Promise<ChatData[]> {
     return this.handle(this.http.get(this.base), 'Ошибка получения списка чатов');
@@ -64,7 +64,7 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка создания чата',
+      'Ошибка создания чата'
     );
   }
 
@@ -74,7 +74,7 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка добавления пользователей в чат',
+      'Ошибка добавления пользователей в чат'
     );
   }
 
@@ -84,16 +84,22 @@ class ChatAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка удаления пользователей из чата',
+      'Ошибка удаления пользователей из чата'
     );
   }
 
   getChatUsers(chatId: number): Promise<any[]> {
-    return this.handle(this.http.get(`${this.base}/${chatId}/users`), 'Ошибка получения пользователей чата');
+    return this.handle(
+      this.http.get(`${this.base}/${chatId}/users`),
+      'Ошибка получения пользователей чата'
+    );
   }
 
   getChatToken(chatId: number): Promise<{ token: string }> {
-    return this.handle(this.http.post(`${this.base}/token/${chatId}`), 'Ошибка получения токена чата');
+    return this.handle(
+      this.http.post(`${this.base}/token/${chatId}`),
+      'Ошибка получения токена чата'
+    );
   }
 
   deleteChat(chatId: number): Promise<void> {
@@ -102,14 +108,14 @@ class ChatAPI extends BaseAPI {
         data: { chatId },
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка удаления чата',
+      'Ошибка удаления чата'
     );
   }
 
   getNewMessagesCount(chatId: number): Promise<{ unread_count: number }> {
     return this.handle(
       this.http.get(`${this.base}/${chatId}/new`),
-      'Ошибка получения количества сообщений',
+      'Ошибка получения количества сообщений'
     );
   }
 }

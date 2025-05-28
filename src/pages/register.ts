@@ -1,7 +1,7 @@
 import { RegisterForm } from '../components/registerForm/registerForm';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
-import AuthController from '../controllers/AuthController'
+import AuthController from '../controllers/AuthController';
 
 const REGISTER_FORM_CONFIG = {
   title: 'Регистрация',
@@ -50,7 +50,6 @@ export class RegisterPage extends Block<RegisterPageProps> {
               phone: formData.phone,
               password: formData.password,
             });
-            
           } catch (error) {
             console.error('Ошибка регистрации:', error);
           }
@@ -58,8 +57,6 @@ export class RegisterPage extends Block<RegisterPageProps> {
       }),
     });
   }
-
-  
 
   protected render(): string {
     return `{{{ RegisterForm }}}`;

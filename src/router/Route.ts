@@ -6,7 +6,7 @@ function isEqual(lhs: string, rhs: string): boolean {
 
 function render(query: string, block: Block): HTMLElement | null {
   const root = document.querySelector(query) as HTMLElement | null;
-  
+
   if (!root) {
     console.error(`Root element not found: ${query}`);
     return null;
@@ -14,12 +14,12 @@ function render(query: string, block: Block): HTMLElement | null {
 
   // Очищаем содержимое корневого элемента
   root.innerHTML = '';
-  
+
   // Убеждаемся, что элемент полностью очищен
   while (root.firstChild) {
     root.removeChild(root.firstChild);
   }
-  
+
   // Добавляем контент блока
   const content = block.getContent();
   if (content) {
@@ -27,7 +27,7 @@ function render(query: string, block: Block): HTMLElement | null {
     // Вызываем componentDidMount для инициализации компонента
     block.dispatchComponentDidMount();
   }
-  
+
   return root;
 }
 
@@ -80,7 +80,7 @@ export default class Route {
         console.error('Error creating block instance:', error);
         return;
       }
-      
+
       render(this._props.rootQuery, this._block);
       return;
     }
