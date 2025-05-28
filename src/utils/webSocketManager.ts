@@ -32,7 +32,7 @@ class WebSocketManager {
       onMessage?: MessageHandler;
       onHistory?: HistoryHandler;
       onUserConnected?: UserConnectHandler;
-    }
+    },
   ): Promise<void> {
     const user = AuthController.getUserData();
     this.userId = user?.id || null;
@@ -83,7 +83,7 @@ class WebSocketManager {
       onMessage?: MessageHandler;
       onHistory?: HistoryHandler;
       onUserConnected?: UserConnectHandler;
-    }
+    },
   ): Promise<void> {
     const { token } = await ChatAPI.getChatToken(chatId);
     const user = AuthController.getUserData();
