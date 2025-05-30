@@ -81,7 +81,7 @@ class ChatController {
       await ChatAPI.addUsersToChat({ chatId, users: userIds });
     } catch (error) {
       Store.setChatError(
-        error instanceof Error ? error.message : 'Ошибка добавления пользователей'
+        error instanceof Error ? error.message : 'Ошибка добавления пользователей',
       );
       throw error;
     } finally {
@@ -127,15 +127,16 @@ class ChatController {
       Store.setChatUsers(normalized);
 
       return normalized;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error('Неизвестная ошибка');
       // Если чат не существует — очищаем Store и сбрасываем выбранный чат
-      if (error.message === 'No chat') {
+      if (err.message === 'No chat') {
         Store.setChatUsers([]);
         Store.setCurrentChat(null);
         return [];
       }
 
-      Store.setChatError(error instanceof Error ? error.message : 'Ошибка получения пользователей');
+      Store.setChatError(err.message);
       throw error;
     }
   }

@@ -1,6 +1,6 @@
 import ChatAPI from '../api/chatAPI';
-import AuthController from '../controllers/AuthController';
 import { WS_BASE_URL } from '../config';
+import AuthController from '../controllers/AuthController';
 
 export interface MessageData {
   id?: string;

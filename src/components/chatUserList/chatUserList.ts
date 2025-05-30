@@ -1,5 +1,7 @@
 import Handlebars from 'handlebars';
+
 import Block, { BlockProps } from '../../framework/block';
+
 import template from './chatUserList.hbs?raw';
 import styles from './chatUserList.module.css';
 
@@ -33,7 +35,7 @@ export class ChatUsersList extends Block<ChatUsersListProps> {
     console.log(styles);
     return compiledTemplate({
       ...this.props,
-      styles, // гарантировано будет доступен в шаблоне
+      styles, 
     });
   }
 }

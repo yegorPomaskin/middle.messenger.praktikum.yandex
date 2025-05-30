@@ -1,6 +1,7 @@
+import { API_BASE_URL } from '../config';
+
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
-import { API_BASE_URL } from '../config';
 
 
 export interface ChatData {

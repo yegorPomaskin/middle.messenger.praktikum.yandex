@@ -1,7 +1,8 @@
+import { API_BASE_URL } from '../config';
+
 import { UserData } from './authAPI';
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
-import { API_BASE_URL } from '../config';
 
 export interface UpdateUserData {
   first_name: string;

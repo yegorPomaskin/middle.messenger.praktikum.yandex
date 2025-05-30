@@ -1,17 +1,17 @@
 import { AddNewChatButton } from '../components/addNewChatButton/addNewChatButton';
 import { ChatInterface, Message } from '../components/chatInterface/chatInterface';
 import { ChatItem } from '../components/chatItem/chatItem';
-import { Link } from '../components/link/link';
 import { ChatUsersList } from '../components/chatUserList/chatUserList';
+import { Link } from '../components/link/link';
 import AuthController from '../controllers/AuthController';
 import ChatController from '../controllers/ChatController';
 import UserController from '../controllers/UserController';
 import Block, { BlockProps } from '../framework/block';
 import { router } from '../router/Router';
+import Store from '../store/store';
 import styles from '../styles/pages/chat.module.css';
 import template from '../templates/chat.hbs?raw';
 import WebSocketManager, { MessageData } from '../utils/webSocketManager';
-import Store from '../store/store';
 
 interface ChatPageProps extends BlockProps {
   attachment: string;
@@ -20,13 +20,16 @@ interface ChatPageProps extends BlockProps {
 
 export class ChatPage extends Block<ChatPageProps> {
   private chatInterface: ChatInterface | null = null;
+
   private usersList: ChatUsersList;
+
   private unsubscribeFromChats: (() => void) | null = null;
+
   private unsubscribeFromMessages: (() => void) | null = null;
+
   private unsubscribeFromChatUsers: (() => void) | null = null;
 
   constructor(props: ChatPageProps) {
-    // Создаем дочерние компоненты один раз
     const chatInterface = new ChatInterface({
       messages: [],
       attachment: props.attachment,
@@ -56,25 +59,30 @@ export class ChatPage extends Block<ChatPageProps> {
       users: [],
       currentUserId: currentUser?.id ?? -1,
       onRemoveUser: async (userId) => {
-        // Не даём удалить самого себя
         if (userId === currentUser?.id) {
           alert('Вы не можете удалить сами себя!');
           return;
         }
+
         const chatId = ChatController.getCurrentChatId();
         if (!chatId) return;
 
-        // UI мгновенно очищается
-        this.setProps({ usersList: null });
         Store.setChatUsers([]);
 
         try {
           await ChatController.removeUsersFromChat(chatId, [userId]);
           const users = await ChatController.getChatUsers(chatId);
-          if (!users.length) Store.setCurrentChat(null);
-        } catch (error: any) {
-          if (error.message === 'No chat') {
+
+          if (users.length === 0) {
             Store.setCurrentChat(null);
+          }
+        } catch (error: unknown) {
+          const err = error instanceof Error ? error : new Error('Неизвестная ошибка');
+
+          if (err.message === 'No chat') {
+            Store.setCurrentChat(null);
+          } else {
+            console.error('Ошибка при удалении пользователя из чата:', err.message);
           }
         }
       },
@@ -96,12 +104,10 @@ export class ChatPage extends Block<ChatPageProps> {
   }
 
   protected componentDidMount(): void {
-    // Подписка на изменения чатов
     this.unsubscribeFromChats = ChatController.onChatsChange(() => {
       this.renderChatsFromStore();
     });
 
-    // Подписка на изменения сообщений
     this.unsubscribeFromMessages = ChatController.onMessagesChange((messages: MessageData[]) => {
       const currentChatId = ChatController.getCurrentChatId();
       const currentUser = AuthController.getUserData();
@@ -128,7 +134,6 @@ export class ChatPage extends Block<ChatPageProps> {
       }
     });
 
-    // Первая загрузка чатов
     this.loadChats();
   }
 
@@ -153,9 +158,9 @@ export class ChatPage extends Block<ChatPageProps> {
           lastMessage: chat.last_message?.content || 'Нет сообщений',
           time: chat.last_message?.time
             ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
+              hour: '2-digit',
+              minute: '2-digit',
+            })
             : '',
           unreadCount: chat.unread_count,
           isActive: activeChatId === chat.id,
@@ -170,7 +175,7 @@ export class ChatPage extends Block<ChatPageProps> {
               }
             },
           },
-        })
+        }),
     );
 
     this.setList({ chatItems });
@@ -211,7 +216,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка выбора чата:', error);
       alert(
-        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
       Store.setChatUsers([]);
     }
@@ -229,15 +234,14 @@ export class ChatPage extends Block<ChatPageProps> {
     if (!confirm('Вы точно хотите удалить этот чат?')) return;
 
     try {
-      Store.setChatUsers([]); // Очистка пользователей
-      Store.setCurrentChat(null); // Сброс активного чата
-      this.setProps({ showUsersList: false }); // Скрыть панель
+      Store.setChatUsers([]);
+      Store.setCurrentChat(null);
+      this.setProps({ showUsersList: false });
 
-      await ChatController.deleteChat(chatId); // Удалить на сервере
-      await this.loadChats(); // Перезагрузить список чатов
-
+      await ChatController.deleteChat(chatId);
+      await this.loadChats();
       if (this.chatInterface) {
-        this.chatInterface.clearMessages(); // Очистить сообщения
+        this.chatInterface.clearMessages();
       }
 
       alert('Чат удалён');
@@ -282,7 +286,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка создания чата с пользователями:', error);
       alert(
-        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
     }
   }
