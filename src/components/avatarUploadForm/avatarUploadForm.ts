@@ -48,7 +48,7 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
             // Проверяем, что this.element точно есть
             if (this.element) {
               this.fileInputRef = this.element.querySelector(
-                '#avatarFileInput',
+                '#avatarFileInput'
               ) as HTMLInputElement | null;
               if (this.fileInputRef) {
                 this.fileInputRef.click();
@@ -58,6 +58,12 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
             } else {
               console.error('this.element не определён!');
             }
+          }
+        },
+        change: (e: Event) => {
+          const target = e.target as HTMLInputElement;
+          if (target.id === 'avatarFileInput') {
+            this.handleFileChange(e);
           }
         },
       },
@@ -74,7 +80,6 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
 
       if (this.fileInputRef) {
         console.log('fileInputRef найден и инициализирован');
-        this.fileInputRef.addEventListener('change', this.handleFileChange.bind(this));
       } else {
         console.error('fileInputRef не найден в DOM');
       }

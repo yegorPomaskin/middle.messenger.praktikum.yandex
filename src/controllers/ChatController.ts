@@ -54,6 +54,13 @@ class ChatController {
     try {
       await ChatAPI.deleteChat(chatId);
       await this.loadChats();
+
+      // Проверяем, удалён ли текущий активный чат
+      const currentChatId = Store.getCurrentChatId();
+      if (currentChatId === chatId) {
+        Store.setCurrentChat(null);
+        Store.setChatUsers([]); // очищаем пользователей, чтобы панель исчезла
+      }
     } catch (error) {
       Store.setChatError(error instanceof Error ? error.message : 'Ошибка удаления чата');
       throw error;
@@ -74,7 +81,7 @@ class ChatController {
       await ChatAPI.addUsersToChat({ chatId, users: userIds });
     } catch (error) {
       Store.setChatError(
-        error instanceof Error ? error.message : 'Ошибка добавления пользователей',
+        error instanceof Error ? error.message : 'Ошибка добавления пользователей'
       );
       throw error;
     } finally {
@@ -103,8 +110,31 @@ class ChatController {
   // Получить пользователей чата
   async getChatUsers(chatId: number): Promise<ChatUser[]> {
     try {
-      return await ChatAPI.getChatUsers(chatId);
-    } catch (error) {
+      const users = await ChatAPI.getChatUsers(chatId);
+
+      const normalized = users.map((u) => ({
+        ...u,
+        display_name: u.display_name ?? '',
+        first_name: u.first_name ?? '',
+        second_name: u.second_name ?? '',
+        login: u.login ?? '',
+        avatar: u.avatar ?? '',
+        email: u.email ?? '',
+        phone: u.phone ?? '',
+        role: u.role ?? '',
+      }));
+
+      Store.setChatUsers(normalized);
+
+      return normalized;
+    } catch (error: any) {
+      // Если чат не существует — очищаем Store и сбрасываем выбранный чат
+      if (error.message === 'No chat') {
+        Store.setChatUsers([]);
+        Store.setCurrentChat(null);
+        return [];
+      }
+
       Store.setChatError(error instanceof Error ? error.message : 'Ошибка получения пользователей');
       throw error;
     }

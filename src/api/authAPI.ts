@@ -1,5 +1,6 @@
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
+import { API_BASE_URL } from '../config';
 
 
 export interface SignInData {
@@ -30,7 +31,7 @@ export interface UserData {
 const http = new HTTPTransport();
 
 class AuthAPI extends BaseAPI {
-  private readonly base = 'https://ya-praktikum.tech/api/v2/auth';
+  private readonly base = `${API_BASE_URL}/auth`;
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
     const res = await promise;

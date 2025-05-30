@@ -1,5 +1,6 @@
 import ChatAPI from '../api/chatAPI';
 import AuthController from '../controllers/AuthController';
+import { WS_BASE_URL } from '../config';
 
 export interface MessageData {
   id?: string;
@@ -41,7 +42,7 @@ class WebSocketManager {
     const { token } = await ChatAPI.getChatToken(chatId);
     if (!this.userId || !token) throw new Error('Нет userId или token');
 
-    const url = `wss://ya-praktikum.tech/ws/chats/${this.userId}/${chatId}/${token}`;
+    const url = `${WS_BASE_URL}/${this.userId}/${chatId}/${token}`;
     this.socket = new WebSocket(url);
 
     this.onMessageCallback = handlers?.onMessage;
@@ -92,7 +93,7 @@ class WebSocketManager {
 
     if (!this.userId || !token) throw new Error('Нет userId или token');
 
-    const url = `wss://ya-praktikum.tech/ws/chats/${this.userId}/${chatId}/${token}`;
+    const url = `${WS_BASE_URL}/$${this.userId}/${chatId}/${token}`;
     this.socket = new WebSocket(url);
 
     this.onMessageCallback = handlers?.onMessage;

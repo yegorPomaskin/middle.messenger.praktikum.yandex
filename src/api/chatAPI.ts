@@ -1,5 +1,6 @@
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
+import { API_BASE_URL } from '../config';
 
 
 export interface ChatData {
@@ -48,7 +49,7 @@ export interface CreateChatResponse {
 class ChatAPI extends BaseAPI {
   private readonly http = new HTTPTransport();
   
-  private readonly base = 'https://ya-praktikum.tech/api/v2/chats';
+  private readonly base = `${API_BASE_URL}/chats`;
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
     const res = await promise;
