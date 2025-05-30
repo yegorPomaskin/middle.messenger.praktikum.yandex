@@ -41,7 +41,6 @@ export class UpdatePasswordPage extends Block<UpdatePasswordPageProps> {
   private avatarModal: Modal | null = null;
 
   constructor(props: UpdatePasswordPageProps) {
-    
     const sidebar = new Sidebar({
       href: props.sidebarData.href,
       iconSrc: props.sidebarData.iconSrc,

@@ -48,7 +48,7 @@ export class AvatarUploadForm extends Block<AvatarUploadFormProps> {
             // Проверяем, что this.element точно есть
             if (this.element) {
               this.fileInputRef = this.element.querySelector(
-                '#avatarFileInput',
+                '#avatarFileInput'
               ) as HTMLInputElement | null;
               if (this.fileInputRef) {
                 this.fileInputRef.click();

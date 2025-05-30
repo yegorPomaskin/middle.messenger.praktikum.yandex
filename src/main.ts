@@ -35,7 +35,7 @@ async function initApp() {
       .use('/505', Error505Page);
 
     // Проверим авторизацию
-    await AuthController.fetchUser(); 
+    await AuthController.fetchUser();
     const user = AuthController.getUserData();
 
     await router.start();
@@ -46,7 +46,6 @@ async function initApp() {
     if (user && publicRoutes.includes(currentPath)) {
       router.go('/messenger');
     }
-    
   } catch (error) {
     console.warn('🔒 Пользователь не авторизован:', error);
     await router.start(); // даже если ошибка — запускаем роутер

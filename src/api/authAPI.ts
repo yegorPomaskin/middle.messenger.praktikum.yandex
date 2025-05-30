@@ -3,7 +3,6 @@ import { API_BASE_URL } from '../config';
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
 
-
 export interface SignInData {
   login: string;
   password: string;
@@ -28,8 +27,6 @@ export interface UserData {
   phone: string;
   avatar: string;
 }
-
-
 
 class AuthAPI extends BaseAPI {
   private readonly base = `${API_BASE_URL}/auth`;
@@ -56,7 +53,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка регистрации',
+      'Ошибка регистрации'
     );
   }
 
@@ -66,7 +63,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка авторизации',
+      'Ошибка авторизации'
     );
   }
 

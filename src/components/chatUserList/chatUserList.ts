@@ -35,7 +35,7 @@ export class ChatUsersList extends Block<ChatUsersListProps> {
     console.log(styles);
     return compiledTemplate({
       ...this.props,
-      styles, 
+      styles,
     });
   }
 }
