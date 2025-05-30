@@ -81,7 +81,7 @@ class ChatController {
       await ChatAPI.addUsersToChat({ chatId, users: userIds });
     } catch (error) {
       Store.setChatError(
-        error instanceof Error ? error.message : 'Ошибка добавления пользователей'
+        error instanceof Error ? error.message : 'Ошибка добавления пользователей',
       );
       throw error;
     } finally {

@@ -41,7 +41,7 @@ class UserAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка обновления профиля'
+      'Ошибка обновления профиля',
     );
   }
 
@@ -51,7 +51,7 @@ class UserAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка обновления пароля'
+      'Ошибка обновления пароля',
     );
   }
 
@@ -63,7 +63,7 @@ class UserAPI extends BaseAPI {
       this.http.put(`${this.base}/profile/avatar`, {
         data: formData,
       }),
-      'Ошибка обновления аватара'
+      'Ошибка обновления аватара',
     );
   }
 
@@ -73,7 +73,7 @@ class UserAPI extends BaseAPI {
         data: { login },
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка поиска пользователей'
+      'Ошибка поиска пользователей',
     );
   }
 }

@@ -53,7 +53,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка регистрации'
+      'Ошибка регистрации',
     );
   }
 
@@ -63,7 +63,7 @@ class AuthAPI extends BaseAPI {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
-      'Ошибка авторизации'
+      'Ошибка авторизации',
     );
   }
 

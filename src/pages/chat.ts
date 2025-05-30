@@ -158,9 +158,9 @@ export class ChatPage extends Block<ChatPageProps> {
           lastMessage: chat.last_message?.content || 'Нет сообщений',
           time: chat.last_message?.time
             ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
+              hour: '2-digit',
+              minute: '2-digit',
+            })
             : '',
           unreadCount: chat.unread_count,
           isActive: activeChatId === chat.id,
@@ -175,7 +175,7 @@ export class ChatPage extends Block<ChatPageProps> {
               }
             },
           },
-        })
+        }),
     );
 
     this.setList({ chatItems });
@@ -216,7 +216,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка выбора чата:', error);
       alert(
-        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка подключения к чату: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
       Store.setChatUsers([]);
     }
@@ -286,7 +286,7 @@ export class ChatPage extends Block<ChatPageProps> {
     } catch (error) {
       console.error('Ошибка создания чата с пользователями:', error);
       alert(
-        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
+        `Ошибка создания чата: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
       );
     }
   }
