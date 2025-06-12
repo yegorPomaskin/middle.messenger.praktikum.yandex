@@ -1,0 +1,27 @@
+{{#if users.length}}
+  <div class="users-block">
+    <div class="users-title">Участники чата:</div>
+    <ul class="users-list">
+      {{#each users}}
+        <li>
+          <span>
+            {{#if display_name}}
+              {{display_name}}
+            {{else}}
+              {{first_name}} {{second_name}}
+            {{/if}}
+            ({{login}})
+          </span>
+          <button 
+            class="{{../styles.button}}"
+            data-action="remove-user"
+            data-user-id="{{id}}"
+            type="button"
+          >Удалить из чата</button>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+{{else}}
+  <div class="users-empty">В чате нет участников</div>
+{{/if}}

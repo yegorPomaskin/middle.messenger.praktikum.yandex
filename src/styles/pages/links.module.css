@@ -1,0 +1,27 @@
+.links-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.links__title {
+  font-size: 24px;
+  margin-bottom: 80px;
+}
+
+.links-list li {
+  margin: 10px 0;
+}
+
+.links-list a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.links-list a:hover {
+  text-decoration: underline;
+}
+
+.container--links {
+  margin: 50px 0;
+  text-align: center;
+}

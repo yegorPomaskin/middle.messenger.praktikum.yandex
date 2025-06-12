@@ -1,0 +1,22 @@
+.link {
+  color: var(--link-color);
+  font-size: 11px;
+  line-height: 11px;
+  text-align: center;
+}
+
+.form__link {
+  color: var(--text-color);
+}
+
+.actionLink {
+  border: none;
+  border-radius: 5px;
+  color: var(--link-color);
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+
+.logoutLink {
+  color: var(--error-color) !important;
+}

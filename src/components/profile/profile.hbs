@@ -1,0 +1,24 @@
+<div class="{{styles.profile__container--background}}">
+    {{{sidebar}}}
+    <div class="{{styles.profile__container}}">
+        <div class="{{styles.profile__details}}">
+            <div class="{{styles.profile__info}}">
+                <div class="{{styles.profileImageContainer}}" id="changeAvatarBtn">
+                    <img src="{{profileImage}}" alt="{{userName}}" class="{{styles.profile__image}}" />
+                    <div class="{{styles.profileImageOverlay}}">
+                        <span class="{{styles.changeAvatarText}}">Поменять аватар</span>
+                    </div>
+                </div>
+                <h2 class="{{styles.profile__name}}">{{userName}}</h2>
+            </div>
+            
+            <div class="{{commonStyles.profile__fields}}">
+                {{{fields}}}
+            </div>
+            
+            <div class="{{styles.settings__actions}}">
+                {{{buttons}}}
+            </div>
+        </div>
+    </div>
+</div>

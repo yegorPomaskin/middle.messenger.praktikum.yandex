@@ -1,0 +1,14 @@
+<div class="{{styles.profile__fieldItem}}" data-name="{{name}}">
+  <div class="{{styles.profile__label}}">{{label}}:</div>
+  <input
+    type="{{type}}"
+    id="{{name}}"
+    name="{{name}}"
+    value="{{value}}"
+    class="{{styles.profile__input}}"
+    value="{{value}}"
+    {{! Чудеса фокуса }}
+    onfocus="if (this.value === this.defaultValue) { this.dataset.oldValue = this.value; this.value = ''; }"
+    onblur="if (this.value === '') { this.value = this.dataset.oldValue; }"
+  />
+</div>

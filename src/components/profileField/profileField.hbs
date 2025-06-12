@@ -1,0 +1,15 @@
+<div class="{{styles.profile__fieldItem}} {{#if error}}{{styles.profile__fieldItem_error}}{{/if}}" data-name="{{name}}">
+    <div class="{{styles.profile__label}}">{{label}}:</div>
+
+    {{#if isViewMode}}
+    <div class="{{styles.profile__value}}">{{value}}</div>
+    {{else}}
+    <div class="{{styles.input__wrapper}}">
+        {{{ input }}}
+        {{#if errorText}}
+        <div class="{{styles.profile__errorText}}">{{errorText}}</div>
+        {{/if}}
+    </div>
+    {{/if}}
+</div>
+

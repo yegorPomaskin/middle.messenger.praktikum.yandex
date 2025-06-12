@@ -1,0 +1,151 @@
+.profile__container--background {
+  background-color: var(--contrast-bg-color);
+  display: flex;
+  min-height: 100vh;
+}
+
+.profile__container {
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 510px;
+  padding-top: 60px;
+  width: 100%;
+}
+
+.profile__details {
+  width: 100%;
+}
+
+.profile__name {
+  font-size: 16px;
+  line-height: 16px;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.profile__info {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.profile__image {
+  height: 100%;
+  margin-bottom: 21px;
+  min-height: 130px;
+  min-width: 130px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.settings__actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  justify-content: space-between;
+  margin-top: 60px;
+  width: 100%;
+}
+
+/* СТИЛИ МОДАЛЬНОГО ОКНА */
+
+.profile__modalOverlay {
+  background: rgb(255 255 255 / 20%);
+  display: none;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9998; /* Выше, чем основной контент, но ниже модального окна */
+}
+
+.modal {
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
+  display: none;
+  flex-direction: column;
+  height: 277px;
+  justify-content: start;
+  left: 50%;
+  padding: 40px 30px;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 340px;
+  z-index: 9999; /* Модальное окно выше overlay */
+}
+
+.profile__modalTitle {
+  color: #1e1e1e;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.profile__modalLink {
+  color: var(--accent-color);
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 45px;
+  margin-top: 43px;
+  max-width: 122px;
+  text-decoration: underline;
+  width: 100%;
+}
+
+/* Стили ссылок */
+
+.actionLink {
+  border: none;
+  border-radius: 5px;
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.logoutLink {
+  color: var(--error-color) !important;
+}
+
+/* Обновленные стили для контейнера изображения как кнопки */
+
+.profileImageContainer {
+  border-radius: 50%;
+  cursor: pointer;
+  height: 130px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+  width: 130px;
+}
+
+/* Оверлей при наведении */
+.profileImageOverlay {
+  align-items: center;
+  background-color: rgb(0 0 0 / 50%);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.3s ease;
+  width: 100%;
+}
+
+.changeAvatarText {
+  color: white;
+  font-size: 12px;
+  padding: 0 10px;
+  text-align: center;
+}
+
+/* Показываем оверлей при наведении */
+.profileImageContainer:hover .profileImageOverlay {
+  opacity: 1;
+}
