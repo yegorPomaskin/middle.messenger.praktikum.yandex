@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "stylelint": "stylelint \"**/*.css\" --fix",
     "stylelint:check": "stylelint \"**/*.css\"",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": ">=22.13.10",
