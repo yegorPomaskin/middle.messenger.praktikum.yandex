@@ -36,6 +36,18 @@
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "npm run lint:fix",
+      "npm run typecheck"
+    ],
+    "*.{css,scss}": [
+      "npm run stylelint"
+    ],
+    "*.{json,md}": [
+      "npm run format"
+    ]
+  },
   "dependencies": {
     "autoprefixer": "^10.4.21",
     "handlebars": "^4.7.8",
