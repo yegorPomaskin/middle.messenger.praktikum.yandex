@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "stylelint": "stylelint \"**/*.css\" --fix",
     "stylelint:check": "stylelint \"**/*.css\"",
-    "prepare": "husky"
+    "prepare": "husky && husky install"
   },
   "devDependencies": {
     "@types/node": ">=22.13.10",
@@ -25,7 +25,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-import-resolver-typescript": "^4.3.1",
     "eslint-plugin-import": "^2.31.0",
-    "husky": "^9.1.7",
+    "husky": "^8.0.0",
     "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
     "stylelint": "^16.17.0",
