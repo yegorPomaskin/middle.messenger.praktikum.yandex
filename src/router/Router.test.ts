@@ -3,7 +3,18 @@ import { RouteGuard } from '../utils/routeGuard';
 import Route from './Route';
 import Router from './Router';
 
-jest.mock('./Route');
+jest.mock('./Route', () => {
+  return {
+    __esModule: true,
+    default: jest.fn().mockImplementation((pathname) => {
+      return {
+        match: (path: string) => path === pathname,
+        render: jest.fn(),
+        leave: jest.fn(),
+      };
+    }),
+  };
+});
 
 type MockRoute = {
   match: (path: string) => boolean;
@@ -41,6 +52,12 @@ describe('Router', () => {
   describe('go()', () => {
     test('вызывает pushState и _onRoute при успешной проверке доступа', async () => {
       const path = '/chat';
+
+      // Создаю блок и регистрирую маршрут, чтобы избежать "Route not found"
+      class DummyBlock {}
+
+      router.use('/', DummyBlock as unknown as new () => unknown); 
+      router.use(path, DummyBlock as unknown as new () => unknown);
 
       jest.spyOn(RouteGuard, 'beforeRouteChange').mockResolvedValue(true);
       const spyPushState = jest.spyOn(window.history, 'pushState');
