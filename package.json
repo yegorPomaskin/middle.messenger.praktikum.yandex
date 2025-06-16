@@ -39,8 +39,7 @@
     "stylelint-scss": "^6.11.1",
     "ts-jest": "^29.4.0",
     "typescript": "~5.7.2",
-    "vite": "^6.2.0",
-    "mocha": "*"
+    "vite": "^6.2.0"
   },
   "lint-staged": {
     "*.{ts,js}": [
