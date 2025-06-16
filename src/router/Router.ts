@@ -102,5 +102,4 @@ export default class Router {
   }
 }
 
-// Создаем singleton инстанс роутера
 export const router = new Router('#app');
