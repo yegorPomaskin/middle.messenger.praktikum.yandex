@@ -24,10 +24,9 @@ async function initApp() {
   console.log('🚀 Инициализация приложения...');
 
   try {
-    // Конфигурируем роуты заранее
     router
       .use('/', AuthPage)
-      .use('/register', RegisterPage)
+      .use('/sign-up', RegisterPage)
       .use('/messenger', MessengerPage)
       .use('/settings', ProfilePageHandler)
       .use('/settings/edit-profile', UpdateProfilePageHandler)
@@ -36,13 +35,16 @@ async function initApp() {
       .use('/505', Error505Page);
 
     // Проверим авторизацию
-    await AuthController.fetchUser(); // получим данные с /auth/user
+    await AuthController.fetchUser();
     const user = AuthController.getUserData();
 
     await router.start();
 
-    if (user) {
-      router.go('/messenger'); 
+    const publicRoutes = ['/', '/sign-up'];
+    const currentPath = window.location.pathname;
+
+    if (user && publicRoutes.includes(currentPath)) {
+      router.go('/messenger');
     }
   } catch (error) {
     console.warn('🔒 Пользователь не авторизован:', error);

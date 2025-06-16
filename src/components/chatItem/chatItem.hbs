@@ -12,6 +12,15 @@
       <div class="{{styles.chat__item-numberOfMessages}}">{{unreadCount}}</div>
     {{/if}}
     <button class="{{styles.deleteButton}}" data-action="delete">🗑️</button>
+    {{#if userId}}
+      <button 
+        class="{{styles.removeUserButton}}" 
+        data-action="remove-user" 
+        data-user-id="{{userId}}"
+      >
+        Удалить из чата
+      </button>
+    {{/if}}
   </div>
   
 </div>

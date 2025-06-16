@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 import { UserData } from './authAPI';
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
@@ -17,7 +19,7 @@ export interface UpdatePasswordData {
 }
 
 class UserAPI extends BaseAPI {
-  private readonly base = 'https://ya-praktikum.tech/api/v2/user';
+  private readonly base = `${API_BASE_URL}/user`;
 
   private readonly http = new HTTPTransport();
 

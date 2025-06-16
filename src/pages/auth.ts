@@ -27,7 +27,7 @@ export class AuthPage extends Block<AuthPageProps> {
         ...AUTH_FORM_CONFIG,
         onLinkClick: (e: Event) => {
           e.preventDefault();
-          router.go('/register');
+          router.go('/sign-up');
         },
         onSubmit: async (formData: Record<string, string>) => {
           try {

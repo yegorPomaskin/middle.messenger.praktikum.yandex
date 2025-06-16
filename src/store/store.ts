@@ -168,6 +168,19 @@ class Store extends EventBus {
     this.set('chats.chatUsers', users);
   }
 
+  // Подписаться на изменения участников чата
+  public onChatUsersChange(callback: (users: UserData[]) => void): () => void {
+    const handler = () => {
+      callback(this.get('chats.chatUsers') as UserData[]);
+    };
+
+    this.on(StoreEvents.Updated, handler);
+
+    return () => {
+      this.off(StoreEvents.Updated, handler);
+    };
+  }
+
   // === УТИЛИТЫ ===
 
   public clearChatMessages(): void {

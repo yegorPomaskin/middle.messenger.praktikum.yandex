@@ -1,6 +1,7 @@
+import { API_BASE_URL } from '../config';
+
 import { BaseAPI } from './baseAPI';
 import HTTPTransport from './HTTPTransport';
-
 
 export interface SignInData {
   login: string;
@@ -27,10 +28,10 @@ export interface UserData {
   avatar: string;
 }
 
-const http = new HTTPTransport();
-
 class AuthAPI extends BaseAPI {
-  private readonly base = 'https://ya-praktikum.tech/api/v2/auth';
+  private readonly base = `${API_BASE_URL}/auth`;
+
+  private readonly http = new HTTPTransport();
 
   private async handle<T>(promise: Promise<XMLHttpRequest>, errorMsg: string): Promise<T> {
     const res = await promise;
@@ -48,7 +49,7 @@ class AuthAPI extends BaseAPI {
 
   create(data: SignUpData): Promise<UserData> {
     return this.handle(
-      http.post(`${this.base}/signup`, {
+      this.http.post(`${this.base}/signup`, {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
@@ -58,7 +59,7 @@ class AuthAPI extends BaseAPI {
 
   signIn(data: SignInData): Promise<void> {
     return this.handle(
-      http.post(`${this.base}/signin`, {
+      this.http.post(`${this.base}/signin`, {
         data,
         headers: { 'Content-Type': 'application/json' },
       }),
@@ -67,11 +68,11 @@ class AuthAPI extends BaseAPI {
   }
 
   request(): Promise<UserData> {
-    return this.handle(http.get(`${this.base}/user`), 'Пользователь не авторизован');
+    return this.handle(this.http.get(`${this.base}/user`), 'Пользователь не авторизован');
   }
 
   logout(): Promise<void> {
-    return this.handle(http.post(`${this.base}/logout`), 'Ошибка при выходе');
+    return this.handle(this.http.post(`${this.base}/logout`), 'Ошибка при выходе');
   }
 }
 
