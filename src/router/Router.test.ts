@@ -56,7 +56,7 @@ describe('Router', () => {
       // Создаю блок и регистрирую маршрут, чтобы избежать "Route not found"
       class DummyBlock {}
 
-      router.use('/', DummyBlock as unknown as new () => unknown); 
+      router.use('/', DummyBlock as unknown as new () => unknown);
       router.use(path, DummyBlock as unknown as new () => unknown);
 
       jest.spyOn(RouteGuard, 'beforeRouteChange').mockResolvedValue(true);
