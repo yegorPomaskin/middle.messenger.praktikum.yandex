@@ -1,0 +1,25 @@
+<section class="chat">
+  <div class="{{styles.chat-container}}">
+    <div class="{{styles.chat__items}}">
+      <div class="{{styles.chat__item-header}}">
+        <div class="{{styles.chat__item-title}}">Чат</div>
+        {{{ profileLink }}}
+      </div>
+      <div class="{{styles.chat__item-search}}">
+        <input type="text" class="{{styles.search-input}}" placeholder="Поиск" />
+        {{{ addNewChatButton }}}
+      </div>
+      <div class="chat__item-list">
+        {{{ chatItems }}}
+      </div>
+    </div>
+    
+        {{{ chatInterface }}}
+
+        {{#if showUsersList}}
+          {{{usersList}}}
+        {{/if}}
+  </div>
+      
+  </div>
+</section>
